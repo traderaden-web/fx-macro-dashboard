@@ -1,0 +1,27 @@
+# dependencies
+node_modules/
+
+# build
+.next/
+out/
+build/
+dist/
+
+# cache & logs
+*.log
+npm-debug.log*
+.yarn/cache
+.yarn/install-state.gz
+.eslintcache
+.cache/
+
+# env (jika ada)
+.env
+.env.local
+.env.*.local
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

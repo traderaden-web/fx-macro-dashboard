@@ -1,0 +1,17 @@
+# netlify.toml — konfigurasi deploy untuk Next.js di Netlify (gratis)
+# @netlify/plugin-nextjs menyiapkan fungsi server (halaman server-component &
+# route handler seperti /news, /api/forex, /api/fred/[id]) secara otomatis.
+# Catatan: jangan set direktori "functions" sendiri — plugin yang mengelolanya.
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Tidak perlu environment variable tambahan:
+# FRED (fredgraph.csv), Yahoo Finance, dan open.er-api.com bersifat publik.
+
+[build.environment]
+  NODE_VERSION = "20"

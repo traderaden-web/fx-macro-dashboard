@@ -1,0 +1,13 @@
+{
+  "updated": "2026-08-29T00:00:00.000Z",
+  "note": "Cadangan offline (fallback) untuk halaman Berita. Saat sumber live tertjangkau, data Google News RSS akan menggantikan daftar ini.",
+  "items": [
+    { "title": "Markets brace for Federal Reserve decision as inflation stays elevated", "source": "Reuters", "cat": "moneter", "link": "https://www.reuters.com/markets/us/", "pubDate": "Sat, 29 Aug 2026 01:00:00 GMT", "iso": "2026-08-29T01:00:00.000Z" },
+    { "title": "Dollar firms after upbeat labor data; traders weigh rate path", "source": "Investing.com", "cat": "pasar", "link": "https://www.investing.com/news/forex-news", "pubDate": "Fri, 28 Aug 2026 18:00:00 GMT", "iso": "2026-08-28T18:00:00.000Z" },
+    { "title": "Fed officials signal patience as inflation risks persist", "source": "FXStreet", "cat": "moneter", "link": "https://www.fxstreet.com/", "pubDate": "Fri, 28 Aug 2026 13:00:00 GMT", "iso": "2026-08-28T13:00:00.000Z" },
+    { "title": "Oil prices steady as supply concerns offset demand worries", "source": "Reuters", "cat": "komoditas", "link": "https://www.reuters.com/markets/commodities/", "pubDate": "Fri, 28 Aug 2026 11:00:00 GMT", "iso": "2026-08-28T11:00:00.000Z" },
+    { "title": "Gold hovers near highs as investors hedge against uncertainty", "source": "Investing.com", "cat": "komoditas", "link": "https://www.investing.com/commodities/gold-news", "pubDate": "Thu, 27 Aug 2026 20:00:00 GMT", "iso": "2026-08-27T20:00:00.000Z" },
+    { "title": "Euro slips versus dollar ahead of key eurozone inflation print", "source": "FXStreet", "cat": "pasar", "link": "https://www.fxstreet.com/", "pubDate": "Thu, 27 Aug 2026 09:00:00 GMT", "iso": "2026-08-27T09:00:00.000Z" },
+    { "title": "US nonfarm payrolls preview: what to watch for next week", "source": "Investing.com", "cat": "ekonomi", "link": "https://www.investing.com/economic-calendar/", "pubDate": "Wed, 26 Aug 2026 15:00:00 GMT", "iso": "2026-08-26T15:00:00.000Z" }
+  ]
+}

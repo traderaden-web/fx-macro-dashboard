@@ -1,0 +1,23 @@
+{
+  "name": "fx-macro-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Dashboard makroekonomi untuk trader forex: kalender ekonomi, data historis (NFP, CPI, PPI, FOMC) & analisis dampak.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "fetch": "node scripts/fetch-all.mjs",
+    "fetch:data": "node scripts/fetch-all.mjs"
+  },
+  "dependencies": {
+    "next": "^15.5.24",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.2.1"
+  }
+}
