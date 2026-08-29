@@ -1,0 +1,51 @@
+# .github/workflows/ci-deploy.yml
+# GitHub Actions: tiap push ke main → (1) CI build check, (2) deploy ke Netlify
+# (hanya aktif jika secret/variable Netlify sudah di-set di repo).
+#
+# Setup sekali (di GitHub):
+#   Settings → Secrets and variables → Actions:
+#     Variables: NETLIFY_SITE_ID  = ID site Netlify-mu
+#     Secrets:   NETLIFY_AUTH_TOKEN = token Netlify (App → Applications → Generate)
+#   Jika tidak di-set, job deploy otomatis dilewati — CI tetap jalan.
+
+name: CI & Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: CI — Build Next.js
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Build
+        run: npm run build
+
+  deploy-netlify:
+    name: Deploy → Netlify
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.NETLIFY_SITE_ID != ''
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Deploy
+        run: npx netlify-cli deploy --prod --site "${{ vars.NETLIFY_SITE_ID }}"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
