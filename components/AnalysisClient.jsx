@@ -181,7 +181,7 @@ function BlockHistory({ item }) {
         <div className="ct-hist-left">
           <div className="ct-spark" aria-hidden="true">
             {rels.map((r, i) => {
-              const h = r.surprise === null ? 0 : Math.max(6, (Math.abs(r.surprise) / maxAbs) * 96);
+              const h = r.surprise === null ? 0 : Math.max(6, (Math.abs(r.surprise) / maxAbs) * 48);
               const up = r.surprise > 0;
               return (
                 <span key={r.date} className="ct-sp-cell" style={{ "--i": i }}>

@@ -2022,7 +2022,7 @@ button.btn:disabled, .btn:disabled, .btn[disabled] {
   border-right: 1px solid var(--ct-border);
   background: var(--ct-bg2);
   display: flex; flex-direction: column;
-  max-height: 780px;
+  min-height: 100%;
 }
 .ct-side-head {
   display: flex; align-items: center; gap: 8px;
