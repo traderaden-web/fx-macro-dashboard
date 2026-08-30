@@ -1891,3 +1891,66 @@ button.btn:disabled, .btn:disabled, .btn[disabled] {
 
 /* panel detail: angka count-up + aksen */
 .map-detail-stats b { font-variant-numeric: tabular-nums; }
+
+/* ================= Round-16c: animasi "wow" Peta Makro ================= */
+/* radar memutar dari pusat peta */
+.map-radar {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background: conic-gradient(from 0deg, transparent 0deg, transparent 290deg, rgba(240,180,41,0.05) 325deg, rgba(240,180,41,0.17) 357deg, transparent 360deg);
+  animation: radarSpin 9s linear infinite;
+  mix-blend-mode: screen;
+}
+@keyframes radarSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* partikel digital melayang */
+.map-particles { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.map-particles i {
+  position: absolute; border-radius: 50%;
+  background: rgba(240,180,41,0.55);
+  box-shadow: 0 0 6px rgba(240,180,41,0.55);
+  opacity: 0;
+  animation: particleFloat linear infinite;
+}
+@keyframes particleFloat {
+  0% { transform: translateY(16px); opacity: 0; }
+  12% { opacity: 0.8; }
+  85% { opacity: 0.45; }
+  100% { transform: translateY(-48px); opacity: 0; }
+}
+
+/* arc aliran data + partikel terbang */
+.map-arcs { pointer-events: none; }
+.map-arc {
+  fill: none; stroke: rgba(240,180,41,0.42); stroke-width: 0.9;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: arcDraw 1.15s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: calc(0.55s + var(--i, 0) * 0.12s);
+}
+@keyframes arcDraw { to { stroke-dashoffset: 0; } }
+.map-arc-pkt { opacity: 0; animation: pktFade 0.5s ease forwards; animation-delay: calc(1s + var(--i, 0) * 0.13s); }
+@keyframes pktFade { to { opacity: 1; } }
+
+/* ticker data bergulir */
+.map-ticker {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 10px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--bg-soft); padding: 7px 12px; overflow: hidden;
+}
+.map-ticker-label {
+  flex: none; font-size: 9.5px; font-weight: 900; letter-spacing: 1.2px; color: var(--up);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.map-ticker-label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--up); animation: livePulse 1.8s ease-out infinite; }
+.map-ticker-viewport {
+  flex: 1; overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+}
+.map-ticker-track {
+  display: inline-flex; align-items: center; white-space: nowrap;
+  animation: tickerScroll 46s linear infinite; will-change: transform;
+}
+.map-ticker:hover .map-ticker-track { animation-play-state: paused; }
+.map-ticker-item { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 30px; display: inline-flex; align-items: center; gap: 30px; }
+.map-ticker-item::after { content: "◆"; color: var(--border-2); font-size: 7px; }
+@keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }

@@ -3,10 +3,13 @@
 // components/MacroMap.jsx
 // Peta Makro Global ala TradingView: peta dunia (SVG equirectangular,
 // geometri Natural Earth 50m) dengan negara-negara utama diwarnai sesuai
-// indikator makro terpilih. Animasi: negara muncul berurutan, pin berdenyut
-// di ibu kota bank sentral, sweep cahaya menyapu peta.
-// Interaksi: hover = info singkat · KLIK negara = popup modal data lengkap
-// + berita terkini negara tersebut (/api/country/news).
+// indikator makro terpilih.
+// Animasi: negara muncul berurutan + re-entrance per indikator, pin berdenyut,
+// RADAR menyapu peta, partikel digital melayang, ARCA aliran data dari entitas
+// ekstrem ke semua bank sentral (partikel terbang), denyut ekstrem + badge,
+// count-up panel, ripple klik, ticker data bergulir.
+// Interaksi: hover = tooltip ikut kursor · KLIK negara = popup modal data
+// lengkap + berita terkini (/api/country/news).
 // Data kurasi per-30-Agu-2026 (lib/macroData.js).
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -231,6 +234,47 @@ export default function MacroMap() {
     if (d) setModalKey(d.key);
   };
 
+  // Arc aliran data: sinyal "memancar" dari entitas ekstrem ke semua bank sentral lain
+  const arcs = useMemo(() => {
+    if (!extreme) return [];
+    return pins
+      .filter((p) => p.key !== extreme.k)
+      .map((p, i) => {
+        const x1 = extreme.x, y1 = extreme.y, x2 = p.x, y2 = p.y;
+        const dist = Math.hypot(x2 - x1, y2 - y1);
+        const cx = (x1 + x2) / 2;
+        const cy = (y1 + y2) / 2 - Math.max(14, dist * 0.22);
+        return {
+          key: p.key,
+          i,
+          d: `M ${x1.toFixed(1)} ${y1.toFixed(1)} Q ${cx.toFixed(1)} ${cy.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`,
+        };
+      });
+  }, [extreme, pins]);
+
+  // Partikel digital melayang (posisi deterministik — aman untuk SSR/hydration)
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 16 }, (_, i) => ({
+        left: (i * 61 + 13) % 100,
+        top: ((i * 37 + 29) % 86) + 8,
+        dur: 9 + ((i * 7) % 8),
+        delay: -((i * 13) % 9),
+        size: 1.5 + (i % 3) * 0.8,
+      })),
+    []
+  );
+
+  // Ticker: ringkasan 4 indikator semua entitas, bergulir
+  const tickerItems = useMemo(
+    () =>
+      Object.keys(COUNTRY_DATA).map((k) => {
+        const d = COUNTRY_DATA[k];
+        return `${COUNTRY_NAMES[k]} · ${FMT(d.rate)}% · ${d.inflation != null ? FMT(d.inflation) + "%" : "—"} · ${d.gdp != null ? FMT(d.gdp) + "%" : "—"} · ${d.unemp != null ? FMT(d.unemp) + "%" : "—"}`;
+      }),
+    []
+  );
+
   return (
     <div className="card reveal map-card">
       <div className="section-head map-head">
@@ -314,6 +358,24 @@ export default function MacroMap() {
                 );
               })}
             </g>
+            {/* arc aliran data: dari entitas ekstrem ke semua bank sentral lain */}
+            <g key={`arcs-${indId}`} className="map-arcs" aria-hidden="true">
+              {arcs.map((a) => (
+                <g key={a.key}>
+                  <path d={a.d} pathLength={1} className="map-arc" style={{ "--i": a.i }} />
+                  <g className="map-arc-pkt" style={{ "--i": a.i }}>
+                    <circle r="2.8" fill="rgba(240,180,41,0.20)" />
+                    <circle r="1.3" fill="#f0b429" />
+                    <animateMotion
+                      dur={`${(2.8 + (a.i % 5) * 0.45).toFixed(2)}s`}
+                      begin={`${(1 + a.i * 0.13).toFixed(2)}s`}
+                      repeatCount="indefinite"
+                      path={a.d}
+                    />
+                  </g>
+                </g>
+              ))}
+            </g>
             {/* badge nilai ekstrem di atas pin */}
             {extreme && (
               <g className="map-extreme" aria-hidden="true">
@@ -323,7 +385,23 @@ export default function MacroMap() {
               </g>
             )}
           </svg>
-          <div className="map-sweep" aria-hidden="true" />
+          {/* radar memutar + partikel digital melayang */}
+          <div className="map-radar" aria-hidden="true" />
+          <div className="map-particles" aria-hidden="true">
+            {particles.map((p, i) => (
+              <i
+                key={i}
+                style={{
+                  left: `${p.left}%`,
+                  top: `${p.top}%`,
+                  width: p.size,
+                  height: p.size,
+                  animationDuration: `${p.dur}s`,
+                  animationDelay: `${p.delay}s`,
+                }}
+              />
+            ))}
+          </div>
           {/* ripple di titik klik */}
           {ripples.map((rp) => (
             <span key={rp.id} className="map-ripple" style={{ left: rp.x, top: rp.y }} aria-hidden="true" />
@@ -410,9 +488,21 @@ export default function MacroMap() {
         </div>
       </div>
 
+      {/* ticker data bergulir — semua entitas, 4 indikator */}
+      <div className="map-ticker" aria-hidden="true">
+        <span className="map-ticker-label">LIVE</span>
+        <div className="map-ticker-viewport">
+          <div className="map-ticker-track">
+            {[...tickerItems, ...tickerItems].map((t, i) => (
+              <span key={i} className="map-ticker-item">{t}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+
       <div className="map-foot">
         <span>Data per {MACRO_ASOF} · sumber: ONS, ECB, FRED, RBA, Investing.com, TradingEconomics, Fitch, OECD</span>
-        <span>Hover / ketuk negara · 12 entitas · {INDICATORS.length} indikator</span>
+        <span>Arc = sinyal terkuat memancar · hover / klik negara · {INDICATORS.length} indikator</span>
       </div>
 
       {modalKey && <CountryModal cc={modalKey} onClose={() => setModalKey(null)} />}
