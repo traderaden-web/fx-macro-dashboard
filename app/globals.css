@@ -3285,3 +3285,49 @@ body::before {
   .ilt-row { animation: none !important; }
   .ilt-term-title::after { animation: none !important; }
 }
+
+/* ============ Round-31: P/K/A per baris jadwal ============ */
+.cal-row { grid-template-columns: 74px minmax(0, 1fr) 108px 78px 216px 92px 20px; }
+.cal-r-metrics { display: flex; gap: 7px; align-items: baseline; font-size: 10.5px; }
+.cal-r-metrics b {
+  display: inline-flex; align-items: baseline; gap: 4px;
+  font-weight: 700; color: var(--text); white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.cal-r-metrics b u {
+  text-decoration: none; font-size: 8px; font-weight: 800; letter-spacing: 0.5px;
+  border-radius: 3px; padding: 1.5px 4px; margin-right: 0; vertical-align: baseline;
+}
+.cal-r-metrics .m-p u { color: var(--muted); background: rgba(148,163,184,0.16); border: 1px solid rgba(148,163,184,0.32); }
+.cal-r-metrics .m-k u { color: var(--accent); background: rgba(240,180,41,0.14); border: 1px solid rgba(240,180,41,0.4); }
+.cal-r-metrics .m-a { color: var(--up); font-weight: 800; }
+.cal-r-metrics .m-a u { color: #052e16; background: linear-gradient(180deg, var(--up), #16a34a); border: none; }
+.cal-r-metrics .m-a.done { text-shadow: 0 0 14px rgba(74,222,128,0.55); }
+.cal-r-metrics .dim { color: var(--dim); }
+
+/* baris angka di panel detail */
+.cal-d-data {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.8px; color: var(--accent);
+  background: rgba(240,180,41,0.08); border: 1px solid rgba(240,180,41,0.32);
+  border-radius: 5px; padding: 3px 8px;
+}
+
+/* angka sebelum rilis di panel NEXT */
+.cal-next-prev { font-size: 10px; letter-spacing: 0.8px; color: var(--muted); }
+.cal-next-prev b { color: var(--accent); font-weight: 800; }
+
+/* responsif: utamakan angka P/K/A tetap terlihat */
+@media (max-width: 1150px) {
+  .cal-row { grid-template-columns: 74px minmax(0, 1fr) 100px 74px 200px 20px; }
+  .cal-r-cd { display: none; }
+  .cal-r-metrics { display: flex; }
+}
+@media (max-width: 900px) {
+  .cal-row { grid-template-columns: 70px minmax(0, 1fr) 62px 184px 16px; }
+  .cal-r-cat { display: none; }
+  .cal-r-cd { display: none; }
+  .cal-r-metrics { gap: 5px; font-size: 10px; }
+}
+@media (max-width: 720px) {
+  .cal-row { grid-template-columns: 62px minmax(0, 1fr) 150px 14px; }
+  .cal-r-imp { display: none; }
+}

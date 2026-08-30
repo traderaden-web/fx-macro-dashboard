@@ -78,7 +78,7 @@ function EventRow({ e, now, isNext, open, onToggle }) {
           <CountryFlag code={e.country} size={15} showCode={false} />
           {e.title}
           {isNext && <b className="cal-next-tag">NEXT</b>}
-          {isPast && e.actual == null && <i className="cal-released">RELEASED</i>}
+          {isPast && <i className="cal-released">RELEASED</i>}
         </span>
         <span className="cal-r-cat" style={{ "--c": cat?.color }}>
           <i /> {cat?.label || e.category}
@@ -86,11 +86,16 @@ function EventRow({ e, now, isNext, open, onToggle }) {
         <span className={`cal-r-imp ${IMP_CLS[e.impact] || "im-low"}`} title={`Dampak ${e.impact}`}>
           <i /><i /><i />
         </span>
-        <span className="cal-r-metrics mono">
-          {e.previous != null && <b title="Previous"><u>P</u>{fmtVal(e.previous)}</b>}
-          {e.forecast != null && <b title="Konsensus"><u>K</u>{fmtVal(e.forecast)}</b>}
-          {e.actual != null && <b className="act" title="Actual"><u>A</u>{fmtVal(e.actual)}</b>}
-          {!hasData && <span className="dim">—</span>}
+        <span className="cal-r-metrics mono" title={hasData ? "P = previous · K = forecast/konsensus · A = actual (sudah rilis)" : "Belum ada angka (previous/forecast/actual)"}>
+          {hasData ? (
+            <>
+              {e.previous != null && <b className="m-p"><u>P</u>{fmtVal(e.previous)}</b>}
+              {e.forecast != null && <b className="m-k"><u>K</u>{fmtVal(e.forecast)}</b>}
+              {e.actual != null && <b className={`m-a ${isPast ? "done" : ""}`}><u>A</u>{fmtVal(e.actual)}</b>}
+            </>
+          ) : (
+            <span className="dim">—</span>
+          )}
         </span>
         <span className="cal-r-cd mono">{cd || ""}</span>
         <span className="cal-r-chev" aria-hidden="true">{open ? "▾" : "▸"}</span>
@@ -113,6 +118,13 @@ function EventRow({ e, now, isNext, open, onToggle }) {
                 <p>{series.fx}</p>
               </div>
               <div className="cal-d-foot">
+                {(() => {
+                  const parts = [];
+                  if (e.previous != null) parts.push(`P ${fmtVal(e.previous)}`);
+                  if (e.forecast != null) parts.push(`K ${fmtVal(e.forecast)}`);
+                  if (e.actual != null) parts.push(`A ${fmtVal(e.actual)}`);
+                  return parts.length ? <span className="cal-d-data mono">{parts.join(" · ")}</span> : null;
+                })()}
                 {series.release && <span className="cal-d-rel mono">JADWAL: {series.release}</span>}
                 <Link className="cal-d-link mono" href={`/indicators/${e.indicatorId}`}>
                   Detail indikator →
@@ -253,6 +265,13 @@ export default function CalendarClient({ events }) {
               <span className="cal-next-when mono">
                 {DAY_NAMES[new Date(nextHigh.iso).getDay()]} · {nextHigh.iso.slice(8, 10)} {MONTHS[Number(nextHigh.iso.slice(5, 7)) - 1]} {nextHigh.iso.slice(0, 4)} · {nextHigh.time} WIB · {COUNTRY_META[nextHigh.country] || nextHigh.country}
               </span>
+              {nextHigh.previous != null && (
+                <span className="cal-next-prev mono">
+                  SEBELUMNYA: <b>{fmtVal(nextHigh.previous)}</b>
+                  {nextHigh.forecast != null && <> · FORECAST: <b>{fmtVal(nextHigh.forecast)}</b></>}
+                  {" "}({getSeries(nextHigh.indicatorId)?.unit || ""})
+                </span>
+              )}
               {nextHighs.length > 1 && (
                 <span className="cal-next-more mono">
                   +{nextHighs.length - 1} high-impact berikutnya: {nextHighs.slice(1).map((e) => e.title).join(" · ")}
@@ -369,8 +388,8 @@ export default function CalendarClient({ events }) {
       </section>
 
       <footer className="cal-term-foot mono">
-        <span>SRC: JADWAL RESMI BLS/FED/ECB/ONS{""} · N: {filtered.length} · ZONA: WIB (UTC+7)</span>
-        <span className="cal-term-foot-note">Jadwal bisa berubah — verifikasi ke sumber resmi</span>
+        <span>SRC: JADWAL RESMI BLS/FED/ECB/ONS · P: FRED · K/A: FOREXFACTORY LIVE · N: {filtered.length} · ZONA: WIB (UTC+7)</span>
+        <span className="cal-term-foot-note">P = sebelum rilis · K = konsensus · A = angka yang sudah keluar — verifikasi ke sumber resmi</span>
         <span className="ct-blink" aria-hidden="true">●</span>
       </footer>
     </div>
