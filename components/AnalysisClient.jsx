@@ -261,24 +261,28 @@ function BlockHistory({ item }) {
             </span>
             <span className="ct-acc-sub">{acc.bias > 0 ? "konsensus cenderung terlalu rendah" : acc.bias < 0 ? "konsensus cenderung terlalu tinggi" : "tak berpihak"}</span>
           </div>
-          <div className="ct-split-wrap">
-            <span className="ct-acc-sub">DISTRIBUSI RILIS</span>
-            <div className="ct-split" aria-hidden="true">
-              <i className="beat" style={{ width: `${(acc.beats / Math.max(acc.samples, 1)) * 100}%` }} />
-              <i className="inl" style={{ width: `${(acc.inlines / Math.max(acc.samples, 1)) * 100}%` }} />
-              <i className="miss" style={{ width: `${(acc.misses / Math.max(acc.samples, 1)) * 100}%` }} />
-            </div>
-            <span className="ct-acc-sub mono">
-              <b className="up">{acc.beats}×</b> BEAT · <b>{acc.inlines}×</b> INLINE · <b className="down">{acc.misses}×</b> MISS
-            </span>
-          </div>
-          {acc.streak && <div className="ct-streak mono">STREAK ▸ {acc.streak.n}× {acc.streak.kind} beruntun</div>}
-          {acc.maxSurprise !== null && (
-            <div className="ct-streak mono dim">
-              MAX SURPRISE ▸ {SFMT(acc.maxSurprise, d)} ({MM(acc.maxSurpriseDate).toUpperCase()})
-            </div>
-          )}
         </aside>
+      </div>
+
+      {/* strip bawah: distribusi beat/miss + streak + max surprise */}
+      <div className="ct-hist-foot">
+        <div className="ct-split-wrap">
+          <span className="ct-acc-sub">DISTRIBUSI RILIS</span>
+          <div className="ct-split" aria-hidden="true">
+            <i className="beat" style={{ width: `${(acc.beats / Math.max(acc.samples, 1)) * 100}%` }} />
+            <i className="inl" style={{ width: `${(acc.inlines / Math.max(acc.samples, 1)) * 100}%` }} />
+            <i className="miss" style={{ width: `${(acc.misses / Math.max(acc.samples, 1)) * 100}%` }} />
+          </div>
+          <span className="ct-acc-sub mono">
+            <b className="up">{acc.beats}×</b> BEAT · <b>{acc.inlines}×</b> INLINE · <b className="down">{acc.misses}×</b> MISS
+          </span>
+        </div>
+        {acc.streak && <div className="ct-streak mono">STREAK ▸ {acc.streak.n}× {acc.streak.kind} beruntun</div>}
+        {acc.maxSurprise !== null && (
+          <div className="ct-streak mono dim">
+            MAX SURPRISE ▸ {SFMT(acc.maxSurprise, d)} ({MM(acc.maxSurpriseDate).toUpperCase()})
+          </div>
+        )}
       </div>
     </div>
   );

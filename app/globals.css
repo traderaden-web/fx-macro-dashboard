@@ -2640,3 +2640,41 @@ body::before {
   .boot-lines { font-size: 10.5px; }
   .home-banner { font-size: clamp(7px, 2.3vw, 11px); padding: 12px 10px 10px; }
 }
+
+/* ============ Round-23: Rapihkan Consensus Terminal — tanpa space kosong ============ */
+/* 03 · tabel lebih panjang (semua rilis terlihat) + kolom rapat */
+.ct-table-wrap { max-height: 470px; }
+.ct-table { font-size: 10.5px; }
+.ct-table thead th { padding: 6px 8px; }
+.ct-table tbody td { padding: 5px 8px; }
+
+/* 03 · grid riwayat: kolom akurasi memanjang rata (tanpa sisa bawah) */
+.ct-hist-grid { align-items: stretch; }
+.ct-acc { display: flex; flex-direction: column; gap: 10px; justify-content: space-between; }
+.ct-acc-row { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; padding: 8px 10px; }
+
+/* 03 · strip bawah: distribusi + streak + max surprise (lebar penuh) */
+.ct-hist-foot { display: flex; gap: 10px; flex-wrap: wrap; align-items: stretch; margin-top: 12px; }
+.ct-hist-foot .ct-split-wrap { flex: 2 1 240px; display: flex; flex-direction: column; justify-content: center; }
+.ct-hist-foot .ct-streak { flex: 1 1 180px; display: flex; align-items: center; }
+
+/* seluruh terminal: padding & jarak dipadatkan (tanpa space kosong) */
+.ct-main { gap: 10px; padding: 4px 14px 12px; }
+.ct-block { padding: 12px 14px 14px; }
+.ct-block-head { margin-bottom: 10px; }
+.ct-readout { margin-bottom: 12px; gap: 7px; }
+.ct-cell { padding: 9px 11px 8px; gap: 3px; }
+.ct-gauge { margin: 2px 0 10px; }
+.ct-senti { padding: 7px 11px; }
+.ct-rx { padding: 9px 13px; margin-bottom: 10px; }
+.ct-model-note { margin: 8px 0 0; }
+.ct-foot { padding: 7px 14px; }
+.ct-hist-left { min-width: 0; }
+
+/* mobile: tabel tetap panjang, foot berbalut */
+@media (max-width: 1180px) {
+  .ct-acc { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; justify-content: normal; }
+  .ct-acc-row { flex: none; }
+  .ct-hist-foot .ct-streak { flex: 1 1 40%; }
+  .ct-hist-foot .ct-split-wrap { flex: 1 1 100%; }
+}
