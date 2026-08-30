@@ -18,14 +18,15 @@ import { filterAssetNews } from "../lib/assetNews";
 // Simbol yang dipantau. `tv` = simbol TradingView untuk embed.
 const SYMBOLS = [
   { id: "gold", label: "Gold (XAU/USD)", tv: "TVC:GOLD", desc: "Emas spot" },
-  { id: "gold-fut", label: "Gold Futures", tv: "COMEX:GC1!", desc: "Kontrak depan COMEX" },
   { id: "silver", label: "Silver (XAG/USD)", tv: "TVC:SILVER", desc: "Perak spot" },
   { id: "wti", label: "Minyak WTI", tv: "TVC:USOIL", desc: "Minyak mentah AS" },
-  { id: "brent", label: "Minyak Brent", tv: "TVC:UKOIL", desc: "Minyak mentah global" },
-  { id: "natgas", label: "Natural Gas", tv: "TVC:NATGAS", desc: "Henry Hub" },
-  { id: "copper", label: "Tembaga", tv: "COMEX:HG1!", desc: "COMEX front month" },
+  { id: "eurusd", label: "EUR/USD", tv: "FX:EURUSD", desc: "Major pair" },
+  { id: "gbpusd", label: "GBP/USD", tv: "FX:GBPUSD", desc: "Major pair" },
+  { id: "usdjpy", label: "USD/JPY", tv: "FX:USDJPY", desc: "Major pair" },
+  { id: "audusd", label: "AUD/USD", tv: "FX:AUDUSD", desc: "Major pair" },
+  { id: "usdcad", label: "USD/CAD", tv: "FX:USDCAD", desc: "Major pair" },
+  { id: "nzdusd", label: "NZD/USD", tv: "FX:NZDUSD", desc: "Major pair" },
   { id: "dxy", label: "Dollar Index", tv: "TVC:DXY", desc: "DXY — kekuatan USD" },
-  { id: "eurusd", label: "EUR/USD", tv: "FX:EURUSD", desc: "Pair mayor" },
 ];
 
 function timeAgo(iso) {
