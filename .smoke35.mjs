@@ -98,7 +98,7 @@ await act(async () => { await new Promise((r) => setTimeout(r, 120)); });
 add("ESC menutup (lagi)", !modal());
 
 // ganti indikator → popup masih berfungsi (NFP)
-add("picker: NFP next = 11 Sep 19:30 (Jumat kedua)", !!$$(".ct-side .ct-row").find((b) => /NFP/.test(b.textContent) && /11 Sep 19:30/.test(b.textContent)), $$(".ct-side .ct-row").find((b) => /NFP/.test(b.textContent))?.textContent.replace(/\s+/g," ").slice(0,80));
+add("picker: NFP next = 4 Sep 19:30 (FF verified: Jumat)", !!$$(".ct-side .ct-row").find((b) => /NFP/.test(b.textContent) && /4 Sep 19:30/.test(b.textContent)), $$(".ct-side .ct-row").find((b) => /NFP/.test(b.textContent))?.textContent.replace(/\s+/g," ").slice(0,80));
 const nfpRow = $$(".ct-side .ct-row").find((b) => /NFP/.test(b.textContent));
 await click(nfpRow);
 await act(async () => { await new Promise((r) => setTimeout(r, 500)); });

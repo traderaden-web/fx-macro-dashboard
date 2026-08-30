@@ -1613,7 +1613,8 @@ var CONSENSUS = {
     { date: "2025-12-16", obs: "2025-11-01", consensus: 51 },
     { date: "2025-11-14", obs: "2025-10-01", consensus: 40 },
     { date: "2025-10-10", obs: "2025-09-01", consensus: 75 },
-    { date: "2025-09-05", obs: "2025-08-01", consensus: 75 }
+    { date: "2025-09-05", obs: "2025-08-01", consensus: 75 },
+    { date: "2026-09-04", obs: "2026-08-01", consensus: 58 }
   ],
   unemp: [
     { date: "2026-08-07", obs: "2026-07-01", consensus: 4.2 },
@@ -1628,7 +1629,8 @@ var CONSENSUS = {
     { date: "2025-10-10", obs: "2025-09-01", consensus: 4.3 },
     { date: "2025-09-05", obs: "2025-08-01", consensus: 4.3 },
     { date: "2025-08-08", obs: "2025-07-01", consensus: 4.2 },
-    { date: "2025-07-11", obs: "2025-06-01", consensus: 4.2 }
+    { date: "2025-07-11", obs: "2025-06-01", consensus: 4.2 },
+    { date: "2026-09-04", obs: "2026-08-01", consensus: 4.1 }
   ],
   cpi: [
     { date: "2026-08-12", obs: "2026-07-01", consensus: 3.4 },
@@ -1903,7 +1905,8 @@ var CONSENSUS = {
     { date: "2026-08-03", obs: "2026-07-01", consensus: 54 },
     { date: "2026-07-02", obs: "2026-06-01", consensus: 53.8 },
     // tervalidasi FF
-    { date: "2026-06-01", obs: "2026-05-01", consensus: 54 }
+    { date: "2026-06-01", obs: "2026-05-01", consensus: 54 },
+    { date: "2026-09-01", obs: "2026-08-01", consensus: 55.2 }
   ],
   ismsvc: [
     { date: "2026-08-05", obs: "2026-07-01", consensus: 54.5 },
@@ -15090,14 +15093,13 @@ var EVENTS = [
   // ⚑ 30-Agu-2026: jadwal rilis NFP di kalender ini IRREGULER (validasi earningsapi:
   // 3 Jul-25, 5 Sep-25, 16 Des-25, 9 Jan-26, 11 Feb-26, 8 Mei-26, 5 Jun-26, 2 Jul-26).
   // Tanggal di bawah = ESTIMASI (belum terverifikasi API), masih pakai pola Jumat kedua.
-  { date: "2026-09-11", time: "19:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
+  { date: "2026-09-04", time: "19:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
   { date: "2026-10-09", time: "19:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
   { date: "2026-11-13", time: "20:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
   { date: "2026-12-11", time: "20:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
   // ---- ISM PMI — 10:00 ET ----
   // ⚑ 30-Agu-2026: jadwal rilis ISM IRREGULER (tervalidasi: Mfg 2 Jul-26, Svc 6 Jul-26
   // & 5 Agu-26). Tanggal di bawah = ESTIMASI (hari kerja pertama / +3 hari kerja).
-  { date: "2026-09-25", time: "19:30", title: "Core PCE Price Index m/m", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
   { date: "2026-10-26", time: "19:30", title: "Core PCE Price Index m/m", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
   { date: "2026-11-25", time: "19:30", title: "Core PCE Price Index m/m", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
   { date: "2026-10-28", time: "19:30", title: "GDP (Advance) q/q", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "gdp" },

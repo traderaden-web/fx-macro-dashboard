@@ -25,6 +25,8 @@
 //   inkonsisten dgn FF), CPI obs 2026-05=4.2, CoreCPI obs 2026-05=2.9.
 //
 // ⚠ Revisi (FF 7 Agu 26): NFP Jun-26 57→20 ribu (nilai sekarang = 20).
+// Rilis NFP Agu-26 verified FF = 4 Sep 2026 (Jumat, 19:30 WIB).
+// Forecast upcoming (FF window Sep 26): NFP 58 ribu, Unemp 4,1, ISM Mfg 55,2.
 // Masih PERKIRAAAN (belum ketemu, akan di-probe): NFP obs 2025-09/10 & 2026-02/03 ·
 // CPI obs 2025-09/11 & 2026-05 · PPI obs 2025-09/10/11 &
 // 2026-01/02/03 · Retail obs 2025-08/09/10 & 2026-02..05 · UMich obs 2026-01/06 ·
@@ -49,7 +51,8 @@ export const CONSENSUS = {
     { date: "2025-12-16", obs: "2025-11-01", consensus: 51 },
     { date: "2025-11-14", obs: "2025-10-01", consensus: 40 },
     { date: "2025-10-10", obs: "2025-09-01", consensus: 75 },
-    { date: "2025-09-05", obs: "2025-08-01", consensus: 75 },
+    { date: "2025-09-05", obs: "2025-08-01", consensus: 75 },    { date: "2026-09-04", obs: "2026-08-01", consensus: 58 },
+
   ],
   unemp: [
     { date: "2026-08-07", obs: "2026-07-01", consensus: 4.2 },
@@ -64,7 +67,8 @@ export const CONSENSUS = {
     { date: "2025-10-10", obs: "2025-09-01", consensus: 4.3 },
     { date: "2025-09-05", obs: "2025-08-01", consensus: 4.3 },
     { date: "2025-08-08", obs: "2025-07-01", consensus: 4.2 },
-    { date: "2025-07-11", obs: "2025-06-01", consensus: 4.2 },
+    { date: "2025-07-11", obs: "2025-06-01", consensus: 4.2 },    { date: "2026-09-04", obs: "2026-08-01", consensus: 4.1 },
+
   ],
   cpi: [
     { date: "2026-08-12", obs: "2026-07-01", consensus: 3.4 },
@@ -339,7 +343,8 @@ export const CONSENSUS = {
   ismmfg: [
     { date: "2026-08-03", obs: "2026-07-01", consensus: 54.0 },
     { date: "2026-07-02", obs: "2026-06-01", consensus: 53.8 }, // tervalidasi FF
-    { date: "2026-06-01", obs: "2026-05-01", consensus: 54.0 },
+    { date: "2026-06-01", obs: "2026-05-01", consensus: 54.0 },    { date: "2026-09-01", obs: "2026-08-01", consensus: 55.2 },
+
   ],
   ismsvc: [
     { date: "2026-08-05", obs: "2026-07-01", consensus: 54.5 }, // tervalidasi API
