@@ -62,6 +62,15 @@ export default function SignalPanel({ symbol, tf, onTf }) {
 
   return (
     <div className={`signal-card ${a ? a.cls : ""}`}>
+      <header className="term-head">
+        <h3 className="term-title">
+          <span className="term-ico" aria-hidden="true">📡</span>
+          Signal <span className="term-sub">· {symbol.label}</span>
+        </h3>
+        <span className="term-badge">EMA · RSI · MACD</span>
+      </header>
+
+      <div className="signal-body">
       <div className="signal-tf" role="tablist" aria-label="Pilih timeframe sinyal">
         {Object.keys(TF_LABELS).map((t) => (
           <button
@@ -132,6 +141,7 @@ export default function SignalPanel({ symbol, tf, onTf }) {
         <span className="signal-disc">
           {data ? `Sumber: ${data.source} · bar terakhir ${new Date(data.lastBar).toLocaleDateString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })} WIB` : ""} · Bukan nasihat keuangan
         </span>
+      </div>
       </div>
     </div>
   );

@@ -1365,3 +1365,20 @@ button.btn:disabled, .btn:disabled, .btn[disabled] {
   .signal-stats { justify-content: space-between; }
   .signal-reasons { max-width: 100%; white-space: normal; }
 }
+
+/* --- Signal + News Event: card bersebelahan di atas chart (Round-11) --- */
+.sig-news-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 18px;
+  align-items: stretch;
+}
+.signal-card { margin-bottom: 0; padding: 0; gap: 0; }
+.signal-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.news-body { flex: 1; }
+.topnews-list.compact .topnews-item { padding: 9px 8px; }
+.topnews-list.compact .topnews-title { font-size: 12.5px; }
+@media (max-width: 1100px) {
+  .sig-news-grid { grid-template-columns: 1fr; }
+}

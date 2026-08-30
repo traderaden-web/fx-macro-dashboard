@@ -96,8 +96,47 @@ export default function ChartsClient({ news = [], upcoming = [] }) {
         <CalendarPanel events={upcoming} />
       </div>
 
-      {/* ── SIGNAL: Long/Short per timeframe (sync dengan interval chart) ── */}
-      <SignalPanel symbol={active} tf={tf} onTf={setTf} />
+      {/* ── SIGNAL (card) + NEWS EVENT (card) — bersebelahan, di atas chart ── */}
+      <div className="sig-news-grid">
+        <SignalPanel symbol={active} tf={tf} onTf={setTf} />
+
+        <article className="term-card news-card">
+          <header className="term-head">
+            <h3 className="term-title">
+              <span className="term-ico" aria-hidden="true">📰</span>
+              News Event <span className="term-sub">· {active.label}</span>
+            </h3>
+            <Link href="/news" className="see-all">Semua →</Link>
+          </header>
+          <div className="term-body news-body">
+            {assetNews.length > 0 ? (
+              <ul className="topnews-list compact">
+                {assetNews.map((n, i) => (
+                  <li key={`${n.link}-${i}`}>
+                    <a href={n.link} target="_blank" rel="noopener noreferrer" className="topnews-item">
+                      <span className="topnews-title">
+                        {n.impact?.level === "kritis" && (
+                          <span className="impact-badge kritis" title={`Topik: ${(n.impact.tags || []).join(", ")}`}>🔥</span>
+                        )}
+                        {n.impact?.level === "tinggi" && (
+                          <span className="impact-badge tinggi" title={`Topik: ${(n.impact.tags || []).join(", ")}`}>⚡</span>
+                        )}
+                        {n.title}
+                      </span>
+                      <span className="topnews-meta">
+                        {n.source} · {timeAgo(n.iso)}
+                        {n.impact?.tags?.length ? ` · ${n.impact.tags.slice(0, 3).join(", ")}` : ""}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="sess-loading">Belum ada berita untuk aset ini — coba lagi sebentar lagi.</p>
+            )}
+          </div>
+        </article>
+      </div>
 
       {/* ── CHART UTAMA ── */}
       <div className="card chart-card reveal">
@@ -171,42 +210,6 @@ export default function ChartsClient({ news = [], upcoming = [] }) {
         />
       </div>
 
-      {/* ── NEWS EVENT: berita yang menggerakkan aset terpilih ── */}
-      {assetNews.length > 0 && (
-        <section className="section">
-          <div className="section-head">
-            <h2>
-              <span className="tip" data-tip="Berita difilter per aset (keyword + skor dampak) dan diurutkan dari yang paling berdampak. Sumber: Google News + TradingView News.">
-                News Event — {active.label}
-              </span>
-            </h2>
-            <Link href="/news" className="see-all">Semua berita →</Link>
-          </div>
-          <div className="card">
-            <ul className="topnews-list">
-              {assetNews.map((n, i) => (
-                <li key={`${n.link}-${i}`}>
-                  <a href={n.link} target="_blank" rel="noopener noreferrer" className="topnews-item">
-                    <span className="topnews-title">
-                      {n.impact?.level === "kritis" && (
-                        <span className="impact-badge kritis" title={`Topik: ${(n.impact.tags || []).join(", ")}`}>🔥</span>
-                      )}
-                      {n.impact?.level === "tinggi" && (
-                        <span className="impact-badge tinggi" title={`Topik: ${(n.impact.tags || []).join(", ")}`}>⚡</span>
-                      )}
-                      {n.title}
-                    </span>
-                    <span className="topnews-meta">
-                      {n.source} · {timeAgo(n.iso)}
-                      {n.impact?.tags?.length ? ` · ${n.impact.tags.slice(0, 3).join(", ")}` : ""}
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      )}
     </>
   );
 }
