@@ -2,6 +2,7 @@ import AnalysisClient from "../../components/AnalysisClient";
 import AssetHeatmap from "../../components/AssetHeatmap";
 import MacroMap from "../../components/MacroMap";
 import { getAllReleaseAnalytics } from "../../lib/consensus";
+import { UPCOMING } from "../../data/calendar";
 
 export const metadata = {
   title: "Analisis Dampak Rilis — MacroLab",
@@ -30,7 +31,7 @@ export default async function AnalysisPage() {
       </div>
 
       {items.length ? (
-        <AnalysisClient items={items} />
+        <AnalysisClient items={items} upcoming={UPCOMING} />
       ) : (
         <p className="cell-muted">Belum ada data rilis tersedia. Jalankan <code>npm run fetch</code> untuk memperbarui.</p>
       )}
