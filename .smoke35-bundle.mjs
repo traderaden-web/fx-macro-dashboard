@@ -1630,7 +1630,7 @@ var CONSENSUS = {
     { date: "2026-06-05", obs: "2026-05-01", consensus: 85 },
     { date: "2026-05-08", obs: "2026-04-01", consensus: 65 },
     { date: "2026-04-03", obs: "2026-03-01", consensus: 65 },
-    { date: "2026-03-13", obs: "2026-02-01", consensus: 45 },
+    { date: "2026-03-06", obs: "2026-02-01", consensus: 58 },
     { date: "2026-02-11", obs: "2026-01-01", consensus: 66 },
     { date: "2026-01-09", obs: "2025-12-01", consensus: 66 },
     { date: "2025-12-16", obs: "2025-11-01", consensus: 51 },
@@ -1645,7 +1645,7 @@ var CONSENSUS = {
     { date: "2026-06-05", obs: "2026-05-01", consensus: 4.3 },
     { date: "2026-05-08", obs: "2026-04-01", consensus: 4.3 },
     { date: "2026-04-03", obs: "2026-03-01", consensus: 4.4 },
-    { date: "2026-03-13", obs: "2026-02-01", consensus: 4.3 },
+    { date: "2026-03-06", obs: "2026-02-01", consensus: 4.3 },
     { date: "2026-02-11", obs: "2026-01-01", consensus: 4.4 },
     { date: "2026-01-09", obs: "2025-12-01", consensus: 4.5 },
     { date: "2025-12-16", obs: "2025-11-01", consensus: 4.5 },
@@ -1656,11 +1656,12 @@ var CONSENSUS = {
     { date: "2026-09-04", obs: "2026-08-01", consensus: 4.1 }
   ],
   cpi: [
+    { date: "2026-03-11", obs: "2026-02-01", consensus: 2.4 },
     { date: "2026-08-12", obs: "2026-07-01", consensus: 3.4 },
     { date: "2026-07-14", obs: "2026-06-01", consensus: 3.8 },
     { date: "2026-06-09", obs: "2026-05-01", consensus: 4.2 },
-    { date: "2026-05-12", obs: "2026-03-01", consensus: 3.7 },
-    { date: "2026-04-10", obs: "2026-02-01", consensus: 3.4 },
+    { date: "2026-05-12", obs: "2026-04-01", consensus: 3.7 },
+    { date: "2026-04-10", obs: "2026-03-01", consensus: 3.4 },
     { date: "2026-02-13", obs: "2026-01-01", consensus: 2.5 },
     { date: "2026-01-13", obs: "2025-12-01", consensus: 2.7 },
     { date: "2025-12-10", obs: "2025-11-01", consensus: 2.9 },
@@ -1671,11 +1672,12 @@ var CONSENSUS = {
     { date: "2025-06-11", obs: "2025-05-01", consensus: 2.5 }
   ],
   corecpi: [
+    { date: "2026-03-11", obs: "2026-02-01", consensus: 2.5 },
     { date: "2026-08-12", obs: "2026-07-01", consensus: 2.5 },
     { date: "2026-07-14", obs: "2026-06-01", consensus: 2.8 },
     { date: "2026-06-09", obs: "2026-05-01", consensus: 2.9 },
-    { date: "2026-05-12", obs: "2026-03-01", consensus: 2.7 },
-    { date: "2026-04-10", obs: "2026-02-01", consensus: 2.7 },
+    { date: "2026-05-12", obs: "2026-04-01", consensus: 2.7 },
+    { date: "2026-04-10", obs: "2026-03-01", consensus: 2.7 },
     { date: "2026-02-13", obs: "2026-01-01", consensus: 2.5 },
     { date: "2026-01-13", obs: "2025-12-01", consensus: 2.7 },
     { date: "2025-12-10", obs: "2025-11-01", consensus: 2.7 },
@@ -1686,15 +1688,16 @@ var CONSENSUS = {
     { date: "2025-06-11", obs: "2025-05-01", consensus: 2.9 }
   ],
   ppi: [
+    { date: "2026-03-18", obs: "2026-02-01", consensus: 4 },
     { date: "2026-08-13", obs: "2026-07-01", consensus: 4.9 },
     { date: "2026-07-15", obs: "2026-06-01", consensus: 6.2 },
     { date: "2026-06-11", obs: "2026-05-01", consensus: 6.4 },
     { date: "2026-05-13", obs: "2026-04-01", consensus: 4.9 },
     { date: "2026-04-14", obs: "2026-03-01", consensus: 4 },
-    { date: "2026-03-10", obs: "2026-02-01", consensus: 2.5 },
-    { date: "2026-02-10", obs: "2026-01-01", consensus: 2.9 },
-    { date: "2026-01-14", obs: "2025-12-01", consensus: 2.7 },
-    { date: "2025-12-10", obs: "2025-11-01", consensus: 3.2 },
+    { date: "2026-02-27", obs: "2026-01-01", consensus: 2.5 },
+    { date: "2026-01-30", obs: "2025-12-01", consensus: 2.9 },
+    { date: "2026-01-14", obs: "2025-11-01", consensus: 2.7 },
+    { date: "2025-12-10", obs: "2025-10-01", consensus: 3.2 },
     { date: "2025-11-12", obs: "2025-10-01", consensus: 3.6 },
     { date: "2025-10-14", obs: "2025-09-01", consensus: 2.5 },
     { date: "2025-09-10", obs: "2025-08-01", consensus: 3.3 },
@@ -1707,9 +1710,9 @@ var CONSENSUS = {
     { date: "2026-06-25", obs: "2026-05-01", consensus: 0.3 },
     { date: "2026-05-28", obs: "2026-04-01", consensus: 0.3 },
     { date: "2026-04-30", obs: "2026-03-01", consensus: 0.3 },
-    { date: "2026-03-27", obs: "2026-02-01", consensus: 0.35 },
-    { date: "2026-02-27", obs: "2026-01-01", consensus: 0.3 },
-    { date: "2026-01-27", obs: "2025-12-01", consensus: 0.28 },
+    { date: "2026-03-13", obs: "2026-01-01", consensus: 0.4 },
+    { date: "2026-02-20", obs: "2025-12-01", consensus: 0.3 },
+    { date: "2026-01-22", obs: "2025-11-01", consensus: 0.2 },
     { date: "2025-12-26", obs: "2025-11-01", consensus: 0.25 },
     { date: "2025-11-27", obs: "2025-10-01", consensus: 0.25 },
     { date: "2025-10-27", obs: "2025-09-01", consensus: 0.25 },
@@ -1718,6 +1721,9 @@ var CONSENSUS = {
     { date: "2025-07-28", obs: "2025-06-01", consensus: 0.25 }
   ],
   adp: [
+    { date: "2026-03-04", obs: "2026-01-01", consensus: 50 },
+    { date: "2026-02-04", obs: "2025-12-01", consensus: 46 },
+    { date: "2026-01-07", obs: "2025-11-01", consensus: 49 },
     { date: "2026-04-01", obs: "2026-03-01", consensus: 41 },
     { date: "2026-06-03", obs: "2026-05-01", consensus: 118 }
   ],
@@ -1726,8 +1732,8 @@ var CONSENSUS = {
     { date: "2026-07-02", obs: "2026-06-01", consensus: 3.5 },
     { date: "2026-06-05", obs: "2026-05-01", consensus: 3.5 },
     { date: "2026-05-08", obs: "2026-04-01", consensus: 3.8 },
-    { date: "2026-04-10", obs: "2026-03-01", consensus: 3.6 },
-    { date: "2026-03-13", obs: "2026-02-01", consensus: 3.7 },
+    { date: "2026-04-03", obs: "2026-03-01", consensus: 3.6 },
+    { date: "2026-03-06", obs: "2026-02-01", consensus: 3.7 },
     { date: "2026-02-11", obs: "2026-01-01", consensus: 3.6 },
     { date: "2026-01-09", obs: "2025-12-01", consensus: 3.6 },
     { date: "2025-12-12", obs: "2025-11-01", consensus: 3.9 },
@@ -1753,12 +1759,13 @@ var CONSENSUS = {
     { date: "2026-08-31", obs: "2026-08-01", consensus: 4.6 }
   ],
   retail: [
+    { date: "2026-03-06", obs: "2026-02-01", consensus: -0.3 },
     { date: "2026-08-14", obs: "2026-07-01", consensus: 0.1 },
     { date: "2026-07-16", obs: "2026-06-01", consensus: 0.2 },
-    { date: "2026-06-16", obs: "2026-05-01", consensus: 0.7 },
-    { date: "2026-05-14", obs: "2026-04-01", consensus: 0.5 },
-    { date: "2026-04-21", obs: "2026-03-01", consensus: 1.4 },
-    { date: "2026-04-01", obs: "2026-02-01", consensus: 0.5 },
+    { date: "2026-06-16", obs: "2026-06-01", consensus: 0.7 },
+    { date: "2026-05-14", obs: "2026-05-01", consensus: 0.5 },
+    { date: "2026-04-21", obs: "2026-04-01", consensus: 1.4 },
+    { date: "2026-04-01", obs: "2026-03-01", consensus: 0.5 },
     { date: "2026-02-10", obs: "2026-01-01", consensus: 0.4 },
     { date: "2026-01-14", obs: "2025-12-01", consensus: 0.5 },
     { date: "2025-12-16", obs: "2025-11-01", consensus: 0.1 },
@@ -1775,7 +1782,7 @@ var CONSENSUS = {
     { date: "2026-05-08", obs: "2026-04-01", consensus: 49.7 },
     { date: "2026-04-10", obs: "2026-03-01", consensus: 51.6 },
     { date: "2026-03-13", obs: "2026-02-01", consensus: 55 },
-    { date: "2026-02-05", obs: "2026-01-01", consensus: 54 },
+    { date: "2026-02-06", obs: "2026-01-01", consensus: 55 },
     { date: "2026-01-09", obs: "2025-12-01", consensus: 53.5 },
     { date: "2025-12-05", obs: "2025-11-01", consensus: 53.5 },
     { date: "2025-11-07", obs: "2025-10-01", consensus: 53 },
@@ -1930,6 +1937,9 @@ var CONSENSUS = {
   // ISM (ditambahkan 30-Agu-2026) — tervalidasi: screenshot FF user (1-15 Jul 26)
   // + file API earningsapi (Non-Manufacturing). Tanggal selain yg ditandai = estimasi.
   ismmfg: [
+    { date: "2026-03-02", obs: "2026-02-01", consensus: 51.7 },
+    { date: "2026-02-02", obs: "2026-01-01", consensus: 48.5 },
+    { date: "2026-01-05", obs: "2025-12-01", consensus: 48.3 },
     { date: "2026-04-01", obs: "2026-03-01", consensus: 52.3 },
     { date: "2026-08-03", obs: "2026-07-01", consensus: 54 },
     { date: "2026-07-01", obs: "2026-06-01", consensus: 53.8 },
@@ -1938,6 +1948,9 @@ var CONSENSUS = {
     { date: "2026-09-01", obs: "2026-08-01", consensus: 55.2 }
   ],
   ismsvc: [
+    { date: "2026-03-04", obs: "2026-02-01", consensus: 53.5 },
+    { date: "2026-02-04", obs: "2026-01-01", consensus: 53.5 },
+    { date: "2026-01-07", obs: "2025-12-01", consensus: 52.2 },
     { date: "2026-04-06", obs: "2026-03-01", consensus: 54.8 },
     { date: "2026-05-05", obs: "2026-04-01", consensus: 53.7 },
     { date: "2026-08-05", obs: "2026-07-01", consensus: 54.5 },
@@ -2418,15 +2431,15 @@ var seed_default = {
         },
         {
           date: "2025-11-01",
-          value: 64
+          value: 56
         },
         {
           date: "2025-12-01",
-          value: 50
+          value: 48
         },
         {
           date: "2026-01-01",
-          value: 130
+          value: 126
         },
         {
           date: "2026-02-01",
@@ -3416,11 +3429,11 @@ var seed_default = {
         },
         {
           date: "2026-02-01",
-          value: 3.3
+          value: 2.4
         },
         {
           date: "2026-03-01",
-          value: 3.8
+          value: 3.3
         },
         {
           date: "2026-04-01",
@@ -3909,11 +3922,11 @@ var seed_default = {
         },
         {
           date: "2026-02-01",
-          value: 2.6
+          value: 2.5
         },
         {
           date: "2026-03-01",
-          value: 2.8
+          value: 2.6
         },
         {
           date: "2026-04-01",
@@ -4879,15 +4892,15 @@ var seed_default = {
         },
         {
           date: "2025-10-01",
-          value: 0.23
+          value: 0.2
         },
         {
           date: "2025-11-01",
-          value: 0.18
+          value: 0.2
         },
         {
           date: "2025-12-01",
-          value: 0.33
+          value: 0.4
         },
         {
           date: "2026-01-01",
@@ -6855,7 +6868,7 @@ var seed_default = {
         },
         {
           date: "2025-11-01",
-          value: 0
+          value: -0.1
         },
         {
           date: "2025-12-01",
@@ -6867,19 +6880,19 @@ var seed_default = {
         },
         {
           date: "2026-02-01",
-          value: 0.6
+          value: -0.1
         },
         {
           date: "2026-03-01",
-          value: 1.6
+          value: 0.6
         },
         {
           date: "2026-04-01",
-          value: 0.5
+          value: 1.6
         },
         {
           date: "2026-05-01",
-          value: 0.88
+          value: 0.5
         },
         {
           date: "2026-06-01",
@@ -7348,15 +7361,15 @@ var seed_default = {
         },
         {
           date: "2025-11-01",
-          value: 53.3
+          value: 52.9
         },
         {
           date: "2025-12-01",
-          value: 54
+          value: 56.4
         },
         {
           date: "2026-01-01",
-          value: 56.6
+          value: 57.3
         },
         {
           date: "2026-02-01",
@@ -7888,6 +7901,10 @@ var seed_default = {
         value: 1.5
       },
       points: [
+        {
+          date: "2025-07-01",
+          value: 4.3
+        },
         {
           date: "2025-10-01",
           value: 0.5
@@ -14632,6 +14649,18 @@ var seed_default = {
       },
       points: [
         {
+          date: "2025-11-01",
+          value: 48.2
+        },
+        {
+          date: "2025-12-01",
+          value: 47.9
+        },
+        {
+          date: "2026-01-01",
+          value: 52.6
+        },
+        {
           date: "2026-02-01",
           value: 52.4
         },
@@ -14689,6 +14718,18 @@ var seed_default = {
           value: 50
         },
         {
+          date: "2025-11-01",
+          value: 52.6
+        },
+        {
+          date: "2025-12-01",
+          value: 54.4
+        },
+        {
+          date: "2026-01-01",
+          value: 53.8
+        },
+        {
           date: "2026-02-01",
           value: 56.1
         },
@@ -14717,6 +14758,22 @@ var seed_default = {
     adp: {
       id: "adp",
       points: [
+        {
+          date: "2025-10-01",
+          value: 29
+        },
+        {
+          date: "2025-11-01",
+          value: 37
+        },
+        {
+          date: "2025-12-01",
+          value: 11
+        },
+        {
+          date: "2026-01-01",
+          value: 66
+        },
         {
           date: "2026-02-01",
           value: 66
@@ -15190,8 +15247,57 @@ var EVENTS = [
   { date: "2026-10-28", time: "19:30", title: "GDP (Advance) q/q", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "gdp" },
   { date: "2026-11-25", time: "19:30", title: "GDP (Prelim) q/q", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "gdp" },
   { date: "2026-12-23", time: "19:30", title: "GDP (Final) q/q", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "gdp" },
+  // ── Rilis sudah lewat (Jan–Mar 2026) — verified FF user; baris menampilkan P/K/A lengkap ──
+  { date: "2026-01-05", time: "22:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
+  { date: "2026-01-07", time: "22:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
+  { date: "2026-01-07", time: "20:15", title: "ADP Non-Farm Employment Change", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "adp" },
+  { date: "2026-01-09", time: "20:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
+  { date: "2026-01-09", time: "22:00", title: "Prelim UoM Consumer Sentiment", category: "konsumen", country: "US", impact: "Medium", indicatorId: "umich" },
+  { date: "2026-01-13", time: "20:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
+  { date: "2026-01-14", time: "20:30", title: "Retail Sales m/m", category: "konsumen", country: "US", impact: "High", indicatorId: "retail" },
+  { date: "2026-01-22", time: "22:00", title: "Core PCE Price Index (m/m)", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
+  { date: "2026-02-02", time: "22:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
+  { date: "2026-02-04", time: "20:15", title: "ADP Non-Farm Employment Change", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "adp" },
+  { date: "2026-02-04", time: "22:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
+  { date: "2026-02-06", time: "22:00", title: "Prelim UoM Consumer Sentiment", category: "konsumen", country: "US", impact: "Medium", indicatorId: "umich" },
+  { date: "2026-02-10", time: "20:30", title: "Retail Sales m/m", category: "konsumen", country: "US", impact: "High", indicatorId: "retail" },
+  { date: "2026-02-11", time: "20:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
+  { date: "2026-02-13", time: "20:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
+  { date: "2026-02-20", time: "20:30", title: "Core PCE Price Index (m/m)", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
+  { date: "2026-03-02", time: "22:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
+  { date: "2026-03-04", time: "20:15", title: "ADP Non-Farm Employment Change", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "adp" },
+  { date: "2026-03-04", time: "22:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
+  { date: "2026-03-06", time: "20:30", title: "Retail Sales m/m", category: "konsumen", country: "US", impact: "High", indicatorId: "retail" },
+  { date: "2026-03-06", time: "20:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
+  { date: "2026-03-11", time: "19:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
+  { date: "2026-03-13", time: "19:30", title: "Core PCE Price Index (m/m)", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
   // ── Rilis sudah lewat (Jul–Agu 2026) — verified FF user; baris menampilkan P/K/A lengkap ──
   { date: "2026-07-01", time: "21:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
+  // ---- APR–JUN 2026 (diperbaiki 30 Agu 2026 — menutup gap R45; tanggal CONSENSUS
+  //      terverifikasi API, waktu WIB dgn DST) ----
+  { date: "2026-04-01", time: "19:15", title: "ADP Non-Farm Employment Change", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "adp" },
+  { date: "2026-04-01", time: "19:30", title: "Retail Sales m/m", category: "konsumen", country: "US", impact: "High", indicatorId: "retail" },
+  { date: "2026-04-01", time: "21:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
+  { date: "2026-04-03", time: "19:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
+  { date: "2026-04-06", time: "21:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
+  { date: "2026-04-10", time: "19:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
+  { date: "2026-04-10", time: "21:00", title: "Prelim UoM Consumer Sentiment", category: "konsumen", country: "US", impact: "Medium", indicatorId: "umich" },
+  { date: "2026-04-21", time: "19:30", title: "Retail Sales m/m", category: "konsumen", country: "US", impact: "High", indicatorId: "retail" },
+  { date: "2026-04-30", time: "19:30", title: "Core PCE Price Index (m/m)", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
+  { date: "2026-05-05", time: "21:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
+  { date: "2026-05-08", time: "19:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
+  { date: "2026-05-08", time: "21:00", title: "Prelim UoM Consumer Sentiment", category: "konsumen", country: "US", impact: "Medium", indicatorId: "umich" },
+  { date: "2026-05-12", time: "19:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
+  { date: "2026-05-14", time: "19:30", title: "Retail Sales m/m", category: "konsumen", country: "US", impact: "High", indicatorId: "retail" },
+  { date: "2026-05-28", time: "19:30", title: "Core PCE Price Index (m/m)", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
+  { date: "2026-06-01", time: "21:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
+  { date: "2026-06-03", time: "19:15", title: "ADP Non-Farm Employment Change", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "adp" },
+  { date: "2026-06-04", time: "21:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
+  { date: "2026-06-05", time: "19:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
+  { date: "2026-06-09", time: "19:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
+  { date: "2026-06-12", time: "21:00", title: "Prelim UoM Consumer Sentiment", category: "konsumen", country: "US", impact: "Medium", indicatorId: "umich" },
+  { date: "2026-06-16", time: "19:30", title: "Retail Sales m/m", category: "konsumen", country: "US", impact: "High", indicatorId: "retail" },
+  { date: "2026-06-25", time: "19:30", title: "Core PCE Price Index (m/m)", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
   { date: "2026-07-02", time: "19:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
   { date: "2026-07-06", time: "21:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
   { date: "2026-07-14", time: "19:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
