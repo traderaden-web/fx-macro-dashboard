@@ -1,11 +1,12 @@
 // components/SignalPanel.jsx
 // Card sinyal Long/Short (Beli/Jual) per timeframe — data dihitung server-side
 // (EMA 20/50, RSI 14, MACD 12,26,9) dari harga riil Yahoo Finance.
-// TF yang dipilih juga dipakai TradingView chart di bawahnya (interval sync).
+// Isi card: TF pills · verdict · harga · mini-chart interaktif (harga+EMA,
+// hover = crosshair & tooltip) · tabel indikator · confluence multi-timeframe.
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const TF_LABELS = {
   "15m": "15m",
@@ -33,6 +34,185 @@ function fmtPrice(p) {
 
 const fmtNum = (v) => (v == null ? "—" : Number(v).toLocaleString("en-US"));
 
+// ── Mini chart interaktif (SVG): harga + EMA20 + EMA50, hover = crosshair ──
+const CW = 340;
+const CH = 132;
+const CPAD = 8;
+
+function MiniChart({ series, price }) {
+  const [hover, setHover] = useState(null); // index bar yang di-hover
+
+  const { pts, min, max } = useMemo(() => {
+    if (!series) return { pts: null, min: 0, max: 1 };
+    const { closes, ema20, ema50 } = series;
+    const all = closes.concat(ema20.filter((v) => v != null), ema50.filter((v) => v != null));
+    const mn = Math.min(...all);
+    const mx = Math.max(...all);
+    const span = mx - mn || mx * 0.001 || 1;
+    const n = closes.length;
+    const X = (i) => CPAD + (i / (n - 1)) * (CW - CPAD * 2);
+    const Y = (v) => CH - CPAD - ((v - mn) / span) * (CH - CPAD * 2);
+    const line = (arr) =>
+      arr
+        .map((v, i) => (v == null ? null : `${X(i).toFixed(1)},${Y(v).toFixed(1)}`))
+        .filter(Boolean)
+        .join(" ");
+    return {
+      pts: {
+        n,
+        X,
+        Y,
+        priceLine: line(closes),
+        ema20Line: line(ema20),
+        ema50Line: line(ema50),
+        area: `M ${CPAD},${CH - CPAD} L ${line(closes).split(" ").join(" L ")} L ${X(n - 1).toFixed(1)},${CH - CPAD} Z`,
+        last: { x: X(n - 1), y: Y(closes[n - 1]) },
+      },
+      min: mn,
+      max: mx,
+    };
+  }, [series]);
+
+  if (!series || !pts) {
+    return (
+      <div className="sig-chart-wrap">
+        <div className="sig-chart-loading">Memuat mini-chart…</div>
+      </div>
+    );
+  }
+
+  const onMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const px = ((e.clientX - rect.left) / rect.width) * CW;
+    let i = Math.round(((px - CPAD) / (CW - CPAD * 2)) * (pts.n - 1));
+    i = Math.max(0, Math.min(pts.n - 1, i));
+    setHover(i);
+  };
+
+  const hv = hover != null ? { x: pts.X(hover), y: pts.Y(series.closes[hover]) } : null;
+  const hvPct = hover != null ? (hv.x / CW) * 100 : 0;
+
+  return (
+    <div className="sig-chart-wrap">
+      <div className="sig-chart" style={{ position: "relative" }}>
+        <svg
+          viewBox={`0 0 ${CW} ${CH}`}
+          preserveAspectRatio="none"
+          className="sig-chart-svg"
+          onMouseMove={onMove}
+          onMouseLeave={() => setHover(null)}
+          role="img"
+          aria-label={`Grafik harga ${fmtPrice(price)} dengan EMA 20 dan 50`}
+        >
+          <defs>
+            <linearGradient id="sigArea" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="rgba(240,180,41,0.20)" />
+              <stop offset="100%" stopColor="rgba(240,180,41,0)" />
+            </linearGradient>
+          </defs>
+          <path d={pts.area} fill="url(#sigArea)" stroke="none" />
+          <polyline points={pts.ema50Line} fill="none" stroke="#7c8698" strokeWidth="1" strokeDasharray="4 4" vectorEffect="non-scaling-stroke" />
+          <polyline points={pts.ema20Line} fill="none" stroke="#2dd4bf" strokeWidth="1.2" vectorEffect="non-scaling-stroke" />
+          <polyline points={pts.priceLine} fill="none" stroke="var(--accent)" strokeWidth="1.8" vectorEffect="non-scaling-stroke" />
+          <circle cx={pts.last.x} cy={pts.last.y} r="2.6" fill="var(--accent)" vectorEffect="non-scaling-stroke" />
+          {hv && (
+            <g>
+              <line x1={hv.x} y1={CPAD} x2={hv.x} y2={CH - CPAD} stroke="rgba(232,236,243,0.35)" strokeWidth="1" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
+              <circle cx={hv.x} cy={hv.y} r="3.2" fill="var(--text)" />
+            </g>
+          )}
+        </svg>
+        {hover != null && (
+          <div
+            className="sig-chart-tip"
+            style={{
+              left: `${Math.max(8, Math.min(92, hvPct))}%`,
+              transform: `translateX(${hvPct > 78 ? "-105%" : hvPct < 22 ? "5%" : "-50%"})`,
+            }}
+          >
+            <b>{fmtPrice(series.closes[hover])}</b>
+            <span>
+              {hover === pts.n - 1 ? "terakhir" : `${pts.n - 1 - hover} bar lalu`}
+              {series.ema20[hover] != null ? ` · EMA20 ${fmtNum(series.ema20[hover])}` : ""}
+            </span>
+          </div>
+        )}
+      </div>
+      <div className="sig-chart-legend">
+        <span><i className="lg lg-price" /> Harga</span>
+        <span><i className="lg lg-ema20" /> EMA 20</span>
+        <span><i className="lg lg-ema50" /> EMA 50</span>
+        <span className="sig-chart-range">
+          {fmtPrice(min)} – {fmtPrice(max)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// ── Strip confluence multi-timeframe ────────────────────────────────────
+function MTFStrip({ symbolId }) {
+  const [m, setM] = useState(null);
+  const [err, setErr] = useState(null);
+
+  useEffect(() => {
+    let alive = true;
+    setM(null);
+    setErr(null);
+    fetch(`/api/signal/matrix?symbol=${symbolId}`)
+      .then((r) => r.json().then((j) => ({ status: r.status, j })))
+      .then(({ status, j }) => {
+        if (!alive) return;
+        if (status === 200 && j.ok) setM(j);
+        else setErr(j?.error || "Gagal mengambil data");
+      })
+      .catch(() => alive && setErr("Gagal terhubung ke server"));
+    return () => {
+      alive = false;
+    };
+  }, [symbolId]);
+
+  const bull = m ? m.tfs.filter((t) => t.ok && t.signal === "LONG").length : 0;
+  const bear = m ? m.tfs.filter((t) => t.ok && t.signal === "SHORT").length : 0;
+  const dom = !m ? null : bull > bear ? "BULLISH" : bear > bull ? "BEARISH" : "MIXED";
+
+  if (err) return <div className="mtf-wrap"><span className="mtf-note">{err}</span></div>;
+
+  return (
+    <div className="mtf-wrap">
+      <div className="mtf-top">
+        <span className="mtf-label">Multi-Timeframe</span>
+        <span className={`mtf-dom ${dom ? `dom-${dom.toLowerCase()}` : ""}`}>
+          {m ? `${dom} · ${bull}B/${bear}S` : "memuat…"}
+        </span>
+      </div>
+      <div className="mtf-strip">
+        {(m?.tfs || []).map((t) =>
+          t.ok ? (
+            <span key={t.tf} className={`mtf-cell ${t.signal.toLowerCase()}`} title={`Skor ${t.score > 0 ? "+" : ""}${t.score}`}>
+              <b>{t.tf.toUpperCase()}</b>
+              <i className="mtf-dot" />
+              <em>{t.signal === "LONG" ? "L" : t.signal === "SHORT" ? "S" : "N"}</em>
+            </span>
+          ) : (
+            <span key={t.tf} className="mtf-cell err">
+              <b>{t.tf.toUpperCase()}</b>
+              <i className="mtf-dot" />
+              <em>—</em>
+            </span>
+          )
+        )}
+      </div>
+      {m && (
+        <p className="mtf-note">
+          {bull} bullish · {bear} bearis · {7 - bull - bear} netral — {m.tfs.filter((t) => t.ok).length}/7 timeframe
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ── Card utama ──────────────────────────────────────────────────────────
 export default function SignalPanel({ symbol, tf, onTf }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -118,6 +298,9 @@ export default function SignalPanel({ symbol, tf, onTf }) {
           )}
         </div>
 
+        {/* Mini chart interaktif — mengisi ruang di desktop */}
+        <MiniChart series={data?.series} price={data?.price} />
+
         {/* Tabel indikator */}
         <div className="sig-table">
           <div className="sig-trow">
@@ -185,6 +368,9 @@ export default function SignalPanel({ symbol, tf, onTf }) {
             </span>
           </div>
         </div>
+
+        {/* Confluence multi-timeframe */}
+        <MTFStrip symbolId={symbol.id} />
 
         {/* Alasan + sumber */}
         <div className="signal-foot">
