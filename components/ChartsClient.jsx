@@ -10,6 +10,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import TradingViewWidget from "./TradingViewWidget";
+import SignalPanel from "./SignalPanel";
 import { CotPanel, SessionPanel, CalendarPanel } from "./TerminalPanels";
 import { IconChart, IconLightbulb } from "./Icons";
 import { cotForAsset } from "../lib/cotData";
@@ -41,7 +42,6 @@ function timeAgo(iso) {
 
 const BASE_CHART = {
   autosize: true,
-  interval: "D",
   timezone: "Asia/Jakarta",
   theme: "dark",
   style: "1",
@@ -51,8 +51,20 @@ const BASE_CHART = {
   support_host: "https://www.tradingview.com",
 };
 
+// TF sinyal → interval TradingView
+const TF_INTERVAL = {
+  "15m": "15",
+  "30m": "30",
+  "1h": "60",
+  "4h": "240",
+  "1d": "D",
+  "1w": "W",
+  "1mo": "1M",
+};
+
 export default function ChartsClient({ news = [], upcoming = [] }) {
   const [active, setActive] = useState(SYMBOLS[0]);
+  const [tf, setTf] = useState("1h"); // timeframe sinyal + chart (sync)
 
   const cot = useMemo(() => cotForAsset(active.id), [active]);
   const assetNews = useMemo(
@@ -83,6 +95,9 @@ export default function ChartsClient({ news = [], upcoming = [] }) {
         <SessionPanel />
         <CalendarPanel events={upcoming} />
       </div>
+
+      {/* ── SIGNAL: Long/Short per timeframe (sync dengan interval chart) ── */}
+      <SignalPanel symbol={active} tf={tf} onTf={setTf} />
 
       {/* ── CHART UTAMA ── */}
       <div className="card chart-card reveal">
@@ -152,7 +167,7 @@ export default function ChartsClient({ news = [], upcoming = [] }) {
           type="advanced-chart"
           className="tv-chart-main"
           height="none"
-          config={{ ...BASE_CHART, symbol: active.tv }}
+          config={{ ...BASE_CHART, symbol: active.tv, interval: TF_INTERVAL[tf] }}
         />
       </div>
 
