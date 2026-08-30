@@ -3372,3 +3372,9 @@ body::before {
 @media (prefers-reduced-motion: reduce) {
   .cal-mo-modal { animation: none !important; }
 }
+
+/* ============ Round-34: jarak atas Peta Makro Global ============ */
+.map-upper { margin-top: 30px; }
+@media (max-width: 720px) {
+  .map-upper { margin-top: 22px; }
+}

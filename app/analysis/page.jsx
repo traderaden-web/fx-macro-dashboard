@@ -32,7 +32,7 @@ export default async function AnalysisPage() {
       )}
 
       {/* Round-33: Peta Makro Global diletakkan tepat di atas Heatmap Aset */}
-      <div className="section-fade">
+      <div className="section-fade map-upper">
         <MacroMap />
       </div>
 
