@@ -1,20 +1,22 @@
 // app/charts/page.jsx
-// Halaman chart Gold, Forex & Komoditas — chart interaktif dari embed
-// resmi TradingView (gratis, tanpa API key) + strip berita berdampak tinggi.
+// Pro Terminal: COT + sesi pasar + kalender High-impact + chart TradingView
+// + News Event per aset. Chart live dari embed resmi TradingView.
 
 import ChartsClient from "../../components/ChartsClient";
 import { getMarketNews } from "../../lib/news";
+import { UPCOMING } from "../../data/calendar";
 
 export const metadata = {
-  title: "Chart Gold, Forex & Komoditas — MacroLab",
+  title: "Pro Terminal — Chart Gold, Forex & Komoditas",
   description:
-    "Chart live Gold (XAU/USD), perak, minyak, tembaga, dan dolar dari TradingView — lengkap dengan berita yang paling berdampak.",
+    "Pro Terminal MacroLab: positioning institusional CFTC COT (XAU/DXY), sesi pasar live WIB, kalender ekonomi High-impact, chart TradingView, dan News Event per aset.",
 };
 
-// Berita strip di-render fresh setiap kali diakses (data tetap ter-cache 10 menit di server).
+// Berita & kalender di-render fresh setiap kali diakses (data tetap ter-cache
+// 10 menit di server). `15` item agar filter per aset tetap punya bahan cukup.
 export const dynamic = "force-dynamic";
 
 export default async function ChartsPage() {
-  const { items } = await getMarketNews(8);
-  return <ChartsClient news={items} />;
+  const { items } = await getMarketNews(15);
+  return <ChartsClient news={items} upcoming={UPCOMING} />;
 }

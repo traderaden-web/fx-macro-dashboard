@@ -18,6 +18,8 @@
     "react-dom": "19.0.0"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^5.2.1"
+    "@netlify/plugin-nextjs": "^5.2.1",
+    "esbuild": "^0.28.2",
+    "jsdom": "^29.1.1"
   }
 }

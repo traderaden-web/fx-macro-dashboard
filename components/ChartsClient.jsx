@@ -1,15 +1,19 @@
 // components/ChartsClient.jsx
-// Halaman Chart Gold, Forex & Komoditas — layout rapi:
+// /charts — "Pro Terminal" Gold, Forex & Komoditas:
 //  1. Hero ringkas + meta sumber data
-//  2. SATU kartu chart besar: head (simbol aktif) → ticker tape → picker simbol → chart utama
-//  3. Strip berita berdampak tinggi untuk Gold/Forex/Komoditas
+//  2. GRID TERMINAL: [COT + Long/Short] [Sesi Pasar live] [Kalender High Impact]
+//  3. Kartu chart besar (ticker tape + picker simbol + chart TradingView live)
+//  4. News Event — berita yang paling menggerakkan aset terpilih
 
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import TradingViewWidget from "./TradingViewWidget";
+import { CotPanel, SessionPanel, CalendarPanel } from "./TerminalPanels";
 import { IconChart, IconLightbulb } from "./Icons";
+import { cotForAsset } from "../lib/cotData";
+import { filterAssetNews } from "../lib/assetNews";
 
 // Simbol yang dipantau. `tv` = simbol TradingView untuk embed.
 const SYMBOLS = [
@@ -46,27 +50,40 @@ const BASE_CHART = {
   support_host: "https://www.tradingview.com",
 };
 
-export default function ChartsClient({ news = [] }) {
+export default function ChartsClient({ news = [], upcoming = [] }) {
   const [active, setActive] = useState(SYMBOLS[0]);
+
+  const cot = useMemo(() => cotForAsset(active.id), [active]);
+  const assetNews = useMemo(
+    () => filterAssetNews(news, active.id, { n: 6, min: 4 }),
+    [news, active]
+  );
 
   return (
     <>
       <section className="hero">
         <h1>
-          Chart <span style={{ color: "var(--accent)" }}>Gold, Forex &amp; Komoditas</span>
+          Pro Terminal <span style={{ color: "var(--accent)" }}>Gold, Forex &amp; Komoditas</span>
         </h1>
         <p>
-          Chart interaktif langsung dari TradingView — pilih simbol, ubah timeframe, pasang
-          indikator apa pun. Harga di ticker dan chart ter-update otomatis di browser kamu.
+          Terminal pro: positioning institusional (CFTC COT), sesi pasar live, kalender
+          High-impact, chart TradingView, dan News Event — semua menyesuaikan aset yang kamu pilih.
         </p>
         <div className="hero-meta">
-          <span>Sumber data: TradingView</span>
+          <span>Chart: TradingView (live)</span>
+          <span>Positioning: CFTC COT (mingguan)</span>
           <span>Zona waktu: Asia/Jakarta (WIB)</span>
-          <span>Interval default: harian</span>
         </div>
       </section>
 
-      {/* SATU kartu besar: head + ticker + picker + chart utama */}
+      {/* ── GRID TERMINAL: COT | SESI | KALENDER ── */}
+      <div className="term-grid">
+        <CotPanel cot={cot} />
+        <SessionPanel />
+        <CalendarPanel events={upcoming} />
+      </div>
+
+      {/* ── CHART UTAMA ── */}
       <div className="card chart-card reveal">
         <div className="tv-chart-head">
           <div className="tv-chart-id">
@@ -138,23 +155,29 @@ export default function ChartsClient({ news = [] }) {
         />
       </div>
 
-      {news.length > 0 && (
+      {/* ── NEWS EVENT: berita yang menggerakkan aset terpilih ── */}
+      {assetNews.length > 0 && (
         <section className="section">
           <div className="section-head">
             <h2>
-              <span className="tip" data-tip="Berita diurutkan berdasarkan skor dampak otomatis terhadap pasar Forex, Gold, & Komoditas (Fed, inflasi, minyak, emas, dsb).">
-                Berita Dampak Tinggi: Gold &amp; Komoditas
+              <span className="tip" data-tip="Berita difilter per aset (keyword + skor dampak) dan diurutkan dari yang paling berdampak. Sumber: Google News + TradingView News.">
+                News Event — {active.label}
               </span>
             </h2>
             <Link href="/news" className="see-all">Semua berita →</Link>
           </div>
           <div className="card">
             <ul className="topnews-list">
-              {news.map((n) => (
-                <li key={n.id}>
+              {assetNews.map((n, i) => (
+                <li key={`${n.link}-${i}`}>
                   <a href={n.link} target="_blank" rel="noopener noreferrer" className="topnews-item">
                     <span className="topnews-title">
-                      {n.impact?.level === "kritis" && <span className="impact-badge kritis" title={`Topik: ${n.impact.tags.join(", ")}`}>🔥</span>}
+                      {n.impact?.level === "kritis" && (
+                        <span className="impact-badge kritis" title={`Topik: ${(n.impact.tags || []).join(", ")}`}>🔥</span>
+                      )}
+                      {n.impact?.level === "tinggi" && (
+                        <span className="impact-badge tinggi" title={`Topik: ${(n.impact.tags || []).join(", ")}`}>⚡</span>
+                      )}
                       {n.title}
                     </span>
                     <span className="topnews-meta">
