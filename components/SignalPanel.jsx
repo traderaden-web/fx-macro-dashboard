@@ -39,13 +39,58 @@ const CW = 340;
 const CH = 132;
 const CPAD = 8;
 
-function MiniChart({ series, price }) {
+// Opsi TF chart mini — hanya mengganti pandangan chart, tidak menggeser TF utama
+const CHART_TFS = ["15m", "1h", "4h"];
+const TF_SHORT = { "15m": "15M", "30m": "30M", "1h": "1H", "4h": "4H", "1d": "1D", "1w": "1M", "1mo": "3B" };
+const TP_MULT = 1.5; // TP = entry ± 1.5×ATR(14)
+const SL_MULT = 1;   // SL = entry ∓ 1×ATR(14)
+
+function MiniChart({ sig, tf, symbolId }) {
   const [hover, setHover] = useState(null); // index bar yang di-hover
+  const [chartTf, setChartTf] = useState(CHART_TFS.includes(tf) ? tf : "1h");
+  const [altSig, setAltSig] = useState(null); // sinyal untuk chartTf (bila ≠ tf card)
+  const [altLoading, setAltLoading] = useState(false);
+
+  // TF card atau simbol berganti → pandangan chart ikut kembali ke TF card
+  useEffect(() => {
+    setHover(null);
+    setChartTf(CHART_TFS.includes(tf) ? tf : "1h");
+    setAltSig(null);
+  }, [tf, symbolId]);
+
+  // Ambil sinyal TF chart saat berbeda dari TF card
+  useEffect(() => {
+    if (chartTf === tf) { setAltSig(null); return undefined; }
+    let alive = true;
+    setAltLoading(true);
+    fetch(`/api/signal?symbol=${encodeURIComponent(symbolId)}&tf=${encodeURIComponent(chartTf)}`)
+      .then((r) => r.json())
+      .then((j) => { if (alive && j && j.ok) setAltSig(j); })
+      .catch(() => {})
+      .finally(() => { if (alive) setAltLoading(false); });
+    return () => { alive = false; };
+  }, [symbolId, tf, chartTf]);
+
+  const active = chartTf === tf ? sig : altSig && altSig.series ? altSig : sig;
+  const series = active?.series;
+  const price = active?.price;
+
+  // Level sinyal: entry = harga terakhir; SL/TP dari ATR(14) — hanya LONG/SHORT
+  const dir = active?.signal || "NETRAL";
+  const entry = active?.price ?? null;
+  const atr = active?.atr ?? null;
+  let tp = null, sl = null;
+  if (entry != null && atr != null) {
+    if (dir === "LONG") { tp = entry + TP_MULT * atr; sl = entry - SL_MULT * atr; }
+    else if (dir === "SHORT") { tp = entry - TP_MULT * atr; sl = entry + SL_MULT * atr; }
+  }
 
   const { pts, min, max } = useMemo(() => {
     if (!series) return { pts: null, min: 0, max: 1 };
     const { closes, ema20, ema50 } = series;
     const all = closes.concat(ema20.filter((v) => v != null), ema50.filter((v) => v != null));
+    if (tp != null) all.push(tp);
+    if (sl != null) all.push(sl);
     const mn = Math.min(...all);
     const mx = Math.max(...all);
     const span = mx - mn || mx * 0.001 || 1;
@@ -67,11 +112,14 @@ function MiniChart({ series, price }) {
         ema50Line: line(ema50),
         area: `M ${CPAD},${CH - CPAD} L ${line(closes).split(" ").join(" L ")} L ${X(n - 1).toFixed(1)},${CH - CPAD} Z`,
         last: { x: X(n - 1), y: Y(closes[n - 1]) },
+        tpY: tp != null ? Y(tp) : null,
+        slY: sl != null ? Y(sl) : null,
+        entryY: entry != null ? Y(entry) : null,
       },
       min: mn,
       max: mx,
     };
-  }, [series]);
+  }, [series, tp, sl, entry]);
 
   if (!series || !pts) {
     return (
@@ -94,6 +142,20 @@ function MiniChart({ series, price }) {
 
   return (
     <div className="sig-chart-wrap">
+      <div className="sig-chart-head">
+        <span className="sig-chart-ttl">
+          PANDANGAN HARGA · {TF_SHORT[chartTf] || chartTf.toUpperCase()}
+          <em>{pts.n} bar</em>
+          {altLoading && <i className="cl">memuat…</i>}
+        </span>
+        <div className="sig-tfbtns" aria-label="Pilih timeframe chart mini">
+          {(CHART_TFS.includes(tf) ? CHART_TFS : [tf, ...CHART_TFS]).map((t) => (
+            <button key={t} type="button" className={t === chartTf ? "on" : ""} onClick={() => setChartTf(t)}>
+              {TF_SHORT[t] || t.toUpperCase()}
+            </button>
+          ))}
+        </div>
+      </div>
       <div className="sig-chart" style={{ position: "relative" }}>
         <svg
           viewBox={`0 0 ${CW} ${CH}`}
@@ -115,6 +177,9 @@ function MiniChart({ series, price }) {
           <polyline points={pts.ema20Line} fill="none" stroke="#2dd4bf" strokeWidth="1.2" vectorEffect="non-scaling-stroke" />
           <polyline points={pts.priceLine} fill="none" stroke="var(--accent)" strokeWidth="1.8" vectorEffect="non-scaling-stroke" />
           <circle cx={pts.last.x} cy={pts.last.y} r="2.6" fill="var(--accent)" vectorEffect="non-scaling-stroke" />
+          {pts.slY != null && <line x1={CPAD} x2={CW - CPAD} y1={pts.slY} y2={pts.slY} stroke="#fb7185" strokeWidth="1" strokeDasharray="4 4" opacity="0.85" vectorEffect="non-scaling-stroke" />}
+          {pts.tpY != null && <line x1={CPAD} x2={CW - CPAD} y1={pts.tpY} y2={pts.tpY} stroke="#4ade80" strokeWidth="1" strokeDasharray="4 4" opacity="0.85" vectorEffect="non-scaling-stroke" />}
+          {pts.entryY != null && <line x1={CPAD} x2={CW - CPAD} y1={pts.entryY} y2={pts.entryY} stroke="var(--accent)" strokeWidth="1" strokeDasharray="2 3" opacity="0.75" vectorEffect="non-scaling-stroke" />}
           {hv && (
             <g>
               <line x1={hv.x} y1={CPAD} x2={hv.x} y2={CH - CPAD} stroke="rgba(232,236,243,0.35)" strokeWidth="1" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
@@ -142,6 +207,16 @@ function MiniChart({ series, price }) {
         <span><i className="lg lg-price" /> Harga</span>
         <span><i className="lg lg-ema20" /> EMA 20</span>
         <span><i className="lg lg-ema50" /> EMA 50</span>
+        {(entry != null || tp != null || sl != null) && (
+          <span
+            className="sig-levels"
+            title={`Level berdasarkan ATR(14) sinyal ${TF_SHORT[chartTf] || chartTf}: TP = entry ± ${TP_MULT}×ATR · SL = entry ∓ ${SL_MULT}×ATR`}
+          >
+            {entry != null && <b className="lvl-chip in">ENTRY {fmtPrice(entry)}</b>}
+            {sl != null && <b className="lvl-chip out">SL {fmtPrice(sl)}</b>}
+            {tp != null && <b className="lvl-chip up">TP {fmtPrice(tp)}</b>}
+          </span>
+        )}
         <span className="sig-chart-range">
           {fmtPrice(min)} – {fmtPrice(max)}
         </span>
@@ -299,7 +374,7 @@ export default function SignalPanel({ symbol, tf, onTf }) {
         </div>
 
         {/* Mini chart interaktif — mengisi ruang di desktop */}
-        <MiniChart series={data?.series} price={data?.price} />
+        <MiniChart sig={data} tf={tf} symbolId={symbol.id} />
 
         {/* Tabel indikator */}
         <div className="sig-table">
