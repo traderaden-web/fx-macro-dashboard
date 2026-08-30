@@ -2,12 +2,14 @@
 
 // components/MacroMap.jsx
 // Peta Makro Global ala TradingView: peta dunia (SVG equirectangular,
-// geometri Natural Earth 110m) dengan negara-negara utama diwarnai sesuai
+// geometri Natural Earth 50m) dengan negara-negara utama diwarnai sesuai
 // indikator makro terpilih. Animasi: negara muncul berurutan, pin berdenyut
-// di ibu kota bank sentral, sweep cahaya menyapu peta, transisi halus.
+// di ibu kota bank sentral, sweep cahaya menyapu peta.
+// Interaksi: hover = info singkat · KLIK negara = popup modal data lengkap
+// + berita terkini negara tersebut (/api/country/news).
 // Data kurasi per-30-Agu-2026 (lib/macroData.js).
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { COUNTRIES, OTHERS, MAP_VIEW } from "../lib/worldMapData";
 import {
   MACRO_ASOF,
@@ -15,6 +17,8 @@ import {
   CAPITAL_POINTS,
   projectPoint,
   dataFor,
+  COUNTRY_DATA,
+  COUNTRY_NAMES,
   countryColor,
   legendStops,
 } from "../lib/macroData";
@@ -22,9 +26,142 @@ import { IconGlobe } from "./Icons";
 
 const FMT = (v, d = 1) => (v === null || v === undefined ? "—" : Number(v).toLocaleString("id-ID", { maximumFractionDigits: d }));
 
+function timeAgo(iso) {
+  if (!iso) return "";
+  const m = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  if (m < 1) return "baru saja";
+  if (m < 60) return `${m} mnt lalu`;
+  const h = Math.round(m / 60);
+  if (h < 24) return `${h} jam lalu`;
+  return `${Math.round(h / 24)} hari lalu`;
+}
+
+// ── Posisi nilai pada domain indikator (mini bar) ───────────────────────
+function IndicatorBar({ indId, d }) {
+  const ind = INDICATORS.find((i) => i.id === indId);
+  const val = d[indId];
+  if (val === null || val === undefined) return null;
+  const [lo, hi] = ind.domain;
+  const t = Math.max(0, Math.min(1, (val - lo) / (hi - lo)));
+  return (
+    <div className="cm-bar-row">
+      <span className="cm-bar-label">{ind.label}</span>
+      <div className="cm-bar">
+        <i style={{ left: `${(t * 100).toFixed(1)}%`, background: countryColor(indId, val) }} />
+      </div>
+      <b className="cm-bar-val">{FMT(val)}{ind.unit}</b>
+    </div>
+  );
+}
+
+// ── Popup modal: data lengkap + berita terkini negara ───────────────────
+function CountryModal({ cc, onClose }) {
+  const [news, setNews] = useState(null);
+  const [err, setErr] = useState("");
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    const onKey = (e) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    let alive = true;
+    fetch(`/api/country/news?cc=${cc}`)
+      .then((r) => r.json().then((j) => ({ status: r.status, j })))
+      .then(({ status, j }) => {
+        if (!alive) return;
+        if (status === 200 && j.ok) setNews(j);
+        else setErr(j?.error || "Berita gagal dimuat");
+      })
+      .catch(() => alive && setErr("Gagal terhubung ke server"));
+    return () => {
+      alive = false;
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [cc, onClose]);
+
+  const d = COUNTRY_DATA[cc];
+  const name = COUNTRY_NAMES[cc];
+  if (!d) return null;
+
+  return (
+    <div
+      className="cm-backdrop"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Detail ${name}`}
+    >
+      <div className="cm-modal">
+        <header className="cm-head">
+          <div>
+            <h3 className="cm-name">{name}</h3>
+            <p className="cm-sub">{d.rateBank} · data per {MACRO_ASOF}</p>
+          </div>
+          <span className={`cm-move ${d.move > 0 ? "hawk" : "dove"}`}>
+            {d.move > 0 ? `▲ +${d.move}bp · hawkish` : `▼ ${d.move}bp · dovish`}
+          </span>
+          <button type="button" className="cm-close" onClick={onClose} aria-label="Tutup" title="Tutup (Esc)">✕</button>
+        </header>
+
+        <div className="cm-body">
+          <div className="cm-stats">
+            <div className="cm-stat">
+              <em>Suku bunga acuan</em>
+              <b>{FMT(d.rate)}%</b>
+            </div>
+            <div className="cm-stat">
+              <em>Inflasi YoY</em>
+              <b>{d.inflation != null ? `${FMT(d.inflation)}%` : "—"}</b>
+            </div>
+            <div className="cm-stat" title={d.gdpNote || ""}>
+              <em>GDP{d.gdpNote ? ` (${d.gdpNote})` : ""}</em>
+              <b>{d.gdp != null ? `${FMT(d.gdp)}%` : "—"}</b>
+            </div>
+            <div className="cm-stat">
+              <em>Pengangguran</em>
+              <b>{d.unemp != null ? `${FMT(d.unemp)}%` : "—"}</b>
+            </div>
+          </div>
+
+          <p className="cm-movenote">📌 {d.moveNote}</p>
+
+          <div className="cm-bars">
+            {INDICATORS.filter((i) => d[i.id] != null).map((i) => (
+              <IndicatorBar key={i.id} indId={i.id} d={d} />
+            ))}
+          </div>
+
+          <div className="cm-news">
+            <h4 className="cm-news-title">📰 Berita Terkini {name}</h4>
+            {err && <p className="cm-news-err">⚠️ {err}. Coba lagi sebentar lagi.</p>}
+            {!err && !news && <p className="cm-news-load">Memuat berita terbaru…</p>}
+            {news && news.items.length === 0 && <p className="cm-news-load">Tidak ada berita terbaru saat ini.</p>}
+            <ul className="cm-news-list">
+              {(news?.items || []).map((it) => (
+                <li key={it.id}>
+                  <a href={it.link} target="_blank" rel="noopener noreferrer" className="cm-news-item">
+                    <span className="cm-news-title2">{it.title}</span>
+                    <span className="cm-news-meta">{it.source} · {timeAgo(it.iso)}</span>
+                    {it.rssSummary && (
+                      <span className="cm-news-sum">
+                        {it.rssSummary.length > 170 ? `${it.rssSummary.slice(0, 170)}…` : it.rssSummary}
+                      </span>
+                    )}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function MacroMap() {
   const [indId, setIndId] = useState("rate");
   const [hover, setHover] = useState(null); // id topo negara
+  const [modalKey, setModalKey] = useState(null); // entitas makro untuk modal
   const ind = INDICATORS.find((i) => i.id === indId);
 
   const stops = useMemo(() => legendStops(indId), [indId]);
@@ -54,7 +191,7 @@ export default function MacroMap() {
           <span className="inline-ico" aria-hidden="true"><IconGlobe size={18} /></span>
           <div>
             <h3>Peta Makro Global</h3>
-            <span className="map-sub">Kebijakan moneter &amp; data ekonomi negara-negara penggerak pasar Forex, Gold &amp; Komoditi</span>
+            <span className="map-sub">Kebijakan moneter &amp; data ekonomi negara-negara penggerak pasar Forex, Gold &amp; Komoditi — klik negara untuk data lengkap + berita</span>
           </div>
         </div>
         <div className="seg" role="tablist" aria-label="Indikator peta makro">
@@ -106,7 +243,7 @@ export default function MacroMap() {
                   style={{ "--i": i }}
                   onMouseEnter={() => setHover(id)}
                   onMouseLeave={() => setHover(null)}
-                  onClick={() => setHover(id)}
+                  onClick={() => { setHover(id); if (d) setModalKey(d.key); }}
                 />
               );
             })}
@@ -170,9 +307,10 @@ export default function MacroMap() {
                     </span>
                   </div>
                   <div className="map-detail-move">{hoverData.moveNote}</div>
+                  <div className="map-detail-cta">Klik untuk data lengkap &amp; berita →</div>
                 </>
               ) : (
-                <div className="map-detail-hint">Arahkan kursor ke negara pada peta untuk detail — pin berdenyut menandai ibu kota / markas bank sentral.</div>
+                <div className="map-detail-hint">Arahkan kursor ke negara pada peta untuk detail — klik negara untuk membuka data lengkap &amp; berita terbarunya.</div>
               )}
             </div>
           </div>
@@ -181,8 +319,10 @@ export default function MacroMap() {
 
       <div className="map-foot">
         <span>Data per {MACRO_ASOF} · sumber: ONS, ECB, FRED, RBA, Investing.com, TradingEconomics, Fitch, OECD</span>
-        <span>Hover / ketuk negara · {INDICATORS.length} indikator</span>
+        <span>Hover / ketuk negara · 12 entitas · {INDICATORS.length} indikator</span>
       </div>
+
+      {modalKey && <CountryModal cc={modalKey} onClose={() => setModalKey(null)} />}
     </div>
   );
 }
