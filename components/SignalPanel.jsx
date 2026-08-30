@@ -1,5 +1,5 @@
 // components/SignalPanel.jsx
-// Bar sinyal Long/Short (Beli/Jual) per timeframe — data dihitung server-side
+// Card sinyal Long/Short (Beli/Jual) per timeframe — data dihitung server-side
 // (EMA 20/50, RSI 14, MACD 12,26,9) dari harga riil Yahoo Finance.
 // TF yang dipilih juga dipakai TradingView chart di bawahnya (interval sync).
 
@@ -31,6 +31,8 @@ function fmtPrice(p) {
   return p.toFixed(4);
 }
 
+const fmtNum = (v) => (v == null ? "—" : Number(v).toLocaleString("en-US"));
+
 export default function SignalPanel({ symbol, tf, onTf }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -59,6 +61,7 @@ export default function SignalPanel({ symbol, tf, onTf }) {
   }, [symbol.id, tf]);
 
   const a = data ? ACTIONS[data.signal] : null;
+  const rsi = data?.indicators?.rsi;
 
   return (
     <div className={`signal-card ${a ? a.cls : ""}`}>
@@ -71,30 +74,31 @@ export default function SignalPanel({ symbol, tf, onTf }) {
       </header>
 
       <div className="signal-body">
-      <div className="signal-tf" role="tablist" aria-label="Pilih timeframe sinyal">
-        {Object.keys(TF_LABELS).map((t) => (
-          <button
-            key={t}
-            role="tab"
-            aria-selected={tf === t}
-            className={`tf-pill ${tf === t ? "active" : ""}`}
-            onClick={() => onTf(t)}
-          >
-            {TF_LABELS[t]}
-          </button>
-        ))}
-      </div>
+        {/* Timeframe */}
+        <div className="signal-tf" role="tablist" aria-label="Pilih timeframe sinyal">
+          {Object.keys(TF_LABELS).map((t) => (
+            <button
+              key={t}
+              role="tab"
+              aria-selected={tf === t}
+              className={`tf-pill ${tf === t ? "active" : ""}`}
+              onClick={() => onTf(t)}
+            >
+              {TF_LABELS[t]}
+            </button>
+          ))}
+        </div>
 
-      <div className="signal-main">
-        <div className={`signal-badge ${a ? a.cls : ""}`}>
-          <span className="signal-ico" aria-hidden="true">{a ? a.ico : "…"}</span>
-          <div className="signal-text">
+        {/* Verdict */}
+        <div className={`signal-verdict ${a ? a.cls : ""}`}>
+          <span className="signal-verdict-ico" aria-hidden="true">{a ? a.ico : "…"}</span>
+          <div className="signal-verdict-text">
             <span className="signal-word">
-              {loading && !data ? "Memuat…" : a ? a.text : error ? "GAGAL" : "—"}
+              {loading && !data ? "MEMUAT…" : a ? a.text : error ? "GAGAL" : "—"}
             </span>
             <span className="signal-sub">
               {data
-                ? `Skor ${data.score > 0 ? "+" : ""}${data.score} · kekuatan ${data.strength} · TF ${tf}`
+                ? `Skor ${data.score > 0 ? "+" : ""}${data.score} · kekuatan ${data.strength} · timeframe ${tf}`
                 : error
                   ? error
                   : "Sinyal Long/Short per timeframe"}
@@ -102,74 +106,98 @@ export default function SignalPanel({ symbol, tf, onTf }) {
           </div>
         </div>
 
-        <div className="signal-stat price-stat">
-          <span className="stat-lbl">Harga terakhir</span>
-          <span className="stat-val big">{data ? fmtPrice(data.price) : "—"}</span>
+        {/* Harga */}
+        <div className="signal-price">
+          <span className="sig-plabel">Harga terakhir</span>
+          <span className="sig-pval">{data ? fmtPrice(data.price) : "—"}</span>
           {data && (
-            <span className={`stat-pct ${data.changePct >= 0 ? "up" : "down"}`}>
-              {data.changePct >= 0 ? "+" : ""}{data.changePct.toFixed(2)}% · {data.changeBasis || ""}
+            <span className={`sig-pct ${data.changePct >= 0 ? "up" : "down"}`}>
+              {data.changePct >= 0 ? "▲" : "▼"} {Math.abs(data.changePct).toFixed(2)}%
+              <i>{data.changeBasis || ""}</i>
             </span>
           )}
         </div>
-      </div>
 
-      {/* Detail indikator — mengisi card agar tidak ada space kosong */}
-      <div className="sig-detail">
-        <div className="sig-row" title="RSI(14) — <30 jenuh jual, >70 jenuh beli">
-          <span className="sig-k">RSI 14</span>
-          <span className="sig-gauge" aria-hidden="true">
-            <span
-              className={`sig-gauge-mark ${
-                data ? (data.indicators.rsi >= 70 ? "hot" : data.indicators.rsi <= 30 ? "cold" : "") : ""
-              }`}
-              style={{ left: data ? `${Math.max(0, Math.min(100, data.indicators.rsi))}%` : "50%" }}
-            />
-          </span>
-          <span className="sig-v">
-            {data ? data.indicators.rsi : "—"}
-            {data && (data.indicators.rsi >= 70 ? " 🔥" : data.indicators.rsi <= 30 ? " ❄️" : "")}
-          </span>
+        {/* Tabel indikator */}
+        <div className="sig-table">
+          <div className="sig-trow">
+            <span className="sig-tlabel" title="RSI(14) — di bawah 30 jenuh jual, di atas 70 jenuh beli">
+              RSI 14
+            </span>
+            <span className={`sig-tval ${data ? (rsi >= 70 ? "down" : rsi <= 30 ? "up" : "") : ""}`}>
+              {data ? rsi : "—"}
+              {data && (rsi >= 70 ? " 🔥" : rsi <= 30 ? " ❄️" : "")}
+            </span>
+            <span className="sig-tsub">
+              {data
+                ? rsi >= 70
+                  ? "jenuh beli"
+                  : rsi > 60
+                    ? "cenderung jenuh beli"
+                    : rsi <= 30
+                      ? "jenuh jual"
+                      : rsi < 40
+                        ? "cenderung jenuh jual"
+                        : "netral"
+                : ""}
+            </span>
+          </div>
+          <div className="sig-gauge-row" aria-hidden="true">
+            <span className="sig-gauge">
+              <span
+                className={`sig-gauge-mark ${data ? (rsi >= 70 ? "hot" : rsi <= 30 ? "cold" : "") : ""}`}
+                style={{ left: data ? `${Math.max(0, Math.min(100, rsi))}%` : "50%" }}
+              />
+            </span>
+            <span className="sig-gauge-scale">
+              <i>0</i>
+              <i>30</i>
+              <i>70</i>
+              <i>100</i>
+            </span>
+          </div>
+
+          <div className="sig-trow" title="Tren: EMA 20 vs EMA 50">
+            <span className="sig-tlabel">EMA 20/50</span>
+            <span className={`sig-tval ${data ? (data.indicators.ema20 > data.indicators.ema50 ? "up" : "down") : ""}`}>
+              {data
+                ? data.indicators.ema20 > data.indicators.ema50
+                  ? "▲ Naik"
+                  : "▼ Turun"
+                : "—"}
+            </span>
+            <span className="sig-tsub">
+              {data ? `${fmtNum(data.indicators.ema20)} / ${fmtNum(data.indicators.ema50)}` : ""}
+            </span>
+          </div>
+
+          <div className="sig-trow" title="Momentum: MACD(12,26,9) vs signal line">
+            <span className="sig-tlabel">MACD</span>
+            <span className={`sig-tval ${data ? (data.indicators.macd > data.indicators.macdSignal ? "up" : "down") : ""}`}>
+              {data
+                ? data.indicators.macd > data.indicators.macdSignal
+                  ? "▲ Naik"
+                  : "▼ Turun"
+                : "—"}
+            </span>
+            <span className="sig-tsub">
+              {data ? `hist ${fmtNum(data.indicators.macdHist)}` : ""}
+            </span>
+          </div>
         </div>
 
-        <div className="sig-row" title="Tren: EMA 20 vs EMA 50">
-          <span className="sig-k">EMA 20/50</span>
-          <span className="sig-vals">
-            <span>20: <b>{data ? data.indicators.ema20 : "—"}</b></span>
-            <span>50: <b>{data ? data.indicators.ema50 : "—"}</b></span>
+        {/* Alasan + sumber */}
+        <div className="signal-foot">
+          <span className="signal-reasons" title={data ? data.reasons.join(" · ") : ""}>
+            <b>Alasan:</b> {data ? data.reasons.join(" · ") : "Memuat analisis…"}
           </span>
-          <span className={`sig-v ${data ? (data.indicators.ema20 > data.indicators.ema50 ? "up" : "down") : ""}`}>
-            {data ? (data.indicators.ema20 > data.indicators.ema50 ? "▲ Naik" : "▼ Turun") : "—"}
-          </span>
-        </div>
-
-        <div className="sig-row" title="Momentum: MACD(12,26,9) vs signal line">
-          <span className="sig-k">MACD</span>
-          <span className="sig-vals">
-            <span>line: <b>{data ? data.indicators.macd : "—"}</b></span>
-            <span>sig: <b>{data ? data.indicators.macdSignal : "—"}</b></span>
-            <span>hist: <b>{data ? data.indicators.macdHist : "—"}</b></span>
-          </span>
-          <span className={`sig-v ${data ? (data.indicators.macd > data.indicators.macdSignal ? "up" : "down") : ""}`}>
-            {data ? (data.indicators.macd > data.indicators.macdSignal ? "▲ Naik" : "▼ Turun") : "—"}
+          <span className="signal-disc">
+            {data
+              ? `Sumber: ${data.source} · ${data.bars.toLocaleString("en-US")} bar · terakhir ${new Date(data.lastBar).toLocaleDateString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })} WIB`
+              : ""}
+            {" "}· Bukan nasihat keuangan
           </span>
         </div>
-
-        <div className="sig-row" title="Alasan skor — arahkan kursor untuk melihat semuanya">
-          <span className="sig-k">Alasan</span>
-          <span className="sig-reasons-full" title={data ? data.reasons.join(" · ") : ""}>
-            {data ? data.reasons.join(" · ") : "Memuat analisis…"}
-          </span>
-        </div>
-      </div>
-
-      <div className="signal-foot">
-        <span className="signal-disc">
-          {data
-            ? `Sumber: ${data.source} · ${data.bars.toLocaleString("en-US")} bar · terakhir ${new Date(data.lastBar).toLocaleDateString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })} WIB`
-            : ""}{" "}
-          · Bukan nasihat keuangan
-        </span>
-      </div>
       </div>
     </div>
   );
