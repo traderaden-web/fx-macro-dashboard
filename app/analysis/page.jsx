@@ -25,15 +25,16 @@ export default async function AnalysisPage() {
         </div>
       </section>
 
-      <div className="section-fade">
-        <MacroMap />
-      </div>
-
       {items.length ? (
         <AnalysisClient items={items} upcoming={UPCOMING} />
       ) : (
         <p className="cell-muted">Belum ada data rilis tersedia. Jalankan <code>npm run fetch</code> untuk memperbarui.</p>
       )}
+
+      {/* Round-33: Peta Makro Global diletakkan tepat di atas Heatmap Aset */}
+      <div className="section-fade">
+        <MacroMap />
+      </div>
 
       {/* Heatmap dipindah ke paling bawah halaman (Round-25) */}
       <div className="section-fade heat-lower">
