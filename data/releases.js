@@ -9,7 +9,7 @@
 //
 // Tanggal rilis tervalidasi (data bulan M → tanggal rilis):
 //   NFP/Unemp/AHE : 3 Jul-25, 5 Sep-25, 16 Des-25, 9 Jan-26, 11 Feb-26, 8 Mei-26,
-//                   5 Jun-26, 2 Jul-26 (irreguler: Kamis/Jumat/Rabu berbeda-beda)
+//                   5 Jun-26, 2 Jul-26, 7 Agu-26 (irreguler: Kamis/Jumat/Rabu berbeda-beda)
 //   CPI/CoreCPI   : 11 Jun-25, 15 Jul-25, 12 Agu-25, 11 Sep-25, 13 Jan-26,
 //                   13 Feb-26, 11 Mar-26, 10 Apr-26, 12 Mei-26, 14 Jul-26, 12 Agu-26
 //   PPI           : 10 Sep-25, 14 Jan-26, 13 Mei-26, 10 Jun-26, 15 Jul-26, 13 Agu-26
@@ -24,8 +24,9 @@
 //   Koreksi tambahan dari P-FF: NFP obs 2026-05=129 (baris API 06-05=172
 //   inkonsisten dgn FF), CPI obs 2026-05=4.2, CoreCPI obs 2026-05=2.9.
 //
-// Masih PERKIRAAAN (belum ketemu di API, akan di-probe): NFP obs 2025-09/10,
-// 2026-02/03/07 · CPI obs 2025-09/11 & 2026-05 · PPI obs 2025-09/10/11 &
+// ⚠ Revisi (FF 7 Agu 26): NFP Jun-26 57→20 ribu (nilai sekarang = 20).
+// Masih PERKIRAAAN (belum ketemu, akan di-probe): NFP obs 2025-09/10 & 2026-02/03 ·
+// CPI obs 2025-09/11 & 2026-05 · PPI obs 2025-09/10/11 &
 // 2026-01/02/03 · Retail obs 2025-08/09/10 & 2026-02..05 · UMich obs 2026-01/06 ·
 // Claims obs 2025-10. Nilai baris perkiraan = rekonstruksi (bukan data API).
 //
@@ -37,7 +38,7 @@
 
 export const CONSENSUS = {
   nfp: [
-    { date: "2026-08-14", obs: "2026-07-01", consensus: 100 },
+    { date: "2026-08-07", obs: "2026-07-01", consensus: 85 },
     { date: "2026-07-02", obs: "2026-06-01", consensus: 114 },
     { date: "2026-06-05", obs: "2026-05-01", consensus: 85 },
     { date: "2026-05-08", obs: "2026-04-01", consensus: 65 },
@@ -51,7 +52,7 @@ export const CONSENSUS = {
     { date: "2025-09-05", obs: "2025-08-01", consensus: 75 },
   ],
   unemp: [
-    { date: "2026-08-14", obs: "2026-07-01", consensus: 4.2 },
+    { date: "2026-08-07", obs: "2026-07-01", consensus: 4.2 },
     { date: "2026-07-02", obs: "2026-06-01", consensus: 4.3 },
     { date: "2026-06-05", obs: "2026-05-01", consensus: 4.3 },
     { date: "2026-05-08", obs: "2026-04-01", consensus: 4.3 },
@@ -130,7 +131,7 @@ export const CONSENSUS = {
     { date: "2025-07-28", obs: "2025-06-01", consensus: 0.25 },
   ],
   ahe: [
-    { date: "2026-08-14", obs: "2026-07-01", consensus: 3.3 },
+    { date: "2026-08-07", obs: "2026-07-01", consensus: 3.3 },
     { date: "2026-07-02", obs: "2026-06-01", consensus: 3.5 },
     { date: "2026-06-12", obs: "2026-05-01", consensus: 3.5 },
     { date: "2026-05-08", obs: "2026-04-01", consensus: 3.8 },
@@ -338,7 +339,7 @@ export const CONSENSUS = {
   // ISM (ditambahkan 30-Agu-2026) — tervalidasi: screenshot FF user (1-15 Jul 26)
   // + file API earningsapi (Non-Manufacturing). Tanggal selain yg ditandai = estimasi.
   ismmfg: [
-    { date: "2026-08-03", obs: "2026-07-01", consensus: 53.3 },
+    { date: "2026-08-03", obs: "2026-07-01", consensus: 54.0 },
     { date: "2026-07-02", obs: "2026-06-01", consensus: 53.8 }, // tervalidasi FF
     { date: "2026-06-01", obs: "2026-05-01", consensus: 54.0 },
   ],

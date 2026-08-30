@@ -1597,7 +1597,7 @@ function AnalysisClient({ items, upcoming = [] }) {
 // data/releases.js
 var CONSENSUS = {
   nfp: [
-    { date: "2026-08-14", obs: "2026-07-01", consensus: 100 },
+    { date: "2026-08-07", obs: "2026-07-01", consensus: 85 },
     { date: "2026-07-02", obs: "2026-06-01", consensus: 114 },
     { date: "2026-06-05", obs: "2026-05-01", consensus: 85 },
     { date: "2026-05-08", obs: "2026-04-01", consensus: 65 },
@@ -1611,7 +1611,7 @@ var CONSENSUS = {
     { date: "2025-09-05", obs: "2025-08-01", consensus: 75 }
   ],
   unemp: [
-    { date: "2026-08-14", obs: "2026-07-01", consensus: 4.2 },
+    { date: "2026-08-07", obs: "2026-07-01", consensus: 4.2 },
     { date: "2026-07-02", obs: "2026-06-01", consensus: 4.3 },
     { date: "2026-06-05", obs: "2026-05-01", consensus: 4.3 },
     { date: "2026-05-08", obs: "2026-04-01", consensus: 4.3 },
@@ -1690,7 +1690,7 @@ var CONSENSUS = {
     { date: "2025-07-28", obs: "2025-06-01", consensus: 0.25 }
   ],
   ahe: [
-    { date: "2026-08-14", obs: "2026-07-01", consensus: 3.3 },
+    { date: "2026-08-07", obs: "2026-07-01", consensus: 3.3 },
     { date: "2026-07-02", obs: "2026-06-01", consensus: 3.5 },
     { date: "2026-06-12", obs: "2026-05-01", consensus: 3.5 },
     { date: "2026-05-08", obs: "2026-04-01", consensus: 3.8 },
@@ -1898,7 +1898,7 @@ var CONSENSUS = {
   // ISM (ditambahkan 30-Agu-2026) — tervalidasi: screenshot FF user (1-15 Jul 26)
   // + file API earningsapi (Non-Manufacturing). Tanggal selain yg ditandai = estimasi.
   ismmfg: [
-    { date: "2026-08-03", obs: "2026-07-01", consensus: 53.3 },
+    { date: "2026-08-03", obs: "2026-07-01", consensus: 54 },
     { date: "2026-07-02", obs: "2026-06-01", consensus: 53.8 },
     // tervalidasi FF
     { date: "2026-06-01", obs: "2026-05-01", consensus: 54 }
@@ -2410,7 +2410,7 @@ var seed_default = {
         },
         {
           date: "2026-06-01",
-          value: 57
+          value: 20
         },
         {
           date: "2026-07-01",
@@ -14875,8 +14875,8 @@ var seed_default = {
       unit: "index",
       updated: "2026-08-30T12:00:00Z",
       last: {
-        date: "2026-06-01",
-        value: 53.3
+        date: "2026-07-01",
+        value: 55.6
       },
       points: [
         {
@@ -14886,6 +14886,10 @@ var seed_default = {
         {
           date: "2026-06-01",
           value: 53.3
+        },
+        {
+          date: "2026-07-01",
+          value: 55.6
         }
       ]
     },
