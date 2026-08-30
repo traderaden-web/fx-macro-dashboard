@@ -11,6 +11,8 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import TradingViewWidget from "./TradingViewWidget";
 import SignalPanel from "./SignalPanel";
+import FundamentalsCard from "./FundamentalsCard";
+import NewsModal from "./NewsModal";
 import { CotPanel, SessionPanel, CalendarPanel } from "./TerminalPanels";
 import { IconChart, IconLightbulb } from "./Icons";
 import { cotForAsset } from "../lib/cotData";
@@ -65,6 +67,7 @@ const TF_INTERVAL = {
 export default function ChartsClient({ news = [], upcoming = [] }) {
   const [active, setActive] = useState(SYMBOLS[0]);
   const [tf, setTf] = useState("1h"); // timeframe sinyal + chart (sync)
+  const [modalNews, setModalNews] = useState(null); // berita yang dibuka di popup
 
   const cot = useMemo(() => cotForAsset(active.id), [active]);
   const assetNews = useMemo(
@@ -82,6 +85,23 @@ export default function ChartsClient({ news = [], upcoming = [] }) {
           Terminal pro: positioning institusional (CFTC COT), sesi pasar live, kalender
           High-impact, chart TradingView, dan News Event — semua menyesuaikan aset yang kamu pilih.
         </p>
+
+        {/* Picker simbol — dipindah ke bawah deskripsi (di atas semua panel) */}
+        <div className="sym-picker hero-picker" role="tablist" aria-label="Pilih aset">
+          {SYMBOLS.map((s) => (
+            <button
+              key={s.id}
+              role="tab"
+              aria-selected={active.id === s.id}
+              className={`sym-pill ${active.id === s.id ? "active" : ""}`}
+              onClick={() => setActive(s)}
+              title={s.desc}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+
         <div className="hero-meta">
           <span>Chart: TradingView (live)</span>
           <span>Positioning: CFTC COT (mingguan)</span>
@@ -96,9 +116,11 @@ export default function ChartsClient({ news = [], upcoming = [] }) {
         <CalendarPanel events={upcoming} />
       </div>
 
-      {/* ── SIGNAL (card) + NEWS EVENT (card) — bersebelahan, di atas chart ── */}
-      <div className="sig-news-grid">
+      {/* ── SIGNAL | FUNDAMENTAL | NEWS EVENT — 3 card di atas chart ── */}
+      <div className="sig-fund-news-grid">
         <SignalPanel symbol={active} tf={tf} onTf={setTf} />
+
+        <FundamentalsCard assetId={active.id} assetLabel={active.label} />
 
         <article className="term-card news-card">
           <header className="term-head">
@@ -113,7 +135,14 @@ export default function ChartsClient({ news = [], upcoming = [] }) {
               <ul className="topnews-list compact">
                 {assetNews.map((n, i) => (
                   <li key={`${n.link}-${i}`}>
-                    <a href={n.link} target="_blank" rel="noopener noreferrer" className="topnews-item">
+                    <div
+                      className="topnews-item clickable"
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setModalNews(n)}
+                      onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setModalNews(n)}
+                      title="Klik untuk baca isi artikel"
+                    >
                       <span className="topnews-title">
                         {n.impact?.level === "kritis" && (
                           <span className="impact-badge kritis" title={`Topik: ${(n.impact.tags || []).join(", ")}`}>🔥</span>
@@ -122,12 +151,23 @@ export default function ChartsClient({ news = [], upcoming = [] }) {
                           <span className="impact-badge tinggi" title={`Topik: ${(n.impact.tags || []).join(", ")}`}>⚡</span>
                         )}
                         {n.title}
+                        <a
+                          className="news-ext"
+                          href={n.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          title="Buka di situs sumber"
+                          aria-label="Buka di situs sumber"
+                        >
+                          ↗
+                        </a>
                       </span>
                       <span className="topnews-meta">
                         {n.source} · {timeAgo(n.iso)}
                         {n.impact?.tags?.length ? ` · ${n.impact.tags.slice(0, 3).join(", ")}` : ""}
                       </span>
-                    </a>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -166,23 +206,6 @@ export default function ChartsClient({ news = [], upcoming = [] }) {
           }}
         />
 
-        <div className="chart-card-strip">
-          <div className="sym-picker" role="tablist" aria-label="Pilih simbol chart">
-            {SYMBOLS.map((s) => (
-              <button
-                key={s.id}
-                role="tab"
-                aria-selected={active.id === s.id}
-                className={`sym-pill ${active.id === s.id ? "active" : ""}`}
-                onClick={() => setActive(s)}
-                title={s.desc}
-              >
-                {s.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
         <div className="chart-hints">
           <span className="chart-hint">
             <span className="inline-ico" aria-hidden="true"><IconLightbulb size={13} /></span>
@@ -210,6 +233,10 @@ export default function ChartsClient({ news = [], upcoming = [] }) {
         />
       </div>
 
+      {/* Popup isi berita (dibuka saat item News Event diklik) */}
+      {modalNews && (
+        <NewsModal item={modalNews} onClose={() => setModalNews(null)} />
+      )}
     </>
   );
 }

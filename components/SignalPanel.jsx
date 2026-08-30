@@ -94,7 +94,7 @@ export default function SignalPanel({ symbol, tf, onTf }) {
             </span>
             <span className="signal-sub">
               {data
-                ? `Skor ${data.score > 0 ? "+" : ""}${data.score} · kekuatan ${data.strength} · ${symbol.label} ${tf}`
+                ? `Skor ${data.score > 0 ? "+" : ""}${data.score} · kekuatan ${data.strength} · TF ${tf}`
                 : error
                   ? error
                   : "Sinyal Long/Short per timeframe"}
@@ -102,44 +102,72 @@ export default function SignalPanel({ symbol, tf, onTf }) {
           </div>
         </div>
 
-        <div className="signal-stats">
-          <div className="signal-stat">
-            <span className="stat-lbl">Harga</span>
-            <span className="stat-val">{data ? fmtPrice(data.price) : "—"}</span>
-            {data && (
-              <span className={`stat-pct ${data.changePct >= 0 ? "up" : "down"}`}>
-                {data.changePct >= 0 ? "+" : ""}{data.changePct.toFixed(2)}%
-              </span>
-            )}
-          </div>
-          <div className="signal-stat" title="RSI(14) — di bawah 30 jenuh jual, di atas 70 jenuh beli">
-            <span className="stat-lbl">RSI 14</span>
-            <span className="stat-val">
-              {data ? data.indicators.rsi : "—"}
-              {data && (data.indicators.rsi >= 70 ? " 🔥" : data.indicators.rsi <= 30 ? " ❄️" : "")}
+        <div className="signal-stat price-stat">
+          <span className="stat-lbl">Harga terakhir</span>
+          <span className="stat-val big">{data ? fmtPrice(data.price) : "—"}</span>
+          {data && (
+            <span className={`stat-pct ${data.changePct >= 0 ? "up" : "down"}`}>
+              {data.changePct >= 0 ? "+" : ""}{data.changePct.toFixed(2)}% · {data.changeBasis || ""}
             </span>
-          </div>
-          <div className="signal-stat" title="Tren: EMA20 vs EMA50">
-            <span className="stat-lbl">EMA 20/50</span>
-            <span className="stat-val">
-              {data ? (data.indicators.ema20 > data.indicators.ema50 ? "Naik" : "Turun") : "—"}
-            </span>
-          </div>
-          <div className="signal-stat" title="Momentum: MACD(12,26,9) vs signal line">
-            <span className="stat-lbl">MACD</span>
-            <span className="stat-val">
-              {data ? (data.indicators.macd > data.indicators.macdSignal ? "Naik" : "Turun") : "—"}
-            </span>
-          </div>
+          )}
+        </div>
+      </div>
+
+      {/* Detail indikator — mengisi card agar tidak ada space kosong */}
+      <div className="sig-detail">
+        <div className="sig-row" title="RSI(14) — <30 jenuh jual, >70 jenuh beli">
+          <span className="sig-k">RSI 14</span>
+          <span className="sig-gauge" aria-hidden="true">
+            <span
+              className={`sig-gauge-mark ${
+                data ? (data.indicators.rsi >= 70 ? "hot" : data.indicators.rsi <= 30 ? "cold" : "") : ""
+              }`}
+              style={{ left: data ? `${Math.max(0, Math.min(100, data.indicators.rsi))}%` : "50%" }}
+            />
+          </span>
+          <span className="sig-v">
+            {data ? data.indicators.rsi : "—"}
+            {data && (data.indicators.rsi >= 70 ? " 🔥" : data.indicators.rsi <= 30 ? " ❄️" : "")}
+          </span>
+        </div>
+
+        <div className="sig-row" title="Tren: EMA 20 vs EMA 50">
+          <span className="sig-k">EMA 20/50</span>
+          <span className="sig-vals">
+            <span>20: <b>{data ? data.indicators.ema20 : "—"}</b></span>
+            <span>50: <b>{data ? data.indicators.ema50 : "—"}</b></span>
+          </span>
+          <span className={`sig-v ${data ? (data.indicators.ema20 > data.indicators.ema50 ? "up" : "down") : ""}`}>
+            {data ? (data.indicators.ema20 > data.indicators.ema50 ? "▲ Naik" : "▼ Turun") : "—"}
+          </span>
+        </div>
+
+        <div className="sig-row" title="Momentum: MACD(12,26,9) vs signal line">
+          <span className="sig-k">MACD</span>
+          <span className="sig-vals">
+            <span>line: <b>{data ? data.indicators.macd : "—"}</b></span>
+            <span>sig: <b>{data ? data.indicators.macdSignal : "—"}</b></span>
+            <span>hist: <b>{data ? data.indicators.macdHist : "—"}</b></span>
+          </span>
+          <span className={`sig-v ${data ? (data.indicators.macd > data.indicators.macdSignal ? "up" : "down") : ""}`}>
+            {data ? (data.indicators.macd > data.indicators.macdSignal ? "▲ Naik" : "▼ Turun") : "—"}
+          </span>
+        </div>
+
+        <div className="sig-row" title="Alasan skor — arahkan kursor untuk melihat semuanya">
+          <span className="sig-k">Alasan</span>
+          <span className="sig-reasons-full" title={data ? data.reasons.join(" · ") : ""}>
+            {data ? data.reasons.join(" · ") : "Memuat analisis…"}
+          </span>
         </div>
       </div>
 
       <div className="signal-foot">
-        <span className="signal-reasons" title={data ? data.reasons.join(" · ") : ""}>
-          {data ? data.reasons.slice(0, 3).join(" · ") : "Memuat analisis…"}
-        </span>
         <span className="signal-disc">
-          {data ? `Sumber: ${data.source} · bar terakhir ${new Date(data.lastBar).toLocaleDateString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })} WIB` : ""} · Bukan nasihat keuangan
+          {data
+            ? `Sumber: ${data.source} · ${data.bars.toLocaleString("en-US")} bar · terakhir ${new Date(data.lastBar).toLocaleDateString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })} WIB`
+            : ""}{" "}
+          · Bukan nasihat keuangan
         </span>
       </div>
       </div>
