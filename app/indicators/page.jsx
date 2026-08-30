@@ -1,6 +1,7 @@
 import { getAllSeriesData } from "../../lib/data";
-import { CATEGORIES } from "../../lib/series";
 import IndicatorsClient from "../../components/IndicatorsClient";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Semua Indikator — MacroLab",
@@ -15,14 +16,10 @@ export default async function IndicatorsPage() {
       <section className="hero section-fade" style={{ paddingTop: 20 }}>
         <h1>Semua Indikator</h1>
         <p>
-          {all.length} indikator dari berbagai ekonomi. Gunakan filter untuk mencari, dan urutkan berdasarkan
-          dampak (High → Low), kategori, atau nama. Klik baris untuk melihat analisis &amp; data lengkap.
+          {all.length} indikator makro dari berbagai ekonomi — nilai terbaru, perubahan, tren 12 periode,
+          dan tingkat dampak pasar. Saring berdasarkan kategori, dampak, negara, atau cari langsung;
+          <strong> klik baris untuk membuka detail terminal</strong> (riwayat, konsensus vs actual, edukasi).
         </p>
-        <div className="legend">
-          {CATEGORIES.map((c) => (
-            <span key={c.id}><span className="dot" style={{ background: c.color }} /> {c.label}</span>
-          ))}
-        </div>
       </section>
 
       <section className="section">
