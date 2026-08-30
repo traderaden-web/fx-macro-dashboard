@@ -120,10 +120,12 @@ var SERIES_RAW = [
     unit: "%",
     decimals: 2,
     impact: "High",
-    release: "Akhir bulan, 08:30 ET",
+    release: "Akhir bulan, 08:30 ET (19:30 WIB)",
     about: "Indeks harga pengeluaran konsumsi pribadi inti (tanpa makanan & energi) \u2014 ukuran inflasi favorit The Fed.",
     why: "The Fed mengacu pada PCE inti untuk menilai tren inflasi jangka menengah.",
-    fx: "Core PCE tinggi \u2192 tekanan kenaikan suku bunga \u2192 USD bisa menguat."
+    fx: "Core PCE tinggi \u2192 tekanan kenaikan suku bunga \u2192 USD bisa menguat.",
+    // koreksi FF 26 Agu 2026 (obs Jun 0,1 / Jul 0,2) → kunci ke seed
+    noLive: true
   },
   {
     id: "ahe",
@@ -241,21 +243,23 @@ var SERIES_RAW = [
   },
   {
     id: "gdp",
-    name: "Real GDP (Quarterly)",
+    name: "Prelim GDP (q/q) Annualized",
     short: "GDP",
     category: "pertumbuhan",
     country: "US",
     countryName: "Amerika Serikat",
     freq: "Q",
     fred: "GDPC1",
-    mode: "yoy_pct",
+    mode: "qq_ann_pct",
     unit: "%",
     decimals: 1,
     impact: "High",
-    release: "Perkiraan setiap kuartal",
-    about: "Pertumbuhan ekonomi riil (year-over-year).",
-    why: "Pertumbuhan kuat mendukung suku bunga tinggi.",
-    fx: "GDP kuat \u2192 USD bullish; lemah \u2192 USD bearish."
+    release: "3x per kuartal (advance/prelim/final), 08:30 ET (19:30 WIB)",
+    about: "Pertumbuhan PDB riil per kuartal, annualized (q/q) \u2014 angka awal (preliminary) dari BEA yang biasanya masih direvisi.",
+    why: "Angka pertumbuhan terlebar; menentukan narasi 'ekonomi kuat vs perlambatan' dan ruang kebijakan The Fed.",
+    fx: "GDP kuat \u2192 USD bullish; lemah \u2192 ekspektasi cut \u2192 USD bearish.",
+    // dikonversi ke basis q/q sesuai ForexFactory (FF 26 Agu 2026: Q2 1,5 / Q1 1,5) → kunci ke seed
+    noLive: true
   },
   {
     id: "eu_cpi",
@@ -565,7 +569,7 @@ var TOL = {
   retail: 0.3,
   umich: 2,
   indpro: 0.1,
-  gdp: 0.3,
+  gdp: 0.1,
   eu_cpi: 0.15,
   eu_unemp: 0.15,
   uk_cpi: 0.15,
@@ -596,7 +600,7 @@ var SCALE = {
   retail: 0.5,
   umich: 10,
   indpro: 0.4,
-  gdp: 1,
+  gdp: 0.5,
   eu_cpi: 0.5,
   eu_unemp: 0.2,
   uk_cpi: 0.5,
@@ -658,6 +662,7 @@ var IND_CURRENCY = {
   unemp: { cur: "USD", bullDir: -1, via: "likuiditas pasar kerja \u2192 jalur suku bunga The Fed" },
   cpi: { cur: "USD", bullDir: 1, via: "inflasi inti-kebijakan \u2192 stance The Fed & real yield" },
   corecpi: { cur: "USD", bullDir: 1, via: "inflasi inti \u2192 fokus utama The Fed" },
+  corepce: { cur: "USD", bullDir: 1, via: "inflasi inti versi The Fed \u2192 ekspektasi suku bunga" },
   ppi: { cur: "USD", bullDir: 1, via: "inflasi produsen \u2192 pendahulu inflasi konsumen" },
   ahe: { cur: "USD", bullDir: 1, via: "inflasi upah \u2192 tekanan hawkish The Fed" },
   fedfunds: { cur: "USD", bullDir: 1, via: "keputusan FOMC langsung" },
@@ -1674,7 +1679,7 @@ var CONSENSUS = {
     { date: "2025-07-15", obs: "2025-06-01", consensus: 1.8 }
   ],
   corepce: [
-    { date: "2026-08-27", obs: "2026-07-01", consensus: 0.27 },
+    { date: "2026-08-26", obs: "2026-07-01", consensus: 0.2 },
     { date: "2026-07-27", obs: "2026-06-01", consensus: 0.3 },
     { date: "2026-06-26", obs: "2026-05-01", consensus: 0.28 },
     { date: "2026-05-27", obs: "2026-04-01", consensus: 0.3 },
@@ -1767,10 +1772,7 @@ var CONSENSUS = {
     { date: "2025-07-11", obs: "2025-06-01", consensus: 0.4 }
   ],
   gdp: [
-    { date: "2026-07-30", obs: "2026-04-01", consensus: 2.3 },
-    { date: "2026-04-30", obs: "2026-01-01", consensus: 2.2 },
-    { date: "2026-01-29", obs: "2025-10-01", consensus: 2.4 },
-    { date: "2025-10-30", obs: "2025-07-01", consensus: 2.5 }
+    { date: "2026-08-26", obs: "2026-07-01", consensus: 1.5 }
   ],
   eu_cpi: [
     { date: "2026-08-07", obs: "2026-07-01", consensus: 2.8 },
@@ -4398,7 +4400,7 @@ var seed_default = {
       updated: "2026-08-29T10:40:41.942Z",
       last: {
         date: "2026-07-01",
-        value: 0.25
+        value: 0.2
       },
       points: [
         {
@@ -4875,11 +4877,11 @@ var seed_default = {
         },
         {
           date: "2026-06-01",
-          value: 0.15
+          value: 0.1
         },
         {
           date: "2026-07-01",
-          value: 0.25
+          value: 0.2
         }
       ]
     },
@@ -7848,305 +7850,17 @@ var seed_default = {
       unit: "%",
       updated: "2026-08-29T10:40:46.480Z",
       last: {
-        date: "2026-04-01",
-        value: 2.1
+        date: "2026-07-01",
+        value: 1.5
       },
       points: [
         {
-          date: "2008-01-01",
-          value: 1.39
-        },
-        {
-          date: "2008-04-01",
-          value: 1.38
-        },
-        {
-          date: "2008-07-01",
-          value: 0.27
-        },
-        {
-          date: "2008-10-01",
-          value: -2.54
-        },
-        {
-          date: "2009-01-01",
-          value: -3.23
-        },
-        {
-          date: "2009-04-01",
-          value: -3.98
-        },
-        {
-          date: "2009-07-01",
-          value: -3.13
-        },
-        {
-          date: "2009-10-01",
-          value: 0.11
-        },
-        {
-          date: "2010-01-01",
-          value: 1.75
-        },
-        {
-          date: "2010-04-01",
-          value: 2.91
-        },
-        {
-          date: "2010-07-01",
-          value: 3.34
-        },
-        {
-          date: "2010-10-01",
-          value: 2.78
-        },
-        {
-          date: "2011-01-01",
-          value: 2.04
-        },
-        {
-          date: "2011-04-01",
-          value: 1.74
-        },
-        {
-          date: "2011-07-01",
-          value: 0.94
-        },
-        {
-          date: "2011-10-01",
-          value: 1.54
-        },
-        {
-          date: "2012-01-01",
-          value: 2.64
-        },
-        {
-          date: "2012-04-01",
-          value: 2.4
-        },
-        {
-          date: "2012-07-01",
-          value: 2.57
-        },
-        {
-          date: "2012-10-01",
-          value: 1.55
-        },
-        {
-          date: "2013-01-01",
-          value: 1.7
-        },
-        {
-          date: "2013-04-01",
-          value: 1.52
-        },
-        {
-          date: "2013-07-01",
-          value: 2.24
-        },
-        {
-          date: "2013-10-01",
-          value: 3.01
-        },
-        {
-          date: "2014-01-01",
-          value: 1.65
-        },
-        {
-          date: "2014-04-01",
-          value: 2.69
-        },
-        {
-          date: "2014-07-01",
-          value: 3.06
-        },
-        {
-          date: "2014-10-01",
-          value: 2.69
-        },
-        {
-          date: "2015-01-01",
-          value: 3.97
-        },
-        {
-          date: "2015-04-01",
-          value: 3.28
-        },
-        {
-          date: "2015-07-01",
-          value: 2.45
-        },
-        {
-          date: "2015-10-01",
-          value: 2.12
-        },
-        {
-          date: "2016-01-01",
-          value: 1.8
-        },
-        {
-          date: "2016-04-01",
-          value: 1.49
-        },
-        {
-          date: "2016-07-01",
-          value: 1.81
-        },
-        {
-          date: "2016-10-01",
-          value: 2.18
-        },
-        {
-          date: "2017-01-01",
-          value: 2.09
-        },
-        {
-          date: "2017-04-01",
-          value: 2.33
-        },
-        {
-          date: "2017-07-01",
-          value: 2.41
-        },
-        {
-          date: "2017-10-01",
-          value: 2.99
-        },
-        {
-          date: "2018-01-01",
-          value: 3.33
-        },
-        {
-          date: "2018-04-01",
-          value: 3.3
-        },
-        {
-          date: "2018-07-01",
-          value: 3.13
-        },
-        {
-          date: "2018-10-01",
-          value: 2.13
-        },
-        {
-          date: "2019-01-01",
-          value: 1.93
-        },
-        {
-          date: "2019-04-01",
-          value: 2.24
-        },
-        {
-          date: "2019-07-01",
-          value: 2.8
-        },
-        {
-          date: "2019-10-01",
-          value: 3.35
-        },
-        {
-          date: "2020-01-01",
-          value: 1.36
-        },
-        {
-          date: "2020-04-01",
-          value: -7.4
-        },
-        {
-          date: "2020-07-01",
-          value: -1.36
-        },
-        {
-          date: "2020-10-01",
-          value: -0.92
-        },
-        {
-          date: "2021-01-01",
-          value: 1.8
-        },
-        {
-          date: "2021-04-01",
-          value: 12.39
-        },
-        {
-          date: "2021-07-01",
-          value: 5.15
-        },
-        {
-          date: "2021-10-01",
-          value: 5.76
-        },
-        {
-          date: "2022-01-01",
-          value: 4.03
-        },
-        {
-          date: "2022-04-01",
-          value: 2.45
-        },
-        {
-          date: "2022-07-01",
-          value: 2.35
-        },
-        {
-          date: "2022-10-01",
-          value: 1.32
-        },
-        {
-          date: "2023-01-01",
-          value: 2.31
-        },
-        {
-          date: "2023-04-01",
-          value: 2.79
-        },
-        {
-          date: "2023-07-01",
-          value: 3.23
-        },
-        {
-          date: "2023-10-01",
-          value: 3.39
-        },
-        {
-          date: "2024-01-01",
-          value: 2.86
-        },
-        {
-          date: "2024-04-01",
-          value: 3.13
-        },
-        {
-          date: "2024-07-01",
-          value: 2.79
-        },
-        {
-          date: "2024-10-01",
-          value: 2.4
-        },
-        {
-          date: "2025-01-01",
-          value: 2.02
-        },
-        {
-          date: "2025-04-01",
-          value: 2.08
-        },
-        {
-          date: "2025-07-01",
-          value: 2.34
-        },
-        {
-          date: "2025-10-01",
-          value: 1.99
-        },
-        {
-          date: "2026-01-01",
-          value: 2.68
-        },
-        {
           date: "2026-04-01",
-          value: 2.1
+          value: 1.5
+        },
+        {
+          date: "2026-07-01",
+          value: 1.5
         }
       ]
     },
@@ -15150,6 +14864,7 @@ var TITLE_MAP = [
   { title: "average hourly earnings y/y", id: "ahe", allow: ["US"] },
   { title: "federal funds rate", id: "fedfunds", allow: ["US"] },
   { title: "retail sales m/m", id: "retail", allow: ["US"] },
+  { title: "core pce price index", id: "corepce", allow: ["US"] },
   { title: "advance gdp", id: "gdp", allow: ["US"] },
   { title: "gdp q/q", id: "gdp", allow: ["US"] },
   { title: "initial jobless claims", id: "claims", allow: ["US"] },
@@ -15382,6 +15097,11 @@ var EVENTS = [
   // ---- ISM PMI — 10:00 ET ----
   // ⚑ 30-Agu-2026: jadwal rilis ISM IRREGULER (tervalidasi: Mfg 2 Jul-26, Svc 6 Jul-26
   // & 5 Agu-26). Tanggal di bawah = ESTIMASI (hari kerja pertama / +3 hari kerja).
+  { date: "2026-09-25", time: "19:30", title: "Core PCE Price Index m/m", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
+  { date: "2026-10-26", time: "19:30", title: "Core PCE Price Index m/m", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
+  { date: "2026-11-25", time: "19:30", title: "Core PCE Price Index m/m", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
+  { date: "2026-10-28", time: "19:30", title: "GDP (Advance) q/q", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "gdp" },
+  { date: "2026-11-25", time: "19:30", title: "GDP (Prelim) q/q", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "gdp" },
   { date: "2026-09-01", time: "21:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
   { date: "2026-09-04", time: "21:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
   { date: "2026-10-01", time: "21:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },

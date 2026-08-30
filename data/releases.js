@@ -115,7 +115,7 @@ export const CONSENSUS = {
     { date: "2025-07-15", obs: "2025-06-01", consensus: 1.8 },
   ],
   corepce: [
-    { date: "2026-08-27", obs: "2026-07-01", consensus: 0.27 },
+    { date: "2026-08-26", obs: "2026-07-01", consensus: 0.2 },
     { date: "2026-07-27", obs: "2026-06-01", consensus: 0.3 },
     { date: "2026-06-26", obs: "2026-05-01", consensus: 0.28 },
     { date: "2026-05-27", obs: "2026-04-01", consensus: 0.3 },
@@ -208,10 +208,8 @@ export const CONSENSUS = {
     { date: "2025-07-11", obs: "2025-06-01", consensus: 0.4 },
   ],
   gdp: [
-    { date: "2026-07-30", obs: "2026-04-01", consensus: 2.3 },
-    { date: "2026-04-30", obs: "2026-01-01", consensus: 2.2 },
-    { date: "2026-01-29", obs: "2025-10-01", consensus: 2.4 },
-    { date: "2025-10-30", obs: "2025-07-01", consensus: 2.5 },
+    { date: "2026-08-26", obs: "2026-07-01", consensus: 1.5 },
+
   ],
   eu_cpi: [
     { date: "2026-08-07", obs: "2026-07-01", consensus: 2.8 },

@@ -144,6 +144,24 @@ const svcJul = svcRows.find((tr) => tr.textContent.includes("5 AGU 26"));
 const svcCells = svcJul ? [...svcJul.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
 add("ISM Svc: baris 5 AGU 26 (data Jul) P=54 K=54,5 A=54,1 (API)", svcCells.includes("54,1") && svcCells.includes("54,5") && svcCells.includes("54"), svcCells.join("|"));
 
+// Core PCE & GDP (cross-check FF window 26-31 Agu 2026):
+const pceRow = $$(".ct-side .ct-row").find((b) => /Core PCE/.test(b.textContent));
+add("picker: Core PCE tersedia", !!pceRow, $$(".ct-side .ct-row").map((b) => b.textContent.slice(0, 10)).join("|").slice(0, 160));
+await click(pceRow);
+await act(async () => { await new Promise((r) => setTimeout(r, 500)); });
+const pceRows = rows();
+const pceJul = pceRows.find((tr) => tr.textContent.includes("26 AGU 26"));
+const pceCells = pceJul ? [...pceJul.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("Core PCE: baris 26 AGU 26 (data Jul) P=0,1 K=0,2 A=0,2 (FF)", pceCells.includes("0,2") && pceCells.includes("0,1"), pceCells.join("|"));
+const gdpRow = $$(".ct-side .ct-row").find((b) => /GDP/.test(b.textContent) && !/EZ|UK/.test(b.textContent));
+add("picker: GDP (US) tersedia", !!gdpRow, $$(".ct-side .ct-row").filter((b) => /GDP/.test(b.textContent)).map((b) => b.textContent.slice(0, 12)).join("|"));
+await click(gdpRow);
+await act(async () => { await new Promise((r) => setTimeout(r, 500)); });
+const gdpRows = rows();
+const gdpJul = gdpRows.find((tr) => tr.textContent.includes("26 AGU 26"));
+const gdpCells = gdpJul ? [...gdpJul.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("GDP: baris 26 AGU 26 (Q2 advance) P=1,5 K=1,5 A=1,5 (FF)", gdpCells.filter((v) => v === "1,5").length >= 2, gdpCells.join("|"));
+
 let pass = 0;
 for (const c of checks) {
   if (c.ok) pass++;
