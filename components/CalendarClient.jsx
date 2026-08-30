@@ -8,11 +8,12 @@
 // Data: jadwal lokal (data/calendar.js) + ForexFactory live bila terjangkau.
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { CATEGORIES, getSeries } from "../lib/series";
 import { CountryFlag } from "./Badges";
 import TermClock from "./TermClock";
+import IndicatorClient from "./IndicatorClient";
 
 const DAY_NAMES = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
@@ -46,8 +47,58 @@ function fmtCountdown(ms) {
 
 const fmtVal = (v) => (v === null || v === undefined ? "—" : Number(v).toLocaleString("id-ID", { maximumFractionDigits: 1 }));
 
+// ── POPUP detail indikator (tanpa pindah halaman) ────────────────────────
+function IndicatorModal({ id, info, onClose }) {
+  const closeRef = useRef(null);
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    const onKey = (e) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    closeRef.current?.focus();
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      className="cm-backdrop cal-mo-backdrop"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Detail indikator ${info.data.short}`}
+    >
+      <div className="cal-mo-modal">
+        <header className="cal-mo-head mono">
+          <span className="cal-mo-tag">POPUP</span>
+          <b>DETAIL INDIKATOR — {info.data.short}</b>
+          <span className="cal-mo-sub">{info.data.name}</span>
+          <button ref={closeRef} type="button" className="cm-close" onClick={onClose} aria-label="Tutup" title="Tutup (Esc)">✕</button>
+        </header>
+        <div className="cal-mo-body">
+          <IndicatorClient
+            data={info.data}
+            releases={info.releases}
+            accuracy={info.accuracy}
+            source={info.source}
+            edu={info.edu}
+            general={info.general}
+            cat={info.cat}
+            country={info.country}
+            upcoming={info.upcoming}
+          />
+          <p className="cal-mo-note mono">
+            Ingin tampilan penuh? Buka <Link href={`/indicators/${id}`}>halaman indikator {info.data.short} →</Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── baris event + panel detail expandable ────────────────────────────────
-function EventRow({ e, now, isNext, open, onToggle }) {
+function EventRow({ e, now, isNext, open, onToggle, onOpenDetail }) {
   const series = e.indicatorId ? getSeries(e.indicatorId) : null;
   const rowKey = e.iso + e.title;
   const ts = new Date(e.iso).getTime();
@@ -126,9 +177,13 @@ function EventRow({ e, now, isNext, open, onToggle }) {
                   return parts.length ? <span className="cal-d-data mono">{parts.join(" · ")}</span> : null;
                 })()}
                 {series.release && <span className="cal-d-rel mono">JADWAL: {series.release}</span>}
-                <Link className="cal-d-link mono" href={`/indicators/${e.indicatorId}`}>
+                <button
+                  type="button"
+                  className="cal-d-link mono"
+                  onClick={(ev) => { ev.stopPropagation(); onOpenDetail && onOpenDetail(e.indicatorId); }}
+                >
                   Detail indikator →
-                </Link>
+                </button>
                 <Link className="cal-d-link mono" href="/analysis">
                   Analisis dampak →
                 </Link>
@@ -155,7 +210,7 @@ function EventRow({ e, now, isNext, open, onToggle }) {
 }
 
 // ── TERMINAL ─────────────────────────────────────────────────────────────
-export default function CalendarClient({ events }) {
+export default function CalendarClient({ events, details = {} }) {
   const now = useNow();
   const [win, setWin] = useState("terkini");
   const [cat, setCat] = useState("semua");
@@ -163,6 +218,7 @@ export default function CalendarClient({ events }) {
   const [cc, setCc] = useState("semua");
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(null);
+  const [modalId, setModalId] = useState(null);
 
   const DAY = 86400000;
 
@@ -379,6 +435,7 @@ export default function CalendarClient({ events }) {
                     isNext={!!nextHigh && e.iso === nextHigh.iso && e.title === nextHigh.title}
                     open={open === e.iso + e.title}
                     onToggle={(k) => setOpen((o) => (o === k ? null : k))}
+                    onOpenDetail={setModalId}
                   />
                 ))}
               </div>
@@ -392,6 +449,10 @@ export default function CalendarClient({ events }) {
         <span className="cal-term-foot-note">P = sebelum rilis · K = konsensus · A = angka yang sudah keluar — verifikasi ke sumber resmi</span>
         <span className="ct-blink" aria-hidden="true">●</span>
       </footer>
+
+      {modalId && details[modalId] && (
+        <IndicatorModal id={modalId} info={details[modalId]} onClose={() => setModalId(null)} />
+      )}
     </div>
   );
 }

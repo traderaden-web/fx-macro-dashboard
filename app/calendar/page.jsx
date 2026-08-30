@@ -2,8 +2,10 @@ import CalendarClient from "../../components/CalendarClient";
 import { UPCOMING } from "../../data/calendar";
 import { CONSENSUS } from "../../data/releases";
 import { fetchLiveCalendar } from "../../lib/provider";
-import { getSeries } from "../../lib/series";
+import { getSeries, CATEGORIES, COUNTRIES } from "../../lib/series";
 import { getSeedSeries } from "../../lib/data";
+import { getReleaseAnalytics } from "../../lib/consensus";
+import { getEducation, GENERAL } from "../../lib/education";
 
 export const dynamic = "force-dynamic";
 
@@ -66,6 +68,29 @@ export default async function CalendarPage() {
   //    mempersempit lewat filter jendela tanggal di sisi klien.
   const events = Object.values(merged).sort((a, b) => a.iso.localeCompare(b.iso));
 
+  // 4) Detail indikator untuk POPUP "Detail indikator" (tanpa pindah halaman):
+  //    analytics (points + releases + accuracy) + edukasi + jadwal, per indicatorId.
+  const ids = [...new Set(events.map((e) => e.indicatorId).filter(Boolean))];
+  const analyticsAll = await Promise.all(ids.map((id) => getReleaseAnalytics(id).catch(() => null)));
+  const details = {};
+  ids.forEach((id, i) => {
+    const a = analyticsAll[i];
+    if (!a) return;
+    details[id] = {
+      data: a,
+      releases: a.releases,
+      accuracy: a.accuracy,
+      source: a.source,
+      edu: getEducation(id),
+      general: GENERAL,
+      cat: CATEGORIES.find((c) => c.id === a.category),
+      country: COUNTRIES.find((c) => c.id === a.country),
+      upcoming: UPCOMING.filter((e) => e.indicatorId === id)
+        .sort((x, y) => x.iso.localeCompare(y.iso))
+        .slice(0, 3),
+    };
+  });
+
   return (
     <>
       <section className="hero section-fade" style={{ paddingTop: 20 }}>
@@ -90,7 +115,7 @@ export default async function CalendarPage() {
         </div>
       </section>
 
-      <CalendarClient events={events} />
+      <CalendarClient events={events} details={details} />
     </>
   );
 }
