@@ -69,6 +69,7 @@ export const EVENTS = [
   { date: "2026-11-25", time: "19:30", title: "Core PCE Price Index m/m", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
   { date: "2026-10-28", time: "19:30", title: "GDP (Advance) q/q", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "gdp" },
   { date: "2026-11-25", time: "19:30", title: "GDP (Prelim) q/q", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "gdp" },
+  { date: "2026-12-23", time: "19:30", title: "GDP (Final) q/q", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "gdp" },
   { date: "2026-09-01", time: "21:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
   { date: "2026-09-04", time: "21:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
   { date: "2026-10-01", time: "21:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },

@@ -108,7 +108,11 @@ add("NFP: tabel riwayat ter-render", nfpRows.length >= 5, nfpRows.length);
 // ANCHOR: data APRIL 2026 → rilis 8 MEI 2026: A=115K, K=65K, P=185K
 const nfpApr = nfpRows.find((tr) => tr.textContent.includes("MEI 26"));
 add("NFP: baris data Apr (rilis 8 MEI 26) ada", !!nfpApr, nfpRows.map((t) => t.textContent.slice(0, 12)).join("|"));
-add("NFP: baris 8 MEI 26 P=185 K=65 A=115 (anchor user)", !!nfpApr && ["185","65","115"].every((v) => nfpApr.textContent.includes(v)), nfpApr?.textContent.replace(/\s+/g," ").slice(0,60));
+const nfpAprCells = nfpApr ? [...nfpApr.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("NFP: baris 8 MEI 26 (data Apr) P=185 K=65 A=2 (revisi 115→1.99K)", nfpAprCells.includes("185") && nfpAprCells.includes("65") && nfpAprCells.includes("2"), nfpAprCells.join("|"));
+const nfpMar = nfpRows.find((tr) => tr.textContent.includes("3 APR 26"));
+const nfpMarCells = nfpMar ? [...nfpMar.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("NFP: baris 3 APR 26 (data Mar) P=−133 K=65 A=185 (FF Apr)", nfpMarCells.includes("185") && nfpMarCells.includes("65") && nfpMarCells.some((v) => v.replace(/[−-]/g,"") === "133"), nfpMarCells.join("|"));
 const nfpMay = nfpRows.find((tr) => tr.textContent.includes("JUN 26"));
 add("NFP: baris data Mei (rilis 5 JUN 26) A=129 K=85 (FF: P baris 2 Jul)", !!nfpMay && nfpMay.textContent.includes("129") && nfpMay.textContent.includes("85"), nfpMay?.textContent.replace(/\s+/g," ").slice(0,60));
 const nfpJun = nfpRows.find((tr) => tr.textContent.includes("JUL 26"));
@@ -130,15 +134,18 @@ add("picker: ISM Mfg tersedia", !!mfgRow, $$(".ct-side .ct-row").map((b) => b.te
 await click(mfgRow);
 await act(async () => { await new Promise((r) => setTimeout(r, 500)); });
 const mfgRows = rows();
-const mfgJun = mfgRows.find((tr) => tr.textContent.includes("2 JUL 26"));
+const mfgJun = mfgRows.find((tr) => tr.textContent.includes("1 JUL 26"));
 const mfgCells = mfgJun ? [...mfgJun.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
-add("ISM Mfg: baris 2 JUL 26 (data Jun) P=54 K=53,8 A=53,3 (FF)", mfgCells.includes("53,3") && mfgCells.includes("53,8") && mfgCells.includes("54"), mfgCells.join("|"));
+add("ISM Mfg: baris 1 JUL 26 (data Jun) P=54 K=53,8 A=53,3 (FF)", mfgCells.includes("53,3") && mfgCells.includes("53,8") && mfgCells.includes("54"), mfgCells.join("|"));
 const mfgJul = mfgRows.find((tr) => tr.textContent.includes("3 AGU 26"));
 const mfgJulCells = mfgJul ? [...mfgJul.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
 add("ISM Mfg: baris 3 AGU 26 (data Jul) P=53,3 K=54 A=55,6 (FF)", mfgJulCells.includes("55,6") && mfgJulCells.includes("54") && mfgJulCells.includes("53,3"), mfgJulCells.join("|"));
 const mfgMay = mfgRows.find((tr) => tr.textContent.includes("1 JUN 26"));
 const mfgMayCells = mfgMay ? [...mfgMay.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
 add("ISM Mfg: baris 1 JUN 26 (data Mei) P=52,7 K=53,3 A=54 (FF Jun)", mfgMayCells.includes("52,7") && mfgMayCells.includes("53,3") && mfgMayCells.includes("54"), mfgMayCells.join("|"));
+const mfgMar = mfgRows.find((tr) => tr.textContent.includes("1 APR 26"));
+const mfgMarCells = mfgMar ? [...mfgMar.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("ISM Mfg: baris 1 APR 26 (data Mar) P=52,4 K=52,3 A=52,7 (FF Apr)", mfgMarCells.includes("52,7") && mfgMarCells.includes("52,3") && mfgMarCells.includes("52,4"), mfgMarCells.join("|"));
 const svcRow = $$(".ct-side .ct-row").find((b) => /ISM Svc/.test(b.textContent));
 await click(svcRow);
 await act(async () => { await new Promise((r) => setTimeout(r, 500)); });
@@ -149,6 +156,9 @@ add("ISM Svc: baris 5 AGU 26 (data Jul) P=54 K=54,5 A=54,1 (API)", svcCells.incl
 const svcMay = svcRows.find((tr) => tr.textContent.includes("4 JUN 26"));
 const svcMayCells = svcMay ? [...svcMay.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
 add("ISM Svc: baris 4 JUN 26 (data Mei) P=53,6 K=53,7 A=54,5 (FF Jun)", svcMayCells.includes("53,6") && svcMayCells.includes("53,7") && svcMayCells.includes("54,5"), svcMayCells.join("|"));
+const svcMar = svcRows.find((tr) => tr.textContent.includes("6 APR 26"));
+const svcMarCells = svcMar ? [...svcMar.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("ISM Svc: baris 6 APR 26 (data Mar) P=56,1 K=54,8 A=54 (FF Apr)", svcMarCells.includes("56,1") && svcMarCells.includes("54,8") && svcMarCells.includes("54"), svcMarCells.join("|"));
 
 // Core PCE & GDP (cross-check FF window 26-31 Agu 2026):
 const pceRow = $$(".ct-side .ct-row").find((b) => /Core PCE/.test(b.textContent));
@@ -162,6 +172,9 @@ add("Core PCE: baris 26 AGU 26 (data Jul) P=0,1 K=0,2 A=0,2 (FF)", pceCells.incl
 const pceMay = pceRows.find((tr) => tr.textContent.includes("25 JUN 26"));
 const pceMayCells = pceMay ? [...pceMay.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
 add("Core PCE: baris 25 JUN 26 (data Mei) P=0,5 K=0,3 A=0,3 (FF Jun)", pceMayCells.includes("0,5") && pceMayCells.includes("0,3"), pceMayCells.join("|"));
+const pceApr = pceRows.find((tr) => tr.textContent.includes("28 MEI 26"));
+const pceAprCells = pceApr ? [...pceApr.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("Core PCE: baris 28 MEI 26 (data Apr) P=0,3 K=0,3 A=0,5 (terkini; rilis awal 0,2)", pceAprCells.includes("0,5") && pceAprCells.includes("0,3"), pceAprCells.join("|"));
 const gdpRow = $$(".ct-side .ct-row").find((b) => /GDP/.test(b.textContent) && !/EZ|UK/.test(b.textContent));
 add("picker: GDP (US) tersedia", !!gdpRow, $$(".ct-side .ct-row").filter((b) => /GDP/.test(b.textContent)).map((b) => b.textContent.slice(0, 12)).join("|"));
 await click(gdpRow);
@@ -170,6 +183,9 @@ const gdpRows = rows();
 const gdpJul = gdpRows.find((tr) => tr.textContent.includes("26 AGU 26"));
 const gdpCells = gdpJul ? [...gdpJul.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
 add("GDP: baris 26 AGU 26 (Q2 advance) P=1,5 K=1,5 A=1,5 (FF)", gdpCells.filter((v) => v === "1,5").length >= 2, gdpCells.join("|"));
+const gdpQ4 = gdpRows.find((tr) => tr.textContent.includes("9 APR 26"));
+const gdpQ4Cells = gdpQ4 ? [...gdpQ4.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("GDP: baris 9 APR 26 (Q4-25 final) K=0,7 A=0,5 (FF Apr)", gdpQ4Cells.includes("0,7") && gdpQ4Cells.includes("0,5"), gdpQ4Cells.join("|"));
 
 // CPI & ADP (cross-check FF window Jun 2026):
 const cpiRow = $$(".ct-side .ct-row").find((b) => /CPI/.test(b.textContent) && !/Core|PPI|EZ|UK|JP|CN|China/.test(b.textContent));
@@ -188,6 +204,23 @@ const adpRows = rows();
 const adpMay = adpRows.find((tr) => tr.textContent.includes("3 JUN 26"));
 const adpCells = adpMay ? [...adpMay.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
 add("ADP: baris 3 JUN 26 (data Mei) P=105 K=118 A=122 (FF Jun)", adpCells.includes("122") && adpCells.includes("118") && adpCells.includes("105"), adpCells.join("|"));
+const adpMar = adpRows.find((tr) => tr.textContent.includes("1 APR 26"));
+const adpMarCells = adpMar ? [...adpMar.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("ADP: baris 1 APR 26 (data Mar) P=66 K=41 A=62 (FF Apr)", adpMarCells.includes("62") && adpMarCells.includes("41") && adpMarCells.includes("66"), adpMarCells.join("|"));
+const cpiFeb = cpiRows.find((tr) => tr.textContent.includes("10 APR 26"));
+const cpiFebCells = cpiFeb ? [...cpiFeb.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("CPI: baris 10 APR 26 (data Feb) P=2,4 K=3,4 A=3,3 (FF Apr)", cpiFebCells.includes("3,3") && cpiFebCells.includes("3,4") && cpiFebCells.includes("2,4"), cpiFebCells.join("|"));
+const cpiMar = cpiRows.find((tr) => tr.textContent.includes("12 MEI 26"));
+const cpiMarCells = cpiMar ? [...cpiMar.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("CPI: baris 12 MEI 26 (data Mar) P=3,3 K=3,7 A=3,8 (FF May)", cpiMarCells.includes("3,8") && cpiMarCells.includes("3,7") && cpiMarCells.includes("3,3"), cpiMarCells.join("|"));
+const retailRow = $$(".ct-side .ct-row").find((b) => /Retail/.test(b.textContent));
+add("picker: Retail tersedia", !!retailRow);
+await click(retailRow);
+await act(async () => { await new Promise((r) => setTimeout(r, 500)); });
+const retailRows = rows();
+const retailMar = retailRows.find((tr) => tr.textContent.includes("21 APR 26"));
+const retailCells = retailMar ? [...retailMar.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("Retail: baris 21 APR 26 (data Mar) P=0,6 K=1,4 A=1,6 (FF Apr)", retailCells.includes("1,6") && retailCells.includes("1,4") && retailCells.includes("0,6"), retailCells.join("|"));
 
 let pass = 0;
 for (const c of checks) {
