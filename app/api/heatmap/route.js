@@ -64,10 +64,17 @@ async function fetchOne(def) {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       const r = data?.chart?.result?.[0];
-      const closes = (r?.indicators?.quote?.[0]?.close || []).filter((c) => c != null);
+      const ts = r?.timestamp || [];
+      const rawC = r?.indicators?.quote?.[0]?.close || [];
+      const bars = [];
+      for (let i = 0; i < ts.length; i++) {
+        if (rawC[i] != null) bars.push({ t: ts[i], c: rawC[i] });
+      }
+      const closes = bars.map((b) => b.c);
       if (closes.length < 8) throw new Error("data kurang");
       const last = closes[closes.length - 1];
       const pct = (base, now) => (base ? ((now - base) / base) * 100 : 0);
+      const tail = bars.slice(-64);
       return {
         group: def.group,
         yahoo: def.yahoo,
@@ -78,6 +85,8 @@ async function fetchOne(def) {
         w: pct(closes[Math.max(0, closes.length - 6)], last),
         m: pct(closes[0], last),
         spark: closes.slice(-24), // 24 sesi terakhir → sparkline 1 bulan
+        hist: tail.map((b) => Number(b.c.toPrecision(6))), // 64 sesi → chart detail
+        histT: tail.map((b) => new Date(b.t * 1000).toISOString().slice(0, 10)),
       };
     } catch (e) {
       lastErr = e;
@@ -97,10 +106,18 @@ async function fetchAll() {
       const s = SEED[def.yahoo];
       if (s) {
         seedCount++;
+        const N = 64;
+        const mk = (n) =>
+          Array.from({ length: n }, (_, i) => s.price * (1 + (s.m / 100) * Math.sin(i / 4) * 0.3 + (i - n / 2) * (s.m / 100) / n));
+        const tail = mk(N).map((v) => Number(v.toPrecision(6)));
         items.push({
           group: def.group, yahoo: def.yahoo, name: def.name, dec: def.dec,
           price: s.price, d: s.d, w: s.w, m: s.m,
-          spark: Array.from({ length: 24 }, (_, i) => s.price * (1 + (s.m / 100) * Math.sin(i / 4) * 0.3 + (i - 12) * (s.m / 100) / 24)),
+          spark: tail.slice(-24),
+          hist: tail,
+          histT: Array.from({ length: N }, (_, i) =>
+            new Date(Date.now() - (N - 1 - i) * 86400000).toISOString().slice(0, 10)
+          ),
           seed: true,
         });
       }
