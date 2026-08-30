@@ -26,7 +26,6 @@ export default async function AnalysisPage() {
       </section>
 
       <div className="section-fade">
-        <AssetHeatmap />
         <MacroMap />
       </div>
 
@@ -35,6 +34,11 @@ export default async function AnalysisPage() {
       ) : (
         <p className="cell-muted">Belum ada data rilis tersedia. Jalankan <code>npm run fetch</code> untuk memperbarui.</p>
       )}
+
+      {/* Heatmap dipindah ke paling bawah halaman (Round-25) */}
+      <div className="section-fade">
+        <AssetHeatmap />
+      </div>
     </>
   );
 }
