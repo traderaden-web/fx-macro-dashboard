@@ -1,5 +1,5 @@
 // components/AnalysisClient.jsx
-// CONSENSUS TERMINAL v2 — tampilan ala terminal profesional untuk:
+// CONSENSUS TERMINAL v2.1 — tampilan ala terminal profesional untuk:
 //   01 · Pilih Indikator            (picker terminal: bar dampak, delta, jadwal next)
 //   02 · Consensus vs Actual        (readout besar, gauge surprise, chip hawk/dov)
 //   03 · Riwayat Surprise & Akurasi (sparkline + tabel mono + panel akurasi)
