@@ -8,6 +8,8 @@ import { IconAnalytics, IconCalendar, IconChart, IconLearn } from "../components
 import { ImpactLegend, GlossaryHint } from "../components/Legend";
 import { ImpactBadge, CountryFlag } from "../components/Badges";
 import { UPCOMING } from "../data/calendar";
+import BootScreen from "../components/BootScreen";
+import TermClock from "../components/TermClock";
 
 const MONTHS_ID = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
@@ -21,6 +23,15 @@ function nextMonthInfo(now = new Date()) {
   const key = `${ny}-${String(monthIdx + 1).padStart(2, "0")}`;
   return { key, label: `${MONTHS_ID[monthIdx]} ${ny}` };
 }
+
+const BANNER = [
+  "██████╗  ███████╗ ███████╗██████╗  ███████╗██████╗  ███████╗██████╗",
+  "██╔══██╗██╔══███╗██╔══███╗██╔══██╗██╔══███╗██╔══██╗██╔══███╗██╔══██╗",
+  "██████╔╝██║   ║║██║   ║║██████╔╝██║   ║║██║  ║║██║   ║║██████╔╝",
+  "██╔══██╗██║   ║║██║   ║║██╔══██╗██║   ║║██║  ║║██║   ║║██╔══██╗",
+  "██████╔╝╚██████╔╝╚██████╔╝██████╔╝╚██████╔╝██████╔╝╚██████╔╝██████╔╝",
+  "╚═════╝  ╚═════╝  ╚═════╝ ╚═════╝  ╚═════╝ ╚═════╝  ╚═════╝ ╚═════╝",
+].join("\n");
 
 export default async function Home() {
   const all = await getAllSeriesData();
@@ -43,10 +54,32 @@ export default async function Home() {
   nextEvents = nextEvents.slice(0, 10);
 
   return (
-    <>
-      <Onboarding />
+    <div className="home-term">
+      <BootScreen />
 
-      <section className="hero">
+      <header className="home-head">
+        <span className="ct-dots" aria-hidden="true"><i /><i /><i /></span>
+        <span className="home-title mono">
+          MACROLAB <em>//</em> HOME.SYS <span className="ct-ver">v2.2</span>
+        </span>
+        <span className="home-head-right">
+          <span className="live-pill">
+            <span className="pulse-dot" /> FRED·LIVE
+          </span>
+          <TermClock />
+        </span>
+      </header>
+
+      <section className="hero home-hero">
+        <pre className="home-banner" aria-hidden="true">{BANNER}</pre>
+        <div className="home-prompt mono" aria-hidden="true">
+          <span className="hp-user">root@macrolab</span>
+          <span className="hp-sep">:</span>
+          <span className="hp-path">~</span>
+          <span className="hp-sep">$</span>{" "}
+          <span className="hp-cmd">run market --watch --asof 30-Agu-2026</span>
+          <span className="hp-cur">▮</span>
+        </div>
         <h1>
           Data Makro Ekonomi untuk <span style={{ color: "var(--accent)" }}>Trader Forex</span>
         </h1>
@@ -149,6 +182,21 @@ export default async function Home() {
           ))}
         </div>
       </section>
-    </>
+
+      <footer className="home-status mono">
+        <span>SYS: FRED+FF · SERI: 27 · ASOF: 30 AGU 2026</span>
+        {nextEvents[0] && (
+          <span className="home-status-next">
+            NEXT ▸ {nextEvents[0].title} — {nextEvents[0].date.slice(8)}{" "}
+            {["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"][Number(nextEvents[0].date.slice(5, 7)) - 1]}{" "}
+            {nextEvents[0].time} WIB
+          </span>
+        )}
+        <span className="home-status-right">
+          <TermClock />
+          <span className="ct-blink" aria-hidden="true">●</span>
+        </span>
+      </footer>
+    </div>
   );
 }
