@@ -18,6 +18,12 @@
 //                   13 Mar-26, 10 Apr-26, 8 Mei-26, 12 Jun-26, 14 Agu-26 (selalu Jumat)
 //   Claims        : mingguan; obs bulanan = rata-rata minggu rilis di bulan tsb
 //
+// Cross-check FF (screenshot user, window 1-15 Jul 2026): SEMUA COCOK —
+//   NFP 2 Jul: 57K/114K/129K · Unemp 4.2/4.3/4.3 · CPI 14 Jul: 3.5/3.8/4.2 ·
+//   Core CPI 2.6/2.8/2.9 · PPI m/m 15 Jul: -0.3/0.0/0.6.
+//   Koreksi tambahan dari P-FF: NFP obs 2026-05=129 (baris API 06-05=172
+//   inkonsisten dgn FF), CPI obs 2026-05=4.2, CoreCPI obs 2026-05=2.9.
+//
 // Masih PERKIRAAAN (belum ketemu di API, akan di-probe): NFP obs 2025-09/10,
 // 2026-02/03/07 · CPI obs 2025-09/11 & 2026-05 · PPI obs 2025-09/10/11 &
 // 2026-01/02/03 · Retail obs 2025-08/09/10 & 2026-02..05 · UMich obs 2026-01/06 ·

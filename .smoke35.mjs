@@ -48,6 +48,9 @@ add("data termuat (bukan loading)", !container.querySelector("#loading"));
 const histBlock = $$(".ct-block").find((b) => /Riwayat Surprise/.test(b.textContent));
 const rows = () => $$(".rm-clickable");
 add("tabel riwayat ≥10 baris clickable", rows().length >= 10, rows().length);
+// Validasi CPI vs FF (screenshot user 30 Agu 2026): data Jun → rilis 14 Jul 2026: A=3.5 K=3.8 P=4.2
+const cpiJul = rows().find((tr) => tr.textContent.includes("14 JUL 26"));
+add("CPI: baris 14 JUL 26 (data Jun) K=3,8 A=3,5 P=4,2 (FF)", !!cpiJul && cpiJul.textContent.includes("4,2") && cpiJul.textContent.includes("3,8") && cpiJul.textContent.includes("3,5"), cpiJul?.textContent.replace(/\s+/g," ").slice(0,80));
 add("baris punya role=button + title", rows()[0]?.getAttribute("role") === "button" && !!rows()[0]?.getAttribute("title"));
 
 // klik baris teratas (rilis terakhir)
@@ -107,7 +110,7 @@ const nfpApr = nfpRows.find((tr) => tr.textContent.includes("MEI 26"));
 add("NFP: baris data Apr (rilis 8 MEI 26) ada", !!nfpApr, nfpRows.map((t) => t.textContent.slice(0, 12)).join("|"));
 add("NFP: baris 8 MEI 26 P=185 K=65 A=115 (anchor user)", !!nfpApr && ["185","65","115"].every((v) => nfpApr.textContent.includes(v)), nfpApr?.textContent.replace(/\s+/g," ").slice(0,60));
 const nfpMay = nfpRows.find((tr) => tr.textContent.includes("JUN 26"));
-add("NFP: baris data Mei (rilis 5 JUN 26) A=172 K=85", !!nfpMay && nfpMay.textContent.includes("172") && nfpMay.textContent.includes("85"), nfpMay?.textContent.replace(/\s+/g," ").slice(0,60));
+add("NFP: baris data Mei (rilis 5 JUN 26) A=129 K=85 (FF: P baris 2 Jul)", !!nfpMay && nfpMay.textContent.includes("129") && nfpMay.textContent.includes("85"), nfpMay?.textContent.replace(/\s+/g," ").slice(0,60));
 const nfpJun = nfpRows.find((tr) => tr.textContent.includes("JUL 26"));
 add("NFP: baris data Jun (rilis 2 JUL 26) A=57 K=114", !!nfpJun && nfpJun.textContent.includes("57") && nfpJun.textContent.includes("114"), nfpJun?.textContent.replace(/\s+/g," ").slice(0,60));
 const nfpJul = nfpRows.find((tr) => tr.textContent.includes("AGU 26"));
