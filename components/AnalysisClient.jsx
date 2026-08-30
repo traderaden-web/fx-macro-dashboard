@@ -391,7 +391,7 @@ export default function AnalysisClient({ items, upcoming = [] }) {
         <header className="ct-head">
           <span className="ct-dots" aria-hidden="true"><i /><i /><i /></span>
           <span className="ct-title">
-            MACROLAB <em>//</em> CONSENSUS&nbsp;TERMINAL <span className="ct-ver">v2.0</span>
+            MACROLAB <em>//</em> CONSENSUS&nbsp;TERMINAL <span className="ct-ver">v2.1</span>
             <span className="ct-cursor" aria-hidden="true" />
           </span>
           <span className="ct-head-right">
