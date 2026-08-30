@@ -25,6 +25,7 @@ add("SSR 200 terminal", ssr.includes("CONSENSUS") && ssr.includes("Riwayat Surpr
 add("SSR baris tabel clickable", (ssr.match(/rm-clickable/g) || []).length >= 10, (ssr.match(/rm-clickable/g) || []).length);
 add("SSR meta KLIK BARIS = DETAIL", ssr.includes("KLIK BARIS = DETAIL"));
 add("SSR tanpa popup di awal", !ssr.includes("rm-modal"));
+
 const cssHref = (ssr.match(/\/_next\/static\/css\/[^"]*\.css/) || [])[0];
 const css = cssHref ? await realFetch(`http://localhost:3000${cssHref}`).then((r) => r.text()) : "";
 add("CSS produksi .rm-modal + .rm-clickable", css.includes(".rm-modal") && css.includes(".rm-clickable"));
@@ -94,11 +95,21 @@ await act(async () => { await new Promise((r) => setTimeout(r, 120)); });
 add("ESC menutup (lagi)", !modal());
 
 // ganti indikator → popup masih berfungsi (NFP)
+add("picker: NFP next = 8 Sep 19:30 (tanggal 8)", !!$$(".ct-side .ct-row").find((b) => /NFP/.test(b.textContent) && /8 Sep 19:30/.test(b.textContent)), $$(".ct-side .ct-row").find((b) => /NFP/.test(b.textContent))?.textContent.replace(/\s+/g," ").slice(0,80));
 const nfpRow = $$(".ct-side .ct-row").find((b) => /NFP/.test(b.textContent));
 await click(nfpRow);
 await act(async () => { await new Promise((r) => setTimeout(r, 500)); });
 const nfpRows = rows();
 add("NFP: tabel riwayat ter-render", nfpRows.length >= 5, nfpRows.length);
+// Validasi data NFP vs ForexFactory (cek user 30 Agu 2026):
+// data Mei 2026 → rilis 8 Jun 2026: A=115K, K=65K, P=185K
+const nfpMay = nfpRows.find((tr) => tr.textContent.includes("JUN 26"));
+add("NFP: baris data Mei ada (tgl rilis JUN 26)", !!nfpMay);
+add("NFP: data Mei P=185 K=65 A=115 (sesuai FF)", !!nfpMay && ["185","65","115"].every((v) => nfpMay.textContent.includes(v)), nfpMay?.textContent.replace(/\s+/g," ").slice(0,60));
+const nfpJul = nfpRows.find((tr) => tr.textContent.includes("AGU 26"));
+add("NFP: baris data Jul (rilis 7 Agu 2026) A=−23", !!nfpJul && nfpJul.textContent.includes("23"), nfpJul?.textContent.replace(/\s+/g," ").slice(0,60));
+const nfpApr = nfpRows.find((tr) => tr.textContent.includes("MEI 26"));
+add("NFP: baris data Apr (rilis 8 Mei 2026) A=185", !!nfpApr && nfpApr.textContent.includes("185"), nfpApr?.textContent.replace(/\s+/g," ").slice(0,60));
 await click(nfpRows[0]);
 await act(async () => { await new Promise((r) => setTimeout(r, 300)); });
 add("NFP: popup terbuka", /NFP ·/.test(document.querySelector(".rm-head")?.textContent || ""), document.querySelector(".rm-head")?.textContent);

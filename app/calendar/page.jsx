@@ -47,8 +47,8 @@ export default async function CalendarPage() {
           if (p.date < d) previous = p.value;
           else break;
         }
-        const period = d.slice(0, 8) + "01"; // periode rilis (awal bulan)
-        const cons = (CONSENSUS[e.indicatorId] || []).find((c) => c.date === period);
+        // c.date kini = tanggal rilis riil → cocokkan persis dengan tanggal event.
+        const cons = (CONSENSUS[e.indicatorId] || []).find((c) => c.date === d);
         if (cons && cons.consensus != null) forecast = cons.consensus;
       }
       merged[key] = { ...e, iso, forecast, actual: null, previous };
