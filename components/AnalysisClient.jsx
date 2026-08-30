@@ -8,7 +8,7 @@
 // riwayat kurasi (data/releases.js). Semua angka dihitung, tidak diketik ulang.
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CATEGORIES, COUNTRIES } from "../lib/series";
 import { computePairImpact, currencyReaction, magnitudeLabel } from "../lib/pairs";
 import { CountryFlag } from "./Badges";
@@ -157,11 +157,211 @@ function BlockConsensus({ item, latest, prevRel, now }) {
   );
 }
 
+// ── POPUP detail satu rilis (dari baris tabel riwayat) ───────────────────
+function ReleaseModal({ item, r, onClose }) {
+  const closeRef = useRef(null);
+  const d = item.decimals;
+  const tol = item.tol ?? 0.5;
+  const rels = item.releases || [];
+  const acc = item.accuracy;
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    const onKey = (e) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    closeRef.current?.focus();
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  const maxAbs = rels.reduce((m, x) => Math.max(m, Math.abs(x.surprise ?? 0)), 0);
+  const domain = Math.max(tol * 3, maxAbs) * 1.15 || 1;
+  const pos = r.surprise === null ? 50 : Math.max(2.5, Math.min(97.5, ((r.surprise + domain) / (2 * domain)) * 100));
+  const zoneW = Math.min((2 * tol / (2 * domain)) * 100, 40);
+  const zoneL = 50 - zoneW / 2;
+  const cls = r.surprise === null ? "flat" : Math.abs(r.surprise) <= tol ? "flat" : r.surprise > 0 ? "up" : "down";
+  const label = r.surprise === null ? "MENUNGGU RILIS" : cls === "flat" ? "INLINE ◆ SESUAI KONSENSUS" : cls === "up" ? "BEAT ▲ DI ATAS KONSENSUS" : "MISS ▼ DI BAWAH KONSENSUS";
+  const rx = r.surpriseIdx != null ? currencyReaction(item.id, r.surpriseIdx) : null;
+  const pairs = useMemo(
+    () => (r.surpriseIdx != null ? computePairImpact(item.id, r.surprisePct, r.surprise, r.surpriseIdx) : []),
+    [item.id, r]
+  );
+
+  const dateLong = new Date(r.date + "T00:00:00").toLocaleDateString("id-ID", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric",
+  });
+  const prevDelta = r.actual != null && r.previous != null ? r.actual - r.previous : null;
+  const valid = rels.filter((x) => x.surprise != null);
+
+  return (
+    <div
+      className="cm-backdrop rm-backdrop"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Detail rilis ${item.short} ${r.date}`}
+    >
+      <div className="rm-modal">
+        <header className="rm-head mono">
+          <span className="rm-tag">RILIS</span>
+          <b>{item.short} — {MM(r.date).toUpperCase()}</b>
+          <span className={`rm-verdict ${cls}`}>{label}</span>
+          <button ref={closeRef} type="button" className="cm-close" onClick={onClose} aria-label="Tutup" title="Tutup (Esc)">✕</button>
+        </header>
+
+        <div className="rm-body">
+          {/* angka inti */}
+          <div className="ct-readout rm-readout">
+            <div className="ct-cell">
+              <em>PREVIOUS</em>
+              <b className="mono">{FMT(r.previous, d)}</b>
+              <i>{item.unit} · nilai sebelum rilis</i>
+            </div>
+            <div className="ct-cell cons">
+              <em>CONSENSUS</em>
+              <b className="mono">{FMT(r.consensus, d)}</b>
+              <i>{r.source === "live" ? "FOREXFACTORY LIVE" : "ESTIMASI KURASI ANALIS"}</i>
+            </div>
+            <div className="ct-cell act">
+              <em>ACTUAL</em>
+              <b className="mono big">{FMT(r.actual, d)}</b>
+              <i>FRED · {item.unit} · {dateLong}</i>
+            </div>
+            <div className={`ct-cell sur ${cls}`}>
+              <em>SURPRISE</em>
+              <b className="mono big">{SFMT(r.surprise, d)}</b>
+              <i>{r.surprisePct != null ? `${SFMT(r.surprisePct, 1)}% vs konsensus · idx ${SFMT(r.surpriseIdx, 0)}` : "actual − konsensus"}</i>
+            </div>
+          </div>
+
+          {/* gauge posisi kejutan */}
+          <div className="ct-gauge" role="img" aria-label={`Surprise index ${SFMT(r.surpriseIdx, 0)}`}>
+            <div className="ct-gauge-track">
+              <span className="ct-g-zone" style={{ left: `${zoneL}%`, width: `${zoneW}%` }} aria-hidden="true" />
+              <span className="ct-g-zero" aria-hidden="true" />
+              <span className="ct-g-needle" style={{ left: `${pos}%` }} aria-hidden="true" />
+            </div>
+            <div className="ct-gauge-scale mono">
+              <span>−{FMT(domain, 1)}</span>
+              <span>0 · ±{FMT(tol, 2)} = inline</span>
+              <span>+{FMT(domain, 1)} {item.unit}</span>
+            </div>
+          </div>
+
+          {/* narasi lengkap */}
+          <div className="rm-txt">
+            <p>
+              <b>{dateLong}</b> — {item.name} ({item.short}) dirilis dengan nilai{" "}
+              <b>{FMT(r.actual, d)} {item.unit}</b>
+              {r.actual == null && " (actual belum tersedia)"}.
+              {r.consensus != null && (
+                <>
+                  {" "}Konsensus analis memperkirakan <b>{FMT(r.consensus, d)} {item.unit}</b>
+                  {r.surprise != null && (
+                    <> — realisasi {Math.abs(r.surprise) <= tol ? "hampir sesuai" : r.surprise > 0 ? "lebih tinggi" : "lebih rendah"}{" "}
+                    <b>{FMT(Math.abs(r.surprise), d)}</b> ({r.surprisePct != null ? `${SFMT(r.surprisePct, 1)}%` : "—"}) dari perkiraan.
+                  </>
+                  )}
+                </>
+              )}
+            </p>
+            {r.previous != null && (
+              <p>
+                Dibanding nilai sebelumnya <b>{FMT(r.previous, d)} {item.unit}</b>, angka ini{" "}
+                {prevDelta === null ? "—" : prevDelta > 0 ? "menaik" : prevDelta < 0 ? "menurun" : "stabil"}{" "}
+                {prevDelta !== null && <b>{SFMT(prevDelta, d)} {item.unit}</b>} periode ini.
+              </p>
+            )}
+            {rx ? (
+              <p>
+                <b>Bacaan pasar: {rx.dir > 0 ? "HAWKISH" : rx.dir < 0 ? "DOVISH" : "NETRAL"}.</b> {rx.via} — estimasi pergerakan{" "}
+                <b>{rx.cur} {rx.dir > 0 ? "menguat" : rx.dir < 0 ? "melemah" : "netral"} ±{FMT(rx.est, 2)}%</b> dalam 15 menit pasca-rilis.
+              </p>
+            ) : (
+              <p>Nilai sesuai konsensus — pasar cenderung minim respons.</p>
+            )}
+          </div>
+
+          {/* dampak pair */}
+          {pairs.length > 0 && (
+            <div className="rm-sec">
+              <h5 className="mono">ESTIMASI DAMPAK KE PAIR (model heuristik)</h5>
+              <div className="ct-table-wrap">
+                <table className="ct-table mono">
+                  <thead>
+                    <tr><th>PAIR</th><th>ARAH</th><th>EST. MOVE</th><th>KEKUATAN</th></tr>
+                  </thead>
+                  <tbody>
+                    {pairs.map((p, i) => (
+                      <tr key={p.symbol} style={{ "--i": i }}>
+                        <td className="ct-pair-name">{p.label}</td>
+                        <td>
+                          <span className={`ct-dir ${p.dir > 0 ? "up" : p.dir < 0 ? "down" : "flat"}`}>
+                            {p.dir > 0 ? "▲ BULLISH" : p.dir < 0 ? "▼ BEARISH" : "◆ NETRAL"}
+                          </span>
+                        </td>
+                        <td className={p.dir === 0 ? "" : p.dir > 0 ? "up" : "down"}>
+                          {p.dir === 0 ? "—" : `${p.dir > 0 ? "+" : "−"}${FMT(p.est, 2)}%`}
+                        </td>
+                        <td>
+                          <span className="ct-seg" aria-hidden="true">
+                            {[1, 2, 3, 4, 5].map((n) => (
+                              <i key={n} className={n <= p.magnitude ? "on" : ""} style={{ "--n": n }} />
+                            ))}
+                          </span>
+                          <span className="ct-acc-sub">{magnitudeLabel(p.magnitude)}</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* konteks indikator */}
+          <div className="rm-sec">
+            <h5 className="mono">KONTEKS INDIKATOR</h5>
+            <div className="rm-ctx">
+              <div><em>APA INI?</em><p>{item.about}</p></div>
+              <div><em>MENGAPA PENTING?</em><p>{item.why}</p></div>
+              <div><em>DAMPAK KE MATA UANG</em><p>{item.fx}</p></div>
+            </div>
+          </div>
+
+          {/* konteks akurasi konsensus */}
+          {acc && acc.samples > 0 && (
+            <div className="rm-sec">
+              <h5 className="mono">KONTEKS AKURASI KONSENSUS ({item.short})</h5>
+              <p className="rm-ctx-p">
+                Dari <b>{acc.samples}</b> rilis tercatat: konsensus tepat (inline ±{FMT(tol, 2)} {item.unit}) dalam{" "}
+                <b>{acc.hitRate}%</b> kasus — <b className="up">BEAT {acc.beats}×</b>, <b className="down">MISS {acc.misses}×</b>,
+                INLINE {acc.inlines}×. Rilis yang dibuka popup ini termasuk{" "}
+                <b className={cls === "up" ? "up" : cls === "down" ? "down" : ""}>
+                  {r.surprise === null ? "MENUNGGU" : cls === "flat" ? "INLINE" : cls === "up" ? "BEAT" : "MISS"}
+                </b>.
+              </p>
+            </div>
+          )}
+
+          <footer className="rm-foot mono">
+            <span>SRC: {r.source === "live" ? "FOREXFACTORY" : "FRED + KURASI LOKAL"} · TOL ±{FMT(tol, 2)} {item.unit}</span>
+            <a className="rm-link" href={`/indicators/${item.id}`}>Halaman indikator {item.short} →</a>
+          </footer>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── 03 · RIWAYAT SURPRISE & AKURASI KONSENSUS ────────────────────────────
 function BlockHistory({ item }) {
   const d = item.decimals;
   const tol = item.tol ?? 0.5;
   const acc = item.accuracy;
+  const [openRel, setOpenRel] = useState(null);
   const rels = useMemo(() => [...item.releases].reverse(), [item.releases]); // terbaru di atas
   const maxAbs = rels.reduce((m, r) => Math.max(m, Math.abs(r.surprise ?? 0)), 1e-9);
   const biasCls = acc.bias === null ? "" : acc.bias > tol / 2 ? "up" : acc.bias < -tol / 2 ? "down" : "flat";
@@ -172,7 +372,7 @@ function BlockHistory({ item }) {
         <span className="ct-tag">03</span>
         <h4>Riwayat Surprise &amp; Akurasi Konsensus</h4>
         <span className="ct-block-meta mono">
-          N={acc.samples} · <b className="up">BEAT {acc.beats}</b> · <b className="down">MISS {acc.misses}</b> · INLINE {acc.inlines}
+          N={acc.samples} · <b className="up">BEAT {acc.beats}</b> · <b className="down">MISS {acc.misses}</b> · INLINE {acc.inlines} · KLIK BARIS = DETAIL
         </span>
       </div>
 
@@ -201,14 +401,23 @@ function BlockHistory({ item }) {
               <thead>
                 <tr>
                   <th>TGL</th><th>PREV</th><th>KONS</th><th>AKTUAL</th>
-                  <th>Δ SURPRISE</th><th>Δ IDX</th><th>SINYAL</th><th>SRC</th>
+                  <th>Δ SURPRISE</th><th>Δ IDX</th><th>SINYAL</th><th>SRC</th><th className="ct-rm-go" aria-label="Detail">▸</th>
                 </tr>
               </thead>
               <tbody>
                 {rels.map((r, i) => {
                   const scls = r.surprise === null ? "" : Math.abs(r.surprise) <= tol ? "flat" : r.surprise > 0 ? "up" : "down";
                   return (
-                    <tr key={r.date} className={i === 0 ? "ct-latest" : ""} style={{ "--i": i }}>
+                    <tr
+                      key={r.date}
+                      className={`${i === 0 ? "ct-latest" : ""} rm-clickable`}
+                      style={{ "--i": i }}
+                      role="button"
+                      tabIndex={0}
+                      title="Klik untuk detail lengkap rilis ini"
+                      onClick={() => setOpenRel(r)}
+                      onKeyDown={(ev) => (ev.key === "Enter" || ev.key === " ") && (ev.preventDefault(), setOpenRel(r))}
+                    >
                       <td>{i === 0 && <span className="ct-dot" aria-hidden="true" />}{MM(r.date).toUpperCase()}</td>
                       <td>{FMT(r.previous, d)}</td>
                       <td>{FMT(r.consensus, d)}</td>
@@ -217,6 +426,7 @@ function BlockHistory({ item }) {
                       <td className={scls}>{r.surpriseIdx !== null && r.surpriseIdx !== undefined ? SFMT(r.surpriseIdx, 0) : "—"}</td>
                       <td className={scls}>{r.surprise === null ? "·" : Math.abs(r.surprise) <= tol ? "◆" : r.surprise > 0 ? "▲" : "▼"}</td>
                       <td className="ct-src">{r.source === "live" ? "FF" : "FRED"}</td>
+                      <td className="ct-rm-go" aria-hidden="true">▸</td>
                     </tr>
                   );
                 })}
@@ -283,6 +493,8 @@ function BlockHistory({ item }) {
           </div>
         )}
       </div>
+
+      {openRel && <ReleaseModal item={item} r={openRel} onClose={() => setOpenRel(null)} />}
     </div>
   );
 }
