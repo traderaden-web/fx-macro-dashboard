@@ -70,6 +70,8 @@ export default async function Home() {
         </span>
       </header>
 
+      <Onboarding />
+
       <section className="hero home-hero">
         <pre className="home-banner" aria-hidden="true">{BANNER}</pre>
         <div className="home-prompt mono" aria-hidden="true">
