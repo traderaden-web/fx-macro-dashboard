@@ -3,7 +3,7 @@
 // components/AssetHeatmap.jsx
 // Heatmap v2 (Round-15) — interaktif & animatif, gaya bento-tile ala TradingView:
 //  - Tile warna kuat + shimmer halus, angka menghitung (count-up)
-//  - Hover = overlay info 1H/1Mgu/1Bulan · Klik = panel detail + chart 3 bulan
+//  - Hover = overlay info 1H/1Mgu/1Bulan · Klik = popup modal detail + chart 3 bulan
 //    (garis tergambar + crosshair & tooltip harga/tanggal)
 //  - Top mover per periode = badge + pulse emas · Sort: grup / naik / turun
 // Sumber: /api/heatmap (Yahoo Finance, refresh 5 menit).
@@ -173,32 +173,50 @@ function BigChart({ hist, histT, dec }) {
   );
 }
 
-// ── Panel detail aset terpilih ─────────────────────────────────────────
+// ── Popup modal detail aset (klik tile) ─────────────────────────────────
 function DetailPanel({ it, onClose }) {
+  // Kunci scroll body saat modal terbuka
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, []);
+
   const hist = it.hist || [];
   const lo = hist.length ? Math.min(...hist) : null;
   const hi = hist.length ? Math.max(...hist) : null;
+  const up = it[PERIODS[0].id] >= 0;
   return (
-    <div className="heat-detail" key={it.yahoo}>
-      <header className="hd-head">
-        <div className="hd-title">
-          <span className="hd-name">{it.name}</span>
-          <span className="hd-src">Harian · 3 bulan · Yahoo Finance{it.seed ? " (seed)" : ""}</span>
+    <div
+      className="heat-modal-backdrop"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Detail ${it.name}`}
+    >
+      <div className="heat-modal">
+        <header className="heat-modal-head">
+          <div className="hm-title">
+            <h3 className="hm-name">{it.name}</h3>
+            <p className="hm-src">Harian · 3 bulan · Yahoo Finance{it.seed ? " (seed)" : ""}</p>
+          </div>
+          <span className={`hm-price ${up ? "up" : "down"}`}><AnimNum value={it.price} decimals={it.dec} /></span>
+          <button type="button" className="hm-close" onClick={onClose} aria-label="Tutup detail" title="Tutup (Esc)">✕</button>
+        </header>
+        <div className="heat-modal-body">
+          <div className="hd-chips">
+            {PERIODS.map((p) => (
+              <span key={p.id} className={`hd-chip ${it[p.id] >= 0 ? "up" : "down"}`}>
+                {p.label}: <b>{fmtSigned(it[p.id])}</b>
+              </span>
+            ))}
+            <span className="hd-chip dim">
+              Range 3B: {lo != null ? `${fmtPrice(lo, it.dec)} – ${fmtPrice(hi, it.dec)}` : "—"}
+            </span>
+          </div>
+          <BigChart hist={it.hist} histT={it.histT} dec={it.dec} />
+          <p className="hm-hint">Arahkan kursor ke chart untuk harga &amp; tanggal tiap sesi.</p>
         </div>
-        <span className="hd-price"><AnimNum value={it.price} decimals={it.dec} /></span>
-        <button type="button" className="hd-close" onClick={onClose} aria-label="Tutup detail">✕</button>
-      </header>
-      <div className="hd-chips">
-        {PERIODS.map((p) => (
-          <span key={p.id} className={`hd-chip ${it[p.id] >= 0 ? "up" : "down"}`}>
-            {p.label}: <b>{fmtSigned(it[p.id])}</b>
-          </span>
-        ))}
-        <span className="hd-chip dim">
-          Range 3B: {lo != null ? `${fmtPrice(lo, it.dec)} – ${fmtPrice(hi, it.dec)}` : "—"}
-        </span>
       </div>
-      <BigChart hist={it.hist} histT={it.histT} dec={it.dec} />
     </div>
   );
 }
@@ -301,8 +319,6 @@ export default function AssetHeatmap() {
 
       {data && (
         <>
-          {sel && <DetailPanel it={sel} onClose={() => setSelId(null)} />}
-
           {data.groups.map((g) => (
             <div className="heat-row" key={`${period}-${sort}-${g.id}`}>
               <div className="heat-row-label">
@@ -363,6 +379,8 @@ export default function AssetHeatmap() {
           </div>
         </>
       )}
+
+      {sel && <DetailPanel it={sel} onClose={() => setSelId(null)} />}
     </div>
   );
 }
