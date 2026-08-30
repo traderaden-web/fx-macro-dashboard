@@ -1,6 +1,7 @@
 import "./globals.css";
 import Header from "../components/Header";
 import ForexTicker from "../components/ForexTicker";
+import TermFx from "../components/TermFx";
 
 export const metadata = {
   title: "MacroLab — Data Makroekonomi untuk Trader Forex",
@@ -12,6 +13,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="id">
       <body>
+        <TermFx />
         <Header />
         <ForexTicker />
         <main className="main">{children}</main>
