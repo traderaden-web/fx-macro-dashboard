@@ -36,7 +36,7 @@ export default async function AnalysisPage() {
       )}
 
       {/* Heatmap dipindah ke paling bawah halaman (Round-25) */}
-      <div className="section-fade">
+      <div className="section-fade heat-lower">
         <AssetHeatmap />
       </div>
     </>

@@ -2678,3 +2678,7 @@ body::before {
   .ct-hist-foot .ct-streak { flex: 1 1 40%; }
   .ct-hist-foot .ct-split-wrap { flex: 1 1 100%; }
 }
+
+/* Round-27: jarak atas Heatmap (di bawah Consensus Terminal) */
+.heat-lower { margin-top: 30px; }
+@media (max-width: 720px) { .heat-lower { margin-top: 22px; } }
