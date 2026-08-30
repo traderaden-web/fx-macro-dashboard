@@ -101,16 +101,17 @@ await click(nfpRow);
 await act(async () => { await new Promise((r) => setTimeout(r, 500)); });
 const nfpRows = rows();
 add("NFP: tabel riwayat ter-render", nfpRows.length >= 5, nfpRows.length);
-// Validasi data NFP vs ForexFactory (cek user 30 Agu 2026):
-// data Mei 2026 → rilis 8 Jun 2026: A=115K, K=65K, P=185K
-const nfpMay = nfpRows.find((tr) => tr.textContent.includes("JUN 26"));
-add("NFP: baris data Mei ada (tgl rilis JUN 26)", !!nfpMay);
-add("NFP: tanggal baris lengkap dgn hari (12 JUN 26 = Jumat kedua)", !!nfpMay && nfpMay.textContent.includes("12 JUN 26"));
-add("NFP: data Mei P=185 K=65 A=115 (sesuai FF)", !!nfpMay && ["185","65","115"].every((v) => nfpMay.textContent.includes(v)), nfpMay?.textContent.replace(/\s+/g," ").slice(0,60));
-const nfpJul = nfpRows.find((tr) => tr.textContent.includes("AGU 26"));
-add("NFP: baris data Jul (rilis 7 Agu 2026) A=−23", !!nfpJul && nfpJul.textContent.includes("23"), nfpJul?.textContent.replace(/\s+/g," ").slice(0,60));
+// Validasi data NFP vs earningsapi (ground truth user, cek 30 Agu 2026):
+// ANCHOR: data APRIL 2026 → rilis 8 MEI 2026: A=115K, K=65K, P=185K
 const nfpApr = nfpRows.find((tr) => tr.textContent.includes("MEI 26"));
-add("NFP: baris data Apr (rilis 8 Mei 2026) A=185", !!nfpApr && nfpApr.textContent.includes("185"), nfpApr?.textContent.replace(/\s+/g," ").slice(0,60));
+add("NFP: baris data Apr (rilis 8 MEI 26) ada", !!nfpApr, nfpRows.map((t) => t.textContent.slice(0, 12)).join("|"));
+add("NFP: baris 8 MEI 26 P=185 K=65 A=115 (anchor user)", !!nfpApr && ["185","65","115"].every((v) => nfpApr.textContent.includes(v)), nfpApr?.textContent.replace(/\s+/g," ").slice(0,60));
+const nfpMay = nfpRows.find((tr) => tr.textContent.includes("JUN 26"));
+add("NFP: baris data Mei (rilis 5 JUN 26) A=172 K=85", !!nfpMay && nfpMay.textContent.includes("172") && nfpMay.textContent.includes("85"), nfpMay?.textContent.replace(/\s+/g," ").slice(0,60));
+const nfpJun = nfpRows.find((tr) => tr.textContent.includes("JUL 26"));
+add("NFP: baris data Jun (rilis 2 JUL 26) A=57 K=114", !!nfpJun && nfpJun.textContent.includes("57") && nfpJun.textContent.includes("114"), nfpJun?.textContent.replace(/\s+/g," ").slice(0,60));
+const nfpJul = nfpRows.find((tr) => tr.textContent.includes("AGU 26"));
+add("NFP: baris data Jul (rilis 14 AGU 26) A=−23", !!nfpJul && nfpJul.textContent.includes("23"), nfpJul?.textContent.replace(/\s+/g," ").slice(0,60));
 await click(nfpRows[0]);
 await act(async () => { await new Promise((r) => setTimeout(r, 300)); });
 add("NFP: popup terbuka", /NFP ·/.test(document.querySelector(".rm-head")?.textContent || ""), document.querySelector(".rm-head")?.textContent);

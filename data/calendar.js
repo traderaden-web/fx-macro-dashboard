@@ -53,7 +53,10 @@ function fomcEvents() {
 export const EVENTS = [
   ...fomcEvents(),
 
-  // ---- NFP (Employment Situation) — Jumat kedua, 08:30 ET ----
+  // ---- NFP (Employment Situation) — 08:30 ET ----
+  // ⚑ 30-Agu-2026: jadwal rilis NFP di kalender ini IRREGULER (validasi earningsapi:
+  // 3 Jul-25, 5 Sep-25, 16 Des-25, 9 Jan-26, 11 Feb-26, 8 Mei-26, 5 Jun-26, 2 Jul-26).
+  // Tanggal di bawah = ESTIMASI (belum terverifikasi API), masih pakai pola Jumat kedua.
   { date: "2026-09-11", time: "19:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
   { date: "2026-10-09", time: "19:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
   { date: "2026-11-13", time: "20:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
