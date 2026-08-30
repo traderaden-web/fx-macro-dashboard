@@ -95,7 +95,7 @@ await act(async () => { await new Promise((r) => setTimeout(r, 120)); });
 add("ESC menutup (lagi)", !modal());
 
 // ganti indikator → popup masih berfungsi (NFP)
-add("picker: NFP next = 8 Sep 19:30 (tanggal 8)", !!$$(".ct-side .ct-row").find((b) => /NFP/.test(b.textContent) && /8 Sep 19:30/.test(b.textContent)), $$(".ct-side .ct-row").find((b) => /NFP/.test(b.textContent))?.textContent.replace(/\s+/g," ").slice(0,80));
+add("picker: NFP next = 11 Sep 19:30 (Jumat kedua)", !!$$(".ct-side .ct-row").find((b) => /NFP/.test(b.textContent) && /11 Sep 19:30/.test(b.textContent)), $$(".ct-side .ct-row").find((b) => /NFP/.test(b.textContent))?.textContent.replace(/\s+/g," ").slice(0,80));
 const nfpRow = $$(".ct-side .ct-row").find((b) => /NFP/.test(b.textContent));
 await click(nfpRow);
 await act(async () => { await new Promise((r) => setTimeout(r, 500)); });
@@ -105,7 +105,7 @@ add("NFP: tabel riwayat ter-render", nfpRows.length >= 5, nfpRows.length);
 // data Mei 2026 → rilis 8 Jun 2026: A=115K, K=65K, P=185K
 const nfpMay = nfpRows.find((tr) => tr.textContent.includes("JUN 26"));
 add("NFP: baris data Mei ada (tgl rilis JUN 26)", !!nfpMay);
-add("NFP: tanggal baris lengkap dgn hari (8 JUN 26)", !!nfpMay && nfpMay.textContent.includes("8 JUN 26"));
+add("NFP: tanggal baris lengkap dgn hari (12 JUN 26 = Jumat kedua)", !!nfpMay && nfpMay.textContent.includes("12 JUN 26"));
 add("NFP: data Mei P=185 K=65 A=115 (sesuai FF)", !!nfpMay && ["185","65","115"].every((v) => nfpMay.textContent.includes(v)), nfpMay?.textContent.replace(/\s+/g," ").slice(0,60));
 const nfpJul = nfpRows.find((tr) => tr.textContent.includes("AGU 26"));
 add("NFP: baris data Jul (rilis 7 Agu 2026) A=−23", !!nfpJul && nfpJul.textContent.includes("23"), nfpJul?.textContent.replace(/\s+/g," ").slice(0,60));
