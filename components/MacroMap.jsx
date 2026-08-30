@@ -9,7 +9,7 @@
 // + berita terkini negara tersebut (/api/country/news).
 // Data kurasi per-30-Agu-2026 (lib/macroData.js).
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { COUNTRIES, OTHERS, MAP_VIEW } from "../lib/worldMapData";
 import {
   MACRO_ASOF,
@@ -25,6 +25,27 @@ import {
 import { IconGlobe } from "./Icons";
 
 const FMT = (v, d = 1) => (v === null || v === undefined ? "—" : Number(v).toLocaleString("id-ID", { maximumFractionDigits: d }));
+
+// Angka count-up kecil untuk panel detail (animasi ulang tiap nilai/negara ganti)
+function Num({ v }) {
+  const [d, setD] = useState(0);
+  useEffect(() => {
+    if (v === null || v === undefined) { setD(0); return undefined; }
+    const start = performance.now();
+    const dur = 500;
+    let raf;
+    const tick = (now) => {
+      const p = Math.min((now - start) / dur, 1);
+      const e = 1 - Math.pow(1 - p, 3);
+      setD(v * e);
+      if (p < 1) raf = requestAnimationFrame(tick);
+      else setD(v);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [v]);
+  return <>{FMT(d)}</>;
+}
 
 function timeAgo(iso) {
   if (!iso) return "";
@@ -162,6 +183,9 @@ export default function MacroMap() {
   const [indId, setIndId] = useState("rate");
   const [hover, setHover] = useState(null); // id topo negara
   const [modalKey, setModalKey] = useState(null); // entitas makro untuk modal
+  const [tip, setTip] = useState(null); // posisi kursor {x, y, w} relatif frame
+  const [ripples, setRipples] = useState([]); // efek klik
+  const frameRef = useRef(null);
   const ind = INDICATORS.find((i) => i.id === indId);
 
   const stops = useMemo(() => legendStops(indId), [indId]);
@@ -183,6 +207,29 @@ export default function MacroMap() {
   }, []);
 
   const hoverData = hover ? dataFor(hover) : null;
+  const hoverVal = hoverData ? hoverData[indId] : null;
+
+  // Entitas dengan nilai TERBESAR indikator aktif → denyut "ekstrem" + badge di peta
+  const extreme = useMemo(() => {
+    const valid = Object.keys(COUNTRY_DATA).map((k) => ({ k, v: COUNTRY_DATA[k][indId] })).filter((x) => x.v != null);
+    if (!valid.length) return null;
+    const best = valid.reduce((a, b) => (b.v > a.v ? b : a));
+    const pin = pins.find((p) => p.key === best.k);
+    return pin ? { ...best, x: pin.x, y: pin.y, name: COUNTRY_NAMES[best.k] } : null;
+  }, [indId, pins]);
+
+  // Klik negara → ripple di titik klik + (bila berdata) buka modal
+  const onCountryClick = (e, id) => {
+    const d = dataFor(id);
+    setHover(id);
+    const r = frameRef.current?.getBoundingClientRect();
+    if (r) {
+      const rid = Date.now() + Math.random();
+      setRipples((rs) => [...rs, { id: rid, x: e.clientX - r.left, y: e.clientY - r.top }]);
+      setTimeout(() => setRipples((rs) => rs.filter((x) => x.id !== rid)), 700);
+    }
+    if (d) setModalKey(d.key);
+  };
 
   return (
     <div className="card reveal map-card">
@@ -211,12 +258,17 @@ export default function MacroMap() {
       </div>
 
       <div className="map-wrap">
-        <div className="map-frame">
+        <div className="map-frame" ref={frameRef}>
           <svg
             className="map-svg"
             viewBox={`0 0 ${MAP_VIEW[0]} ${MAP_VIEW[1]}`}
             role="img"
             aria-label={`Peta dunia: ${ind.label}`}
+            onMouseMove={(e) => {
+              const r = frameRef.current?.getBoundingClientRect();
+              if (r) setTip({ x: e.clientX - r.left, y: e.clientY - r.top, w: r.width });
+            }}
+            onMouseLeave={() => setTip(null)}
           >
             <defs>
               <pattern id="map-grid" width="62.5" height="62.5" patternUnits="userSpaceOnUse">
@@ -226,39 +278,71 @@ export default function MacroMap() {
             <rect width={MAP_VIEW[0]} height={MAP_VIEW[1]} fill="url(#map-grid)" className="map-bg" />
             {/* negara non-target (gabungan) */}
             <path d={OTHERS} fill="#1a2029" stroke="#242b38" strokeWidth="0.5" className="map-others" />
-            {/* negara target: interaktif, muncul berurutan */}
-            {Object.entries(COUNTRIES).map(([id, c], i) => {
-              const d = dataFor(id);
-              const val = d ? d[indId] : null;
-              const fill = d ? countryColor(indId, val) : "#333c4c";
-              const isHover = hover === id;
-              return (
-                <path
-                  key={id}
-                  d={c.d}
-                  fill={fill}
-                  stroke={isHover ? "#f0b429" : "#0a0c10"}
-                  strokeWidth={isHover ? 1.4 : 0.7}
-                  className="map-country"
-                  style={{ "--i": i }}
-                  onMouseEnter={() => setHover(id)}
-                  onMouseLeave={() => setHover(null)}
-                  onClick={() => { setHover(id); if (d) setModalKey(d.key); }}
-                />
-              );
-            })}
+            {/* negara target: interaktif — re-entrance wave tiap ganti indikator */}
+            <g key={`countries-${indId}`}>
+              {Object.entries(COUNTRIES).map(([id, c], i) => {
+                const d = dataFor(id);
+                const val = d ? d[indId] : null;
+                const fill = d ? countryColor(indId, val) : "#333c4c";
+                const isHover = hover === id;
+                const isExtreme = extreme && d && d.key === extreme.k;
+                return (
+                  <path
+                    key={id}
+                    d={c.d}
+                    fill={fill}
+                    stroke={isHover ? "#f0b429" : "#0a0c10"}
+                    strokeWidth={isHover ? 1.4 : 0.7}
+                    className={`map-country ${isExtreme ? "map-country-extreme" : ""}`}
+                    style={{ "--i": i }}
+                    onMouseEnter={() => setHover(id)}
+                    onMouseLeave={() => setHover(null)}
+                    onClick={(e) => onCountryClick(e, id)}
+                  />
+                );
+              })}
+            </g>
             {/* pin berdenyut di ibu kota */}
-            {pins.map((p, i) => {
-              const c = countryColor(indId, p.data[indId]);
-              return (
-                <g key={`pin-${p.key}`} className="map-pin" aria-hidden="true">
-                  <circle className="map-pin-ring" cx={p.x} cy={p.y} r="6" fill="none" stroke={c} strokeWidth="1.3" style={{ "--pd": `${i * 0.22}s` }} />
-                  <circle className="map-pin-dot" cx={p.x} cy={p.y} r="2.5" fill={c} stroke="#0a0c10" strokeWidth="0.9" />
-                </g>
-              );
-            })}
+            <g key={`pins-${indId}`}>
+              {pins.map((p, i) => {
+                const c = countryColor(indId, p.data[indId]);
+                return (
+                  <g key={`pin-${p.key}`} className="map-pin" aria-hidden="true">
+                    <circle className="map-pin-ring" cx={p.x} cy={p.y} r="6" fill="none" stroke={c} strokeWidth="1.3" style={{ "--pd": `${i * 0.22}s` }} />
+                    <circle className="map-pin-dot" cx={p.x} cy={p.y} r="2.5" fill={c} stroke="#0a0c10" strokeWidth="0.9" />
+                  </g>
+                );
+              })}
+            </g>
+            {/* badge nilai ekstrem di atas pin */}
+            {extreme && (
+              <g className="map-extreme" aria-hidden="true">
+                <text x={extreme.x} y={extreme.y - 11} textAnchor="middle">
+                  ▲ {FMT(extreme.v)}{ind.unit}
+                </text>
+              </g>
+            )}
           </svg>
           <div className="map-sweep" aria-hidden="true" />
+          {/* ripple di titik klik */}
+          {ripples.map((rp) => (
+            <span key={rp.id} className="map-ripple" style={{ left: rp.x, top: rp.y }} aria-hidden="true" />
+          ))}
+          {/* tooltip mengikuti kursor */}
+          {hover && hoverData && tip && (
+            <div
+              className="map-tip"
+              style={{ left: Math.max(90, Math.min(tip.w - 90, tip.x)), top: tip.y }}
+              aria-hidden="true"
+            >
+              <b>{hoverData.name}</b>
+              <span className="mtip-bank">{hoverData.bank}</span>
+              <span className={`mtip-val ${hoverVal >= 0 ? "up" : "down"}`}>
+                {ind.label}: {FMT(hoverVal)}{ind.unit}
+              </span>
+              <span className="mtip-cta">Klik untuk data lengkap &amp; berita →</span>
+            </div>
+          )}
         </div>
 
         <div className="map-side">
@@ -278,6 +362,15 @@ export default function MacroMap() {
             <div className="map-legend-pin">
               <i aria-hidden="true" /> ibu kota / markas bank sentral
             </div>
+            {extreme && (
+              <div className="map-legend-extreme" key={`ext-${indId}-${extreme.k}`}>
+                <i aria-hidden="true" />
+                <span>
+                  Tertinggi: <b>{extreme.name}</b> {FMT(extreme.v)}
+                  {ind.unit}
+                </span>
+              </div>
+            )}
           </div>
 
           <div className={`map-detail ${hoverData ? "" : "empty"}`}>
@@ -291,19 +384,19 @@ export default function MacroMap() {
                   <div className="map-detail-stats">
                     <span className="map-stat">
                       <em>Suku bunga</em>
-                      <b>{FMT(hoverData.rate)}{hoverData.rate !== null ? "%" : ""}</b>
+                      <b>{hoverData.rate !== null ? <><Num v={hoverData.rate} />%</> : "—"}</b>
                     </span>
                     <span className="map-stat">
                       <em>Inflasi YoY</em>
-                      <b>{FMT(hoverData.inflation)}{hoverData.inflation !== null ? "%" : ""}</b>
+                      <b>{hoverData.inflation !== null ? <><Num v={hoverData.inflation} />%</> : "—"}</b>
                     </span>
                     <span className="map-stat">
                       <em>GDP{hoverData.gdpNote ? ` (${hoverData.gdpNote})` : ""}</em>
-                      <b>{FMT(hoverData.gdp)}{hoverData.gdp !== null ? "%" : ""}</b>
+                      <b>{hoverData.gdp !== null ? <><Num v={hoverData.gdp} />%</> : "—"}</b>
                     </span>
                     <span className="map-stat">
                       <em>Pengangguran</em>
-                      <b>{FMT(hoverData.unemp)}{hoverData.unemp !== null ? "%" : ""}</b>
+                      <b>{hoverData.unemp !== null ? <><Num v={hoverData.unemp} />%</> : "—"}</b>
                     </span>
                   </div>
                   <div className="map-detail-move">{hoverData.moveNote}</div>
