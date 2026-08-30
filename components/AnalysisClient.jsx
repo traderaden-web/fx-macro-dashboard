@@ -12,7 +12,6 @@ import { useEffect, useMemo, useState } from "react";
 import { CATEGORIES, COUNTRIES } from "../lib/series";
 import { computePairImpact, currencyReaction, magnitudeLabel } from "../lib/pairs";
 import { CountryFlag } from "./Badges";
-import { GlossaryHint, ImpactLegend } from "./Legend";
 import { IconSearch } from "./Icons";
 
 const FMT = (v, d = 1) => (v === null || v === undefined ? "—" : Number(v).toLocaleString("id-ID", { maximumFractionDigits: d }));
@@ -497,9 +496,6 @@ export default function AnalysisClient({ items, upcoming = [] }) {
           <span className="ct-blink" aria-hidden="true">●</span>
         </footer>
       </div>
-
-      <GlossaryHint />
-      <ImpactLegend />
     </>
   );
 }
