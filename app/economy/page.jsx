@@ -27,7 +27,7 @@ export default async function EconomyPage() {
 
       {countries.map((c) => {
         const list = byCountry[c.id];
-        const order = ["cpi", "nfp", "fedfunds", "corecpi", "gdp", "unemp", "ppi", "ahe", "eu_cpi", "eu_unemp", "eu_gdp", "uk_cpi", "uk_unemp", "jp_cpi", "china_cpi", "claims", "capacity", "dgs10", "retail", "umich", "indpro"];
+        const order = ["cpi", "nfp", "fedfunds", "corecpi", "gdp", "unemp", "ppi", "ahe", "eu_cpi", "eu_unemp", "eu_gdp", "uk_cpi", "uk_unemp", "jp_cpi", "china_cpi", "claims", "capacity", "dgs10", "retail", "umich", "indpro", "ismmfg", "ismsvc"];
         const key = order
           .map((id) => list.find((d) => d.id === id))
           .filter(Boolean)

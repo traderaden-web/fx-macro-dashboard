@@ -62,6 +62,18 @@ export const EVENTS = [
   { date: "2026-11-13", time: "20:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
   { date: "2026-12-11", time: "20:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
 
+  // ---- ISM PMI — 10:00 ET ----
+  // ⚑ 30-Agu-2026: jadwal rilis ISM IRREGULER (tervalidasi: Mfg 2 Jul-26, Svc 6 Jul-26
+  // & 5 Agu-26). Tanggal di bawah = ESTIMASI (hari kerja pertama / +3 hari kerja).
+  { date: "2026-09-01", time: "21:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
+  { date: "2026-09-04", time: "21:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
+  { date: "2026-10-01", time: "21:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
+  { date: "2026-10-06", time: "21:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
+  { date: "2026-11-02", time: "22:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
+  { date: "2026-11-05", time: "22:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
+  { date: "2026-12-01", time: "22:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
+  { date: "2026-12-04", time: "22:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
+
   // ---- CPI AS — 08:30 ET ----
   { date: "2026-09-11", time: "19:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
   { date: "2026-10-14", time: "19:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },

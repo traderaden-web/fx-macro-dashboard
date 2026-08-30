@@ -122,6 +122,23 @@ await act(async () => { window.dispatchEvent(new dom.window.KeyboardEvent("keydo
 await act(async () => { await new Promise((r) => setTimeout(r, 120)); });
 add("NFP: ESC menutup", !modal());
 
+// ISM (indikator baru 30-Agu-2026, tervalidasi FF user + API):
+const mfgRow = $$(".ct-side .ct-row").find((b) => /ISM Mfg/.test(b.textContent));
+add("picker: ISM Mfg tersedia", !!mfgRow, $$(".ct-side .ct-row").map((b) => b.textContent.slice(0, 10)).join("|").slice(0, 140));
+await click(mfgRow);
+await act(async () => { await new Promise((r) => setTimeout(r, 500)); });
+const mfgRows = rows();
+const mfgJun = mfgRows.find((tr) => tr.textContent.includes("2 JUL 26"));
+const mfgCells = mfgJun ? [...mfgJun.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("ISM Mfg: baris 2 JUL 26 (data Jun) P=54 K=53,8 A=53,3 (FF)", mfgCells.includes("53,3") && mfgCells.includes("53,8") && mfgCells.includes("54"), mfgCells.join("|"));
+const svcRow = $$(".ct-side .ct-row").find((b) => /ISM Svc/.test(b.textContent));
+await click(svcRow);
+await act(async () => { await new Promise((r) => setTimeout(r, 500)); });
+const svcRows = rows();
+const svcJul = svcRows.find((tr) => tr.textContent.includes("5 AGU 26"));
+const svcCells = svcJul ? [...svcJul.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("ISM Svc: baris 5 AGU 26 (data Jul) P=54 K=54,5 A=54,1 (API)", svcCells.includes("54,1") && svcCells.includes("54,5") && svcCells.includes("54"), svcCells.join("|"));
+
 let pass = 0;
 for (const c of checks) {
   if (c.ok) pass++;

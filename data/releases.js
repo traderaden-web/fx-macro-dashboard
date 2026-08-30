@@ -335,4 +335,19 @@ export const CONSENSUS = {
     { date: "2024-05-02", obs: "2024-04-01", consensus: 0.2 },
     { date: "2024-04-02", obs: "2024-03-01", consensus: 0.2 },
   ],
+  // ISM (ditambahkan 30-Agu-2026) — tervalidasi: screenshot FF user (1-15 Jul 26)
+  // + file API earningsapi (Non-Manufacturing). Tanggal selain yg ditandai = estimasi.
+  ismmfg: [
+    { date: "2026-08-03", obs: "2026-07-01", consensus: 53.3 },
+    { date: "2026-07-02", obs: "2026-06-01", consensus: 53.8 }, // tervalidasi FF
+    { date: "2026-06-01", obs: "2026-05-01", consensus: 54.0 },
+  ],
+  ismsvc: [
+    { date: "2026-08-05", obs: "2026-07-01", consensus: 54.5 }, // tervalidasi API
+    { date: "2026-07-06", obs: "2026-06-01", consensus: 54.2 }, // tervalidasi FF
+    { date: "2026-06-04", obs: "2026-05-01", consensus: 54.5 },
+    { date: "2025-10-03", obs: "2025-09-01", consensus: 51.8 }, // tervalidasi API
+    { date: "2025-09-04", obs: "2025-08-01", consensus: 50.9 }, // tervalidasi API
+    { date: "2025-07-03", obs: "2025-06-01", consensus: 50.8 }, // tervalidasi API
+  ],
 };
