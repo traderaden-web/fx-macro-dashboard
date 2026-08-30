@@ -45,7 +45,7 @@ function fmtCountdown(ms) {
   return `T-${m}m ${String(ss).padStart(2, "0")}s`;
 }
 
-const fmtVal = (v) => (v === null || v === undefined ? "—" : Number(v).toLocaleString("id-ID", { maximumFractionDigits: 1 }));
+const fmtVal = (v, d = 1) => (v === null || v === undefined ? "—" : Number(v).toLocaleString("id-ID", { maximumFractionDigits: d ?? 1 }));
 
 // ── POPUP detail indikator (tanpa pindah halaman) ────────────────────────
 function IndicatorModal({ id, info, onClose }) {
@@ -140,9 +140,9 @@ function EventRow({ e, now, isNext, open, onToggle, onOpenDetail }) {
         <span className="cal-r-metrics mono" title={hasData ? "P = previous · K = forecast/konsensus · A = actual (sudah rilis)" : "Belum ada angka (previous/forecast/actual)"}>
           {hasData ? (
             <>
-              {e.previous != null && <b className="m-p"><u>P</u>{fmtVal(e.previous)}</b>}
-              {e.forecast != null && <b className="m-k"><u>K</u>{fmtVal(e.forecast)}</b>}
-              {e.actual != null && <b className={`m-a ${isPast ? "done" : ""}`}><u>A</u>{fmtVal(e.actual)}</b>}
+              {e.previous != null && <b className="m-p"><u>P</u>{fmtVal(e.previous, series?.decimals)}</b>}
+              {e.forecast != null && <b className="m-k"><u>K</u>{fmtVal(e.forecast, series?.decimals)}</b>}
+              {e.actual != null && <b className={`m-a ${isPast ? "done" : ""}`}><u>A</u>{fmtVal(e.actual, series?.decimals)}</b>}
             </>
           ) : (
             <span className="dim">—</span>
@@ -171,9 +171,9 @@ function EventRow({ e, now, isNext, open, onToggle, onOpenDetail }) {
               <div className="cal-d-foot">
                 {(() => {
                   const parts = [];
-                  if (e.previous != null) parts.push(`P ${fmtVal(e.previous)}`);
-                  if (e.forecast != null) parts.push(`K ${fmtVal(e.forecast)}`);
-                  if (e.actual != null) parts.push(`A ${fmtVal(e.actual)}`);
+                  if (e.previous != null) parts.push(`P ${fmtVal(e.previous, series?.decimals)}`);
+                  if (e.forecast != null) parts.push(`K ${fmtVal(e.forecast, series?.decimals)}`);
+                  if (e.actual != null) parts.push(`A ${fmtVal(e.actual, series?.decimals)}`);
                   return parts.length ? <span className="cal-d-data mono">{parts.join(" · ")}</span> : null;
                 })()}
                 {series.release && <span className="cal-d-rel mono">JADWAL: {series.release}</span>}
@@ -231,7 +231,7 @@ export default function CalendarClient({ events, details = {} }) {
   const filtered = useMemo(() => {
     let from = null, to = null;
     if (now) {
-      if (win === "terkini") { from = new Date(now.getTime() - 3 * DAY); to = new Date(now.getTime() + 45 * DAY); }
+      if (win === "terkini") { from = new Date(now.getTime() - 30 * DAY); to = new Date(now.getTime() + 45 * DAY); }
       else if (win === "7") { from = now; to = new Date(now.getTime() + 7 * DAY); }
       else if (win === "30") { from = now; to = new Date(now.getTime() + 30 * DAY); }
     }
@@ -287,7 +287,7 @@ export default function CalendarClient({ events, details = {} }) {
   };
 
   const winLabel =
-    win === "terkini" ? "3 hari terakhir → ±45 hari ke depan" :
+    win === "terkini" ? "30 hari terakhir → ±45 hari ke depan" :
     win === "semua" ? "seluruh rilis" :
     win === "7" ? "7 hari ke depan" : "30 hari ke depan";
 

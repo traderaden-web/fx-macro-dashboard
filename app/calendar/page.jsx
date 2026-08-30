@@ -35,23 +35,33 @@ export default async function CalendarPage() {
       //   P (previous) = nilai terakhir SEBELUM tanggal rilis (seed FRED) —
       //                  yaitu angka yang akan "digantikan" rilis berikutnya.
       //   K (forecast) = konsensus bila ada riwayat yang cocok dengan periode rilis.
-      //   A (actual)   = hanya dari live ForexFactory (event menimpa di bawah) —
-      //                  untuk event yang sudah RELEASED, angka lengkapnya tampil
-      //                  otomatis begitu data live/capture tersedia.
+      //   A (actual)   = titik seed utk periode obs bila rilisnya sudah lewat
+      //                  (data verified) — atau dari live ForexFactory bila aktif.
       let previous = null;
       let forecast = null;
+      let actual = null;
       if (e.indicatorId) {
         const d = iso.slice(0, 10);
         const pts = getSeedSeries(e.indicatorId)?.points || [];
-        for (const p of pts) {
-          if (p.date < d) previous = p.value;
-          else break;
-        }
         // c.date kini = tanggal rilis riil → cocokkan persis dengan tanggal event.
         const cons = (CONSENSUS[e.indicatorId] || []).find((c) => c.date === d);
         if (cons && cons.consensus != null) forecast = cons.consensus;
+        // Event sudah RELEASED (ada titik seed utk obs-nya):
+        //   A (actual)  = titik seed utk periode obs;
+        //   P (previous) = titik SEBELUM obs (bukan sekadar titik sebelum tgl rilis).
+        const i = cons && cons.obs ? pts.findIndex((pt) => pt.date === cons.obs) : -1;
+        if (i >= 0) {
+          actual = pts[i].value;
+          previous = i > 0 ? pts[i - 1].value : null;
+        } else {
+          // Belum rilis → P = nilai terakhir yang akan "digantikan".
+          for (const p of pts) {
+            if (p.date < d) previous = p.value;
+            else break;
+          }
+        }
       }
-      merged[key] = { ...e, iso, forecast, actual: null, previous };
+      merged[key] = { ...e, iso, forecast, actual, previous };
     }
   };
   UPCOMING.forEach(addLocal);
@@ -97,7 +107,7 @@ export default async function CalendarPage() {
         <h1>Kalender Ekonomi</h1>
         <p>
           Jadwal rilis data makro yang berdampak pada pasar valuta asing. Waktu dalam <strong>WIB (UTC+7)</strong>.
-          Tampilan default <strong>"Terkini"</strong> menampilkan rilis dari <strong>3 hari terakhir hingga 30 hari ke depan</strong> —
+          Tampilan default <strong>"Terkini"</strong> menampilkan rilis dari <strong>30 hari terakhir hingga 45 hari ke depan</strong> —
           termasuk yang sudah lewat (terlihat redup) dan yang akan datang. Pilih <strong>"Semua"</strong> untuk seluruh rilis.
           Setiap baris menampilkan <strong>P</strong> (previous), <strong>K</strong> (forecast/konsensus), dan <strong>A</strong> (actual)
           — untuk jadwal yang sudah <strong>RELEASED</strong>, angka lengkap yang sudah keluar langsung tampil di barisnya.
