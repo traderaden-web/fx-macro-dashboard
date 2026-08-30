@@ -136,6 +136,9 @@ add("ISM Mfg: baris 2 JUL 26 (data Jun) P=54 K=53,8 A=53,3 (FF)", mfgCells.inclu
 const mfgJul = mfgRows.find((tr) => tr.textContent.includes("3 AGU 26"));
 const mfgJulCells = mfgJul ? [...mfgJul.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
 add("ISM Mfg: baris 3 AGU 26 (data Jul) P=53,3 K=54 A=55,6 (FF)", mfgJulCells.includes("55,6") && mfgJulCells.includes("54") && mfgJulCells.includes("53,3"), mfgJulCells.join("|"));
+const mfgMay = mfgRows.find((tr) => tr.textContent.includes("1 JUN 26"));
+const mfgMayCells = mfgMay ? [...mfgMay.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("ISM Mfg: baris 1 JUN 26 (data Mei) P=52,7 K=53,3 A=54 (FF Jun)", mfgMayCells.includes("52,7") && mfgMayCells.includes("53,3") && mfgMayCells.includes("54"), mfgMayCells.join("|"));
 const svcRow = $$(".ct-side .ct-row").find((b) => /ISM Svc/.test(b.textContent));
 await click(svcRow);
 await act(async () => { await new Promise((r) => setTimeout(r, 500)); });
@@ -143,6 +146,9 @@ const svcRows = rows();
 const svcJul = svcRows.find((tr) => tr.textContent.includes("5 AGU 26"));
 const svcCells = svcJul ? [...svcJul.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
 add("ISM Svc: baris 5 AGU 26 (data Jul) P=54 K=54,5 A=54,1 (API)", svcCells.includes("54,1") && svcCells.includes("54,5") && svcCells.includes("54"), svcCells.join("|"));
+const svcMay = svcRows.find((tr) => tr.textContent.includes("4 JUN 26"));
+const svcMayCells = svcMay ? [...svcMay.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("ISM Svc: baris 4 JUN 26 (data Mei) P=53,6 K=53,7 A=54,5 (FF Jun)", svcMayCells.includes("53,6") && svcMayCells.includes("53,7") && svcMayCells.includes("54,5"), svcMayCells.join("|"));
 
 // Core PCE & GDP (cross-check FF window 26-31 Agu 2026):
 const pceRow = $$(".ct-side .ct-row").find((b) => /Core PCE/.test(b.textContent));
@@ -153,6 +159,9 @@ const pceRows = rows();
 const pceJul = pceRows.find((tr) => tr.textContent.includes("26 AGU 26"));
 const pceCells = pceJul ? [...pceJul.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
 add("Core PCE: baris 26 AGU 26 (data Jul) P=0,1 K=0,2 A=0,2 (FF)", pceCells.includes("0,2") && pceCells.includes("0,1"), pceCells.join("|"));
+const pceMay = pceRows.find((tr) => tr.textContent.includes("25 JUN 26"));
+const pceMayCells = pceMay ? [...pceMay.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("Core PCE: baris 25 JUN 26 (data Mei) P=0,5 K=0,3 A=0,3 (FF Jun)", pceMayCells.includes("0,5") && pceMayCells.includes("0,3"), pceMayCells.join("|"));
 const gdpRow = $$(".ct-side .ct-row").find((b) => /GDP/.test(b.textContent) && !/EZ|UK/.test(b.textContent));
 add("picker: GDP (US) tersedia", !!gdpRow, $$(".ct-side .ct-row").filter((b) => /GDP/.test(b.textContent)).map((b) => b.textContent.slice(0, 12)).join("|"));
 await click(gdpRow);
@@ -161,6 +170,24 @@ const gdpRows = rows();
 const gdpJul = gdpRows.find((tr) => tr.textContent.includes("26 AGU 26"));
 const gdpCells = gdpJul ? [...gdpJul.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
 add("GDP: baris 26 AGU 26 (Q2 advance) P=1,5 K=1,5 A=1,5 (FF)", gdpCells.filter((v) => v === "1,5").length >= 2, gdpCells.join("|"));
+
+// CPI & ADP (cross-check FF window Jun 2026):
+const cpiRow = $$(".ct-side .ct-row").find((b) => /CPI/.test(b.textContent) && !/Core|PPI|EZ|UK|JP|CN|China/.test(b.textContent));
+add("picker: CPI tersedia", !!cpiRow, $$(".ct-side .ct-row").filter((b) => /CPI/.test(b.textContent)).map((b) => b.textContent.slice(0, 10)).join("|").slice(0, 120));
+await click(cpiRow);
+await act(async () => { await new Promise((r) => setTimeout(r, 500)); });
+const cpiRows = rows();
+const cpiMay = cpiRows.find((tr) => tr.textContent.includes("9 JUN 26"));
+const cpiMayCells = cpiMay ? [...cpiMay.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("CPI: baris 9 JUN 26 (data Mei) P=3,8 K=4,2 A=4,2 (FF Jun)", cpiMayCells.includes("4,2") && cpiMayCells.includes("3,8"), cpiMayCells.join("|"));
+const adpRow = $$(".ct-side .ct-row").find((b) => /ADP/.test(b.textContent));
+add("picker: ADP tersedia", !!adpRow);
+await click(adpRow);
+await act(async () => { await new Promise((r) => setTimeout(r, 500)); });
+const adpRows = rows();
+const adpMay = adpRows.find((tr) => tr.textContent.includes("3 JUN 26"));
+const adpCells = adpMay ? [...adpMay.querySelectorAll("td")].map((td) => td.textContent.trim()) : [];
+add("ADP: baris 3 JUN 26 (data Mei) P=105 K=118 A=122 (FF Jun)", adpCells.includes("122") && adpCells.includes("118") && adpCells.includes("105"), adpCells.join("|"));
 
 let pass = 0;
 for (const c of checks) {

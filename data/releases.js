@@ -73,7 +73,7 @@ export const CONSENSUS = {
   cpi: [
     { date: "2026-08-12", obs: "2026-07-01", consensus: 3.4 },
     { date: "2026-07-14", obs: "2026-06-01", consensus: 3.8 },
-    { date: "2026-06-10", obs: "2026-05-01", consensus: 3.8 },
+    { date: "2026-06-09", obs: "2026-05-01", consensus: 4.2 },
     { date: "2026-05-12", obs: "2026-04-01", consensus: 3.7 },
     { date: "2026-04-10", obs: "2026-03-01", consensus: 3.4 },
     { date: "2026-03-11", obs: "2026-02-01", consensus: 2.4 },
@@ -89,7 +89,7 @@ export const CONSENSUS = {
   corecpi: [
     { date: "2026-08-12", obs: "2026-07-01", consensus: 2.5 },
     { date: "2026-07-14", obs: "2026-06-01", consensus: 2.8 },
-    { date: "2026-06-10", obs: "2026-05-01", consensus: 2.6 },
+    { date: "2026-06-09", obs: "2026-05-01", consensus: 2.9 },
     { date: "2026-05-12", obs: "2026-04-01", consensus: 2.7 },
     { date: "2026-04-10", obs: "2026-03-01", consensus: 2.7 },
     { date: "2026-03-11", obs: "2026-02-01", consensus: 2.5 },
@@ -105,7 +105,7 @@ export const CONSENSUS = {
   ppi: [
     { date: "2026-08-13", obs: "2026-07-01", consensus: 4.9 },
     { date: "2026-07-15", obs: "2026-06-01", consensus: 6.2 },
-    { date: "2026-06-10", obs: "2026-05-01", consensus: 6.4 },
+    { date: "2026-06-11", obs: "2026-05-01", consensus: 6.4 },
     { date: "2026-05-13", obs: "2026-04-01", consensus: 4.9 },
     { date: "2026-04-09", obs: "2026-03-01", consensus: 4 },
     { date: "2026-03-10", obs: "2026-02-01", consensus: 2.5 },
@@ -121,7 +121,7 @@ export const CONSENSUS = {
   corepce: [
     { date: "2026-08-26", obs: "2026-07-01", consensus: 0.2 },
     { date: "2026-07-27", obs: "2026-06-01", consensus: 0.3 },
-    { date: "2026-06-26", obs: "2026-05-01", consensus: 0.28 },
+    { date: "2026-06-25", obs: "2026-05-01", consensus: 0.3 },
     { date: "2026-05-27", obs: "2026-04-01", consensus: 0.3 },
     { date: "2026-04-27", obs: "2026-03-01", consensus: 0.35 },
     { date: "2026-03-27", obs: "2026-02-01", consensus: 0.35 },
@@ -134,10 +134,13 @@ export const CONSENSUS = {
     { date: "2025-08-27", obs: "2025-07-01", consensus: 0.25 },
     { date: "2025-07-28", obs: "2025-06-01", consensus: 0.25 },
   ],
+  adp: [
+    { date: "2026-06-03", obs: "2026-05-01", consensus: 118 },
+  ],
   ahe: [
     { date: "2026-08-07", obs: "2026-07-01", consensus: 3.3 },
     { date: "2026-07-02", obs: "2026-06-01", consensus: 3.5 },
-    { date: "2026-06-12", obs: "2026-05-01", consensus: 3.5 },
+    { date: "2026-06-05", obs: "2026-05-01", consensus: 3.5 },
     { date: "2026-05-08", obs: "2026-04-01", consensus: 3.8 },
     { date: "2026-04-10", obs: "2026-03-01", consensus: 3.6 },
     { date: "2026-03-13", obs: "2026-02-01", consensus: 3.7 },
@@ -343,13 +346,13 @@ export const CONSENSUS = {
   ismmfg: [
     { date: "2026-08-03", obs: "2026-07-01", consensus: 54.0 },
     { date: "2026-07-02", obs: "2026-06-01", consensus: 53.8 }, // tervalidasi FF
-    { date: "2026-06-01", obs: "2026-05-01", consensus: 54.0 },    { date: "2026-09-01", obs: "2026-08-01", consensus: 55.2 },
+    { date: "2026-06-01", obs: "2026-05-01", consensus: 53.3 },    { date: "2026-09-01", obs: "2026-08-01", consensus: 55.2 },
 
   ],
   ismsvc: [
     { date: "2026-08-05", obs: "2026-07-01", consensus: 54.5 }, // tervalidasi API
     { date: "2026-07-06", obs: "2026-06-01", consensus: 54.2 }, // tervalidasi FF
-    { date: "2026-06-04", obs: "2026-05-01", consensus: 54.5 },
+    { date: "2026-06-04", obs: "2026-05-01", consensus: 53.7 },
     { date: "2025-10-03", obs: "2025-09-01", consensus: 51.8 }, // tervalidasi API
     { date: "2025-09-04", obs: "2025-08-01", consensus: 50.9 }, // tervalidasi API
     { date: "2025-07-03", obs: "2025-06-01", consensus: 50.8 }, // tervalidasi API

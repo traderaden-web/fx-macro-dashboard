@@ -536,6 +536,26 @@ var SERIES_RAW = [
     noLive: true
   },
   {
+    id: "adp",
+    name: "ADP National Employment Report (Private Payrolls)",
+    short: "ADP",
+    category: "tenaga-kerja",
+    country: "US",
+    countryName: "Amerika Serikat",
+    freq: "M",
+    mode: "absolute",
+    unit: "ribu",
+    decimals: 0,
+    impact: "High",
+    release: "Selasa sebelum NFP, 19:15 WIB",
+    about: "Perubahan jumlah tenaga kerja di sektor swasta (survey ADP) \u2014 'pemanasan' sebelum NFP resmi BLS.",
+    why: "Proksi arah umum ketenagakerjaan; kejutan ADP sering (tidak selalu) diikuti NFP pekan yang sama.",
+    fx: "ADP kuat \u2192 ekspektasi NFP kuat \u2192 USD naik; ADP lemah \u2192 USD turun.",
+    // ditambahkan 30-Agu-2026 dari FF window Jun 2026 (A 122K K 118K P 105K) → kunci ke seed
+    // ⚠ FF window Sep 2026 tidak menampilkan lagi baris ADP (kemungkinan discontinued)
+    noLive: true
+  },
+  {
     id: "ismsvc",
     name: "ISM Services PMI (Non-Manufacturing)",
     short: "ISM Svc",
@@ -585,7 +605,8 @@ var TOL = {
   eu_gdp: 0.3,
   china_cpi: 0.15,
   ismmfg: 1,
-  ismsvc: 1
+  ismsvc: 1,
+  adp: 10
 };
 var SCALE = {
   nfp: 100,
@@ -616,7 +637,8 @@ var SCALE = {
   eu_gdp: 0.8,
   china_cpi: 0.5,
   ismmfg: 2,
-  ismsvc: 2.5
+  ismsvc: 2.5,
+  adp: 50
 };
 var SERIES = SERIES_RAW.map((s) => ({ ...s, tol: TOL[s.id] ?? 0.5, scale: SCALE[s.id] ?? 1 }));
 var CATEGORIES = [
@@ -673,6 +695,7 @@ var IND_CURRENCY = {
   umich: { cur: "USD", bullDir: 1, via: "sentimen & ekspektasi inflasi konsumen" },
   ismmfg: { cur: "USD", bullDir: 1, via: "aktivitas manufaktur \u2192 ekspektasi pertumbuhan & suku bunga" },
   ismsvc: { cur: "USD", bullDir: 1, via: "sektor jasa (\xB180% PDB) \u2192 momentum pertumbuhan AS" },
+  adp: { cur: "USD", bullDir: 1, via: "indikator leading NFP \u2014 pekerjaan sektor swasta" },
   eu_cpi: { cur: "EUR", bullDir: 1, via: "inflasi HICP \u2192 stance ECB" },
   eu_unemp: { cur: "EUR", bullDir: -1, via: "pasar kerja EZ \u2192 jalur ECB" },
   uk_cpi: { cur: "GBP", bullDir: 1, via: "inflasi CPI \u2192 stance BoE" },
@@ -1635,7 +1658,7 @@ var CONSENSUS = {
   cpi: [
     { date: "2026-08-12", obs: "2026-07-01", consensus: 3.4 },
     { date: "2026-07-14", obs: "2026-06-01", consensus: 3.8 },
-    { date: "2026-06-10", obs: "2026-05-01", consensus: 3.8 },
+    { date: "2026-06-09", obs: "2026-05-01", consensus: 4.2 },
     { date: "2026-05-12", obs: "2026-04-01", consensus: 3.7 },
     { date: "2026-04-10", obs: "2026-03-01", consensus: 3.4 },
     { date: "2026-03-11", obs: "2026-02-01", consensus: 2.4 },
@@ -1651,7 +1674,7 @@ var CONSENSUS = {
   corecpi: [
     { date: "2026-08-12", obs: "2026-07-01", consensus: 2.5 },
     { date: "2026-07-14", obs: "2026-06-01", consensus: 2.8 },
-    { date: "2026-06-10", obs: "2026-05-01", consensus: 2.6 },
+    { date: "2026-06-09", obs: "2026-05-01", consensus: 2.9 },
     { date: "2026-05-12", obs: "2026-04-01", consensus: 2.7 },
     { date: "2026-04-10", obs: "2026-03-01", consensus: 2.7 },
     { date: "2026-03-11", obs: "2026-02-01", consensus: 2.5 },
@@ -1667,7 +1690,7 @@ var CONSENSUS = {
   ppi: [
     { date: "2026-08-13", obs: "2026-07-01", consensus: 4.9 },
     { date: "2026-07-15", obs: "2026-06-01", consensus: 6.2 },
-    { date: "2026-06-10", obs: "2026-05-01", consensus: 6.4 },
+    { date: "2026-06-11", obs: "2026-05-01", consensus: 6.4 },
     { date: "2026-05-13", obs: "2026-04-01", consensus: 4.9 },
     { date: "2026-04-09", obs: "2026-03-01", consensus: 4 },
     { date: "2026-03-10", obs: "2026-02-01", consensus: 2.5 },
@@ -1683,7 +1706,7 @@ var CONSENSUS = {
   corepce: [
     { date: "2026-08-26", obs: "2026-07-01", consensus: 0.2 },
     { date: "2026-07-27", obs: "2026-06-01", consensus: 0.3 },
-    { date: "2026-06-26", obs: "2026-05-01", consensus: 0.28 },
+    { date: "2026-06-25", obs: "2026-05-01", consensus: 0.3 },
     { date: "2026-05-27", obs: "2026-04-01", consensus: 0.3 },
     { date: "2026-04-27", obs: "2026-03-01", consensus: 0.35 },
     { date: "2026-03-27", obs: "2026-02-01", consensus: 0.35 },
@@ -1696,10 +1719,13 @@ var CONSENSUS = {
     { date: "2025-08-27", obs: "2025-07-01", consensus: 0.25 },
     { date: "2025-07-28", obs: "2025-06-01", consensus: 0.25 }
   ],
+  adp: [
+    { date: "2026-06-03", obs: "2026-05-01", consensus: 118 }
+  ],
   ahe: [
     { date: "2026-08-07", obs: "2026-07-01", consensus: 3.3 },
     { date: "2026-07-02", obs: "2026-06-01", consensus: 3.5 },
-    { date: "2026-06-12", obs: "2026-05-01", consensus: 3.5 },
+    { date: "2026-06-05", obs: "2026-05-01", consensus: 3.5 },
     { date: "2026-05-08", obs: "2026-04-01", consensus: 3.8 },
     { date: "2026-04-10", obs: "2026-03-01", consensus: 3.6 },
     { date: "2026-03-13", obs: "2026-02-01", consensus: 3.7 },
@@ -1905,7 +1931,7 @@ var CONSENSUS = {
     { date: "2026-08-03", obs: "2026-07-01", consensus: 54 },
     { date: "2026-07-02", obs: "2026-06-01", consensus: 53.8 },
     // tervalidasi FF
-    { date: "2026-06-01", obs: "2026-05-01", consensus: 54 },
+    { date: "2026-06-01", obs: "2026-05-01", consensus: 53.3 },
     { date: "2026-09-01", obs: "2026-08-01", consensus: 55.2 }
   ],
   ismsvc: [
@@ -1913,7 +1939,7 @@ var CONSENSUS = {
     // tervalidasi API
     { date: "2026-07-06", obs: "2026-06-01", consensus: 54.2 },
     // tervalidasi FF
-    { date: "2026-06-04", obs: "2026-05-01", consensus: 54.5 },
+    { date: "2026-06-04", obs: "2026-05-01", consensus: 53.7 },
     { date: "2025-10-03", obs: "2025-09-01", consensus: 51.8 },
     // tervalidasi API
     { date: "2025-09-04", obs: "2025-08-01", consensus: 50.9 },
@@ -4872,11 +4898,11 @@ var seed_default = {
         },
         {
           date: "2026-04-01",
-          value: 0.26
+          value: 0.5
         },
         {
           date: "2026-05-01",
-          value: 0.36
+          value: 0.3
         },
         {
           date: "2026-06-01",
@@ -14597,6 +14623,10 @@ var seed_default = {
       },
       points: [
         {
+          date: "2026-04-01",
+          value: 52.7
+        },
+        {
           date: "2026-05-01",
           value: 54
         },
@@ -14642,6 +14672,10 @@ var seed_default = {
           value: 50
         },
         {
+          date: "2026-04-01",
+          value: 53.6
+        },
+        {
           date: "2026-05-01",
           value: 54.5
         },
@@ -14654,6 +14688,23 @@ var seed_default = {
           value: 54.1
         }
       ]
+    },
+    adp: {
+      id: "adp",
+      points: [
+        {
+          date: "2026-04-01",
+          value: 105
+        },
+        {
+          date: "2026-05-01",
+          value: 122
+        }
+      ],
+      last: {
+        date: "2026-05-01",
+        value: 122
+      }
     }
   }
 };
@@ -14868,6 +14919,7 @@ var TITLE_MAP = [
   { title: "federal funds rate", id: "fedfunds", allow: ["US"] },
   { title: "retail sales m/m", id: "retail", allow: ["US"] },
   { title: "core pce price index", id: "corepce", allow: ["US"] },
+  { title: "adp non-farm employment", id: "adp", allow: ["US"] },
   { title: "advance gdp", id: "gdp", allow: ["US"] },
   { title: "gdp q/q", id: "gdp", allow: ["US"] },
   { title: "initial jobless claims", id: "claims", allow: ["US"] },
