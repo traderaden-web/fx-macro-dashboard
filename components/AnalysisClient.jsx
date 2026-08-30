@@ -19,6 +19,8 @@ const FMT = (v, d = 1) => (v === null || v === undefined ? "—" : Number(v).toL
 const SFMT = (v, d = 1) => (v === null || v === undefined ? "—" : (v > 0 ? "+" : "") + Number(v).toLocaleString("id-ID", { maximumFractionDigits: d }));
 const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 const MM = (s) => (s ? new Date(s + "T00:00:00").toLocaleDateString("id-ID", { month: "short", year: "2-digit" }) : "—");
+// Tanggal rilis lengkap (tanpa nol awal): "8 JUN 26" — dipakai di tabel riwayat
+const DMY = (s) => (s ? `${Number(s.slice(8, 10))} ${BLN[parseInt(s.slice(5, 7), 10) - 1].toUpperCase()} ${s.slice(2, 4)}` : "—");
 const IMPACT_RANK = { High: 0, Medium: 1, Low: 2 };
 
 const WIBM = new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
@@ -109,7 +111,7 @@ function BlockConsensus({ item, latest, prevRel, now }) {
         <h4>Consensus vs Actual — {item.short}</h4>
         <span className="ct-block-meta mono">
           {stale && <b className="ct-stale">⚠ DATA STALE</b>}
-          {latest && <> ASOF {MM(latest.date).toUpperCase()} · SRC {latest.source === "live" ? "FOREXFACTORY" : "FRED"}</>}
+          {latest && <> ASOF {DMY(latest.date)} · SRC {latest.source === "live" ? "FOREXFACTORY" : "FRED"}</>}
           {daily && " · SERI HARIAN (EST. ANALIS)"}
         </span>
       </div>
@@ -424,7 +426,7 @@ function BlockHistory({ item }) {
                       onClick={() => setOpenRel(r)}
                       onKeyDown={(ev) => (ev.key === "Enter" || ev.key === " ") && (ev.preventDefault(), setOpenRel(r))}
                     >
-                      <td>{i === 0 && <span className="ct-dot" aria-hidden="true" />}{MM(r.date).toUpperCase()}</td>
+                      <td title={`Rilis ${DMY(r.date)}`}>{i === 0 && <span className="ct-dot" aria-hidden="true" />}{DMY(r.date)}</td>
                       <td>{FMT(r.previous, d)}</td>
                       <td>{FMT(r.consensus, d)}</td>
                       <td><b>{FMT(r.actual, d)}</b></td>
@@ -495,7 +497,7 @@ function BlockHistory({ item }) {
         {acc.streak && <div className="ct-streak mono">STREAK ▸ {acc.streak.n}× {acc.streak.kind} beruntun</div>}
         {acc.maxSurprise !== null && (
           <div className="ct-streak mono dim">
-            MAX SURPRISE ▸ {SFMT(acc.maxSurprise, d)} ({MM(acc.maxSurpriseDate).toUpperCase()})
+            MAX SURPRISE ▸ {SFMT(acc.maxSurprise, d)} ({DMY(acc.maxSurpriseDate)})
           </div>
         )}
       </div>
@@ -519,7 +521,7 @@ function BlockImpact({ item, latest }) {
       <div className="ct-block-head">
         <span className="ct-tag">04</span>
         <h4>Dampak terhadap Pasangan Mata Uang</h4>
-        <span className="ct-block-meta mono">{latest ? `RILIS ${MM(latest.date).toUpperCase()} · IDX ${SFMT(idx, 0)}` : "—"}</span>
+        <span className="ct-block-meta mono">{latest ? `RILIS ${DMY(latest.date)} · IDX ${SFMT(idx, 0)}` : "—"}</span>
       </div>
 
       {rx ? (

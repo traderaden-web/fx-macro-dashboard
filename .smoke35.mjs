@@ -105,6 +105,7 @@ add("NFP: tabel riwayat ter-render", nfpRows.length >= 5, nfpRows.length);
 // data Mei 2026 → rilis 8 Jun 2026: A=115K, K=65K, P=185K
 const nfpMay = nfpRows.find((tr) => tr.textContent.includes("JUN 26"));
 add("NFP: baris data Mei ada (tgl rilis JUN 26)", !!nfpMay);
+add("NFP: tanggal baris lengkap dgn hari (8 JUN 26)", !!nfpMay && nfpMay.textContent.includes("8 JUN 26"));
 add("NFP: data Mei P=185 K=65 A=115 (sesuai FF)", !!nfpMay && ["185","65","115"].every((v) => nfpMay.textContent.includes(v)), nfpMay?.textContent.replace(/\s+/g," ").slice(0,60));
 const nfpJul = nfpRows.find((tr) => tr.textContent.includes("AGU 26"));
 add("NFP: baris data Jul (rilis 7 Agu 2026) A=−23", !!nfpJul && nfpJul.textContent.includes("23"), nfpJul?.textContent.replace(/\s+/g," ").slice(0,60));
