@@ -52,9 +52,10 @@ add("baris punya role=button + title", rows()[0]?.getAttribute("role") === "butt
 // klik baris teratas (rilis terakhir)
 await click(rows()[0]);
 await act(async () => { await new Promise((r) => setTimeout(r, 400)); });
-const modal = () => container.querySelector(".rm-modal");
+const modal = () => document.querySelector(".rm-modal"); // portal ke body
 add("popup terbuka", !!modal());
-add("popup a11y dialog", !!container.querySelector('[role="dialog"][aria-modal="true"]'));
+add("portal: backdrop anak <body> (bukan dalam terminal)", !!document.querySelector("body > .rm-backdrop") && !container.querySelector(".rm-backdrop"));
+add("popup a11y dialog", !!document.querySelector('[role="dialog"][aria-modal="true"]'));
 add("body scroll terkunci", document.body.style.overflow === "hidden");
 const head = modal()?.querySelector(".rm-head")?.textContent || "";
 add("judul popup: INDIKATOR · TGL", /CPI · \d{2} [A-Z][a-z]{2} 2026/.test(head), head);
@@ -100,7 +101,7 @@ const nfpRows = rows();
 add("NFP: tabel riwayat ter-render", nfpRows.length >= 5, nfpRows.length);
 await click(nfpRows[0]);
 await act(async () => { await new Promise((r) => setTimeout(r, 300)); });
-add("NFP: popup terbuka", /NFP ·/.test(container.querySelector(".rm-head")?.textContent || ""), container.querySelector(".rm-head")?.textContent);
+add("NFP: popup terbuka", /NFP ·/.test(document.querySelector(".rm-head")?.textContent || ""), document.querySelector(".rm-head")?.textContent);
 await act(async () => { window.dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "Escape", bubbles: true })); });
 await act(async () => { await new Promise((r) => setTimeout(r, 120)); });
 add("NFP: ESC menutup", !modal());

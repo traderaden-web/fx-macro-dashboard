@@ -9,6 +9,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { CATEGORIES, COUNTRIES } from "../lib/series";
 import { computePairImpact, currencyReaction, magnitudeLabel } from "../lib/pairs";
 import { CountryFlag } from "./Badges";
@@ -195,7 +196,10 @@ function ReleaseModal({ item, r, onClose }) {
   const dateShort = `${r.date.slice(8, 10)} ${BLN[parseInt(r.date.slice(5, 7), 10) - 1]} ${r.date.slice(0, 4)}`;
   const prevDelta = r.actual != null && r.previous != null ? r.actual - r.previous : null;
 
-  return (
+  // Portal ke <body>: induk .ct-block punya transform (animasi fill both)
+  // yang membuat position:fixed jadi relatif block → popup bertumpuk.
+  if (typeof document === "undefined") return null;
+  return createPortal(
     <div
       className="cm-backdrop rm-backdrop"
       onClick={(e) => e.target === e.currentTarget && onClose()}
@@ -353,7 +357,8 @@ function ReleaseModal({ item, r, onClose }) {
           </footer>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
