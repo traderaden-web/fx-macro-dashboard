@@ -192,8 +192,8 @@ function ReleaseModal({ item, r, onClose }) {
   const dateLong = new Date(r.date + "T00:00:00").toLocaleDateString("id-ID", {
     weekday: "long", day: "numeric", month: "long", year: "numeric",
   });
+  const dateShort = `${r.date.slice(8, 10)} ${BLN[parseInt(r.date.slice(5, 7), 10) - 1]} ${r.date.slice(0, 4)}`;
   const prevDelta = r.actual != null && r.previous != null ? r.actual - r.previous : null;
-  const valid = rels.filter((x) => x.surprise != null);
 
   return (
     <div
@@ -206,7 +206,7 @@ function ReleaseModal({ item, r, onClose }) {
       <div className="rm-modal">
         <header className="rm-head mono">
           <span className="rm-tag">RILIS</span>
-          <b>{item.short} — {MM(r.date).toUpperCase()}</b>
+          <b>{item.short} · {dateShort}</b>
           <span className={`rm-verdict ${cls}`}>{label}</span>
           <button ref={closeRef} type="button" className="cm-close" onClick={onClose} aria-label="Tutup" title="Tutup (Esc)">✕</button>
         </header>
@@ -227,7 +227,7 @@ function ReleaseModal({ item, r, onClose }) {
             <div className="ct-cell act">
               <em>ACTUAL</em>
               <b className="mono big">{FMT(r.actual, d)}</b>
-              <i>FRED · {item.unit} · {dateLong}</i>
+              <i>FRED · {item.unit}</i>
             </div>
             <div className={`ct-cell sur ${cls}`}>
               <em>SURPRISE</em>
@@ -236,90 +236,93 @@ function ReleaseModal({ item, r, onClose }) {
             </div>
           </div>
 
-          {/* gauge posisi kejutan */}
-          <div className="ct-gauge" role="img" aria-label={`Surprise index ${SFMT(r.surpriseIdx, 0)}`}>
-            <div className="ct-gauge-track">
-              <span className="ct-g-zone" style={{ left: `${zoneL}%`, width: `${zoneW}%` }} aria-hidden="true" />
-              <span className="ct-g-zero" aria-hidden="true" />
-              <span className="ct-g-needle" style={{ left: `${pos}%` }} aria-hidden="true" />
-            </div>
-            <div className="ct-gauge-scale mono">
-              <span>−{FMT(domain, 1)}</span>
-              <span>0 · ±{FMT(tol, 2)} = inline</span>
-              <span>+{FMT(domain, 1)} {item.unit}</span>
-            </div>
-          </div>
-
-          {/* narasi lengkap */}
-          <div className="rm-txt">
-            <p>
-              <b>{dateLong}</b> — {item.name} ({item.short}) dirilis dengan nilai{" "}
-              <b>{FMT(r.actual, d)} {item.unit}</b>
-              {r.actual == null && " (actual belum tersedia)"}.
-              {r.consensus != null && (
-                <>
-                  {" "}Konsensus analis memperkirakan <b>{FMT(r.consensus, d)} {item.unit}</b>
-                  {r.surprise != null && (
-                    <> — realisasi {Math.abs(r.surprise) <= tol ? "hampir sesuai" : r.surprise > 0 ? "lebih tinggi" : "lebih rendah"}{" "}
-                    <b>{FMT(Math.abs(r.surprise), d)}</b> ({r.surprisePct != null ? `${SFMT(r.surprisePct, 1)}%` : "—"}) dari perkiraan.
-                  </>
-                  )}
-                </>
-              )}
-            </p>
-            {r.previous != null && (
-              <p>
-                Dibanding nilai sebelumnya <b>{FMT(r.previous, d)} {item.unit}</b>, angka ini{" "}
-                {prevDelta === null ? "—" : prevDelta > 0 ? "menaik" : prevDelta < 0 ? "menurun" : "stabil"}{" "}
-                {prevDelta !== null && <b>{SFMT(prevDelta, d)} {item.unit}</b>} periode ini.
-              </p>
-            )}
-            {rx ? (
-              <p>
-                <b>Bacaan pasar: {rx.dir > 0 ? "HAWKISH" : rx.dir < 0 ? "DOVISH" : "NETRAL"}.</b> {rx.via} — estimasi pergerakan{" "}
-                <b>{rx.cur} {rx.dir > 0 ? "menguat" : rx.dir < 0 ? "melemah" : "netral"} ±{FMT(rx.est, 2)}%</b> dalam 15 menit pasca-rilis.
-              </p>
-            ) : (
-              <p>Nilai sesuai konsensus — pasar cenderung minim respons.</p>
-            )}
-          </div>
-
-          {/* dampak pair */}
-          {pairs.length > 0 && (
-            <div className="rm-sec">
-              <h5 className="mono">ESTIMASI DAMPAK KE PAIR (model heuristik)</h5>
-              <div className="ct-table-wrap">
-                <table className="ct-table mono">
-                  <thead>
-                    <tr><th>PAIR</th><th>ARAH</th><th>EST. MOVE</th><th>KEKUATAN</th></tr>
-                  </thead>
-                  <tbody>
-                    {pairs.map((p, i) => (
-                      <tr key={p.symbol} style={{ "--i": i }}>
-                        <td className="ct-pair-name">{p.label}</td>
-                        <td>
-                          <span className={`ct-dir ${p.dir > 0 ? "up" : p.dir < 0 ? "down" : "flat"}`}>
-                            {p.dir > 0 ? "▲ BULLISH" : p.dir < 0 ? "▼ BEARISH" : "◆ NETRAL"}
-                          </span>
-                        </td>
-                        <td className={p.dir === 0 ? "" : p.dir > 0 ? "up" : "down"}>
-                          {p.dir === 0 ? "—" : `${p.dir > 0 ? "+" : "−"}${FMT(p.est, 2)}%`}
-                        </td>
-                        <td>
-                          <span className="ct-seg" aria-hidden="true">
-                            {[1, 2, 3, 4, 5].map((n) => (
-                              <i key={n} className={n <= p.magnitude ? "on" : ""} style={{ "--n": n }} />
-                            ))}
-                          </span>
-                          <span className="ct-acc-sub">{magnitudeLabel(p.magnitude)}</span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+          {/* 2 kolom: gauge+narasi | tabel pair */}
+          <div className={`rm-cols${pairs.length ? "" : " rm-cols-1"}`}>
+            <section className="rm-card">
+              <h5 className="mono">POSISSI KEJUTAN &amp; BACAAN PASAR</h5>
+              <div className="ct-gauge rm-gauge" role="img" aria-label={`Surprise index ${SFMT(r.surpriseIdx, 0)}`}>
+                <div className="ct-gauge-track">
+                  <span className="ct-g-zone" style={{ left: `${zoneL}%`, width: `${zoneW}%` }} aria-hidden="true" />
+                  <span className="ct-g-zero" aria-hidden="true" />
+                  <span className="ct-g-needle" style={{ left: `${pos}%` }} aria-hidden="true" />
+                </div>
+                <div className="ct-gauge-scale mono">
+                  <span>−{FMT(domain, 1)}</span>
+                  <span>0 · ±{FMT(tol, 2)} = inline</span>
+                  <span>+{FMT(domain, 1)} {item.unit}</span>
+                </div>
               </div>
-            </div>
-          )}
+              <div className="rm-txt">
+                <p>
+                  <b>{dateLong}</b> — {item.name} ({item.short}) dirilis dengan nilai{" "}
+                  <b>{FMT(r.actual, d)} {item.unit}</b>
+                  {r.actual == null && " (actual belum tersedia)"}.
+                  {r.consensus != null && (
+                    <>
+                      {" "}Konsensus analis memperkirakan <b>{FMT(r.consensus, d)} {item.unit}</b>
+                      {r.surprise != null && (
+                        <> — realisasi {Math.abs(r.surprise) <= tol ? "hampir sesuai" : r.surprise > 0 ? "lebih tinggi" : "lebih rendah"}{" "}
+                        <b>{FMT(Math.abs(r.surprise), d)}</b> ({r.surprisePct != null ? `${SFMT(r.surprisePct, 1)}%` : "—"}) dari perkiraan.
+                      </>
+                      )}
+                    </>
+                  )}
+                </p>
+                {r.previous != null && (
+                  <p>
+                    Dibanding nilai sebelumnya <b>{FMT(r.previous, d)} {item.unit}</b>, angka ini{" "}
+                    {prevDelta === null ? "—" : prevDelta > 0 ? "menaik" : prevDelta < 0 ? "menurun" : "stabil"}{" "}
+                    {prevDelta !== null && <b>{SFMT(prevDelta, d)} {item.unit}</b>} periode ini.
+                  </p>
+                )}
+                {rx ? (
+                  <p>
+                    <b>Bacaan pasar: {rx.dir > 0 ? "HAWKISH" : rx.dir < 0 ? "DOVISH" : "NETRAL"}.</b> {rx.via} — estimasi pergerakan{" "}
+                    <b>{rx.cur} {rx.dir > 0 ? "menguat" : rx.dir < 0 ? "melemah" : "netral"} ±{FMT(rx.est, 2)}%</b> dalam 15 menit pasca-rilis.
+                  </p>
+                ) : (
+                  <p>Nilai sesuai konsensus — pasar cenderung minim respons.</p>
+                )}
+              </div>
+            </section>
+
+            {pairs.length > 0 && (
+              <section className="rm-card">
+                <h5 className="mono">ESTIMASI DAMPAK KE PAIR</h5>
+                <div className="ct-table-wrap rm-pair-wrap">
+                  <table className="ct-table mono">
+                    <thead>
+                      <tr><th>PAIR</th><th>ARAH</th><th>EST. MOVE</th><th>KEKUATAN</th></tr>
+                    </thead>
+                    <tbody>
+                      {pairs.map((p, i) => (
+                        <tr key={p.symbol} style={{ "--i": i }}>
+                          <td className="ct-pair-name">{p.label}</td>
+                          <td>
+                            <span className={`ct-dir ${p.dir > 0 ? "up" : p.dir < 0 ? "down" : "flat"}`}>
+                              {p.dir > 0 ? "▲ BULLISH" : p.dir < 0 ? "▼ BEARISH" : "◆ NETRAL"}
+                            </span>
+                          </td>
+                          <td className={p.dir === 0 ? "" : p.dir > 0 ? "up" : "down"}>
+                            {p.dir === 0 ? "—" : `${p.dir > 0 ? "+" : "−"}${FMT(p.est, 2)}%`}
+                          </td>
+                          <td>
+                            <span className="ct-seg" aria-hidden="true">
+                              {[1, 2, 3, 4, 5].map((n) => (
+                                <i key={n} className={n <= p.magnitude ? "on" : ""} style={{ "--n": n }} />
+                              ))}
+                            </span>
+                            <span className="ct-acc-sub">{magnitudeLabel(p.magnitude)}</span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="ct-model-note">Model heuristik volatilitas 15 mnt — edukasi, bukan sinyal trading.</p>
+              </section>
+            )}
+          </div>
 
           {/* konteks indikator */}
           <div className="rm-sec">
@@ -331,18 +334,16 @@ function ReleaseModal({ item, r, onClose }) {
             </div>
           </div>
 
-          {/* konteks akurasi konsensus */}
+          {/* strip akurasi konsensus */}
           {acc && acc.samples > 0 && (
-            <div className="rm-sec">
-              <h5 className="mono">KONTEKS AKURASI KONSENSUS ({item.short})</h5>
-              <p className="rm-ctx-p">
-                Dari <b>{acc.samples}</b> rilis tercatat: konsensus tepat (inline ±{FMT(tol, 2)} {item.unit}) dalam{" "}
-                <b>{acc.hitRate}%</b> kasus — <b className="up">BEAT {acc.beats}×</b>, <b className="down">MISS {acc.misses}×</b>,
-                INLINE {acc.inlines}×. Rilis yang dibuka popup ini termasuk{" "}
-                <b className={cls === "up" ? "up" : cls === "down" ? "down" : ""}>
-                  {r.surprise === null ? "MENUNGGU" : cls === "flat" ? "INLINE" : cls === "up" ? "BEAT" : "MISS"}
-                </b>.
-              </p>
+            <div className="rm-acc mono">
+              <span className="rm-acc-label">AKURASI KONSENSUS</span>
+              <span>{acc.samples} RILIS</span>
+              <span>HIT RATE <b>{acc.hitRate}%</b></span>
+              <span className="up">BEAT {acc.beats}×</span>
+              <span className="down">MISS {acc.misses}×</span>
+              <span>INLINE {acc.inlines}×</span>
+              <span className="rm-acc-this">RILIS INI: <b className={cls === "up" ? "up" : cls === "down" ? "down" : ""}>{r.surprise === null ? "MENUNGGU" : cls === "flat" ? "INLINE" : cls === "up" ? "BEAT" : "MISS"}</b></span>
             </div>
           )}
 
