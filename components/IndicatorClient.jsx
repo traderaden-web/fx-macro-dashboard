@@ -121,6 +121,7 @@ const DIR_TXT = { up: "▲", down: "▼", flat: "—" };
 function EduTab({ edu, general }) {
   const tabs = [
     { id: "read", label: "CARA MEMBACA" },
+    ...(edu.forecast ? [{ id: "forecast", label: "PERKIRAAN RILIS" }] : []),
     { id: "outlook", label: "PROSPEK" },
     { id: "drivers", label: "PENGERAK" },
     ...(edu.expertViews?.length ? [{ id: "experts", label: "PAKAR" }] : []),
@@ -144,6 +145,45 @@ function EduTab({ edu, general }) {
               <li key={i}><b>{String(i + 1).padStart(2, "0")}</b>{p}</li>
             ))}
           </ol>
+        )}
+
+        {tab === "forecast" && edu.forecast && (
+          <div className="ind-forecast">
+            <div className="ind-forecast-next mono">
+              <span className="ind-when"><b>NEXT ▸</b> {edu.forecast.next}</span>
+              {edu.forecast.obs && edu.forecast.obs !== "—" && (
+                <span className="ind-obs">DATA: {edu.forecast.obs}</span>
+              )}
+            </div>
+            <div className="ind-cells mono">
+              <div className="ind-cell">
+                <span>PREVIOUS</span>
+                <b>{edu.forecast.prev}</b>
+              </div>
+              <div className="ind-cell">
+                <span>KONSENSUS</span>
+                <b>{edu.forecast.con}</b>
+              </div>
+              <div className="ind-cell act">
+                <span>PERKIRAAN (RANGE)</span>
+                <b>{edu.forecast.range}</b>
+              </div>
+            </div>
+            <p className="ind-outlook-text">{edu.forecast.basis}</p>
+            <div className="ind-scenarios">
+              <div className="ind-scen-head mono"><span>PERKIRAAN DATA</span><span>EFEK PASAR</span><span>ARAH</span></div>
+              {edu.forecast.scenarios.map((sc, i) => (
+                <div key={i} className={`ind-scen-row ${sc.dir}`}>
+                  <span className="ind-scen-label">{sc.label}</span>
+                  <span className="ind-scen-effect">{sc.effect}</span>
+                  <span className="ind-scen-dir mono">{DIR_TXT[sc.dir]} {sc.cur}</span>
+                </div>
+              ))}
+            </div>
+            <p className="ind-forecast-note mono">
+              Perkiraan disusun dari konsensus + tren data verified (per 30 Agu 2026). Nilai final bisa berbeda — selalu baca revisi & komponen di dalam rilis.
+            </p>
+          </div>
         )}
 
         {tab === "outlook" && (

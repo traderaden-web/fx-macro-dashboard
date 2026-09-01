@@ -3109,6 +3109,10 @@ body::before {
 .ind-scen-row.up .ind-scen-dir { color: var(--up); }
 .ind-scen-row.down .ind-scen-dir { color: var(--down); }
 .ind-scen-row.flat .ind-scen-dir { color: var(--dim); }
+.ind-forecast-next { display: flex; flex-direction: column; gap: 3px; margin-bottom: 12px; }
+.ind-when { font-size: 13px; font-weight: 700; color: var(--accent); line-height: 1.5; }
+.ind-obs { font-size: 10px; letter-spacing: 1px; color: var(--dim); }
+.ind-forecast-note { margin: 4px 0 0; font-size: 9.5px; line-height: 1.5; color: var(--dim); }
 .ind-watch { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
 .ind-watch > .mono { font-size: 9px; font-weight: 800; letter-spacing: 1.4px; color: var(--dim); }
 .ind-watch-chip { font-size: 10px; color: var(--accent); border: 1px solid rgba(240,180,41,0.35); background: rgba(240,180,41,0.07); border-radius: 4px; padding: 3px 8px; }
