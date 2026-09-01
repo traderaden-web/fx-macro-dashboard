@@ -5,7 +5,6 @@ import StatCard from "../components/StatCard";
 import Onboarding from "../components/Onboarding";
 import TopNews from "../components/TopNews";
 import { IconAnalytics, IconCalendar, IconChart, IconLearn } from "../components/Icons";
-import { ImpactLegend, GlossaryHint } from "../components/Legend";
 import { ImpactBadge, CountryFlag } from "../components/Badges";
 import { UPCOMING } from "../data/calendar";
 import BootScreen from "../components/BootScreen";
@@ -108,8 +107,6 @@ export default async function Home() {
           <span><span className="pulse-dot" /> Sumber: FRED (live)</span>
           <span>Dikumpulkan: {SEED_META.generated?.slice(0, 10) || "—"}</span>
         </div>
-        <GlossaryHint />
-        <ImpactLegend />
       </section>
 
       <section className="section">
