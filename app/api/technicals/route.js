@@ -5,7 +5,7 @@
 
 import { NextResponse } from "next/server";
 import { getSignalMatrix } from "../../../lib/signals";
-import { confluenceScore, setupGrade } from "../../../lib/confluence";
+import { confluenceScore, setupGrade, detectRegime } from "../../../lib/confluence";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -33,6 +33,7 @@ export async function GET() {
     const matrix = r.value;
     const c = confluenceScore(matrix.tfs || []);
     const g = setupGrade(matrix.tfs || []);
+    const reg = detectRegime(matrix.tfs || []);
     return {
       ...sym,
       ok: true,
@@ -42,6 +43,7 @@ export async function GET() {
       scoreLabel: c.label,
       grade: g.grade,
       gradeNote: g.note,
+      regime: reg,
     };
   });
 

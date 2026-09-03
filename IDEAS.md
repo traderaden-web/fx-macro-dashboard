@@ -18,6 +18,7 @@ Halaman **yang sudah saya bangun di rilis ini (v3.0)** ditandai ✅.
 | **Live Session Strip** | Sydney/Tokyo/London/NY: BUKA/TUTUP + jam WIB + progress bar saat berjalan. | ✅ |
 | **Top Movers** | Pair bergerak terbesar hari ini, satu klik ke chart. | ✅ |
 | **Dark/Light toggle** | Trader yang begadang butuh mode gelap super kontras + mode terang siang. | ✅ |
+| **Sidebar Navigation** | Navigasi utama dipindah dari tombol di header ke sidebar kiri (drawer di mobile) → tampilan lebih rapi. | ✅ |
 | Terminal "Pro view" | Layout 3 kolom ala Bloomberg (watchlist | chart | terminal/berita) dengan hotkey. | 🔜 |
 | Spesial efek | Latar "market tape" bergerak halus di belakang hero; subtle glow saat angka berubah. | 🔜 |
 
@@ -46,11 +47,11 @@ Halaman **yang sudah saya bangun di rilis ini (v3.0)** ditandai ✅.
 
 ## 4. 📈 Analisis Fundamental ("tempat informasi fundamental")
 
-- **Bias Fundamental per Mata Uang**: skor valuta dari suku bunga, inflasi, pertumbuhan, neraca, sentimen → "AUD: NETRAL · USD: CENDERUNG KUAT".
+- **Bias Fundamental per Mata Uang**: skor valuta dari suku bunga, inflasi, pertumbuhan, neraca, sentimen → "AUD: NETRAL · USD: CENDERUNG KUAT". | ✅ `/fundamentals` |
 - **Dampak News Engine** (sudah ada di `/analysis`): surprise vs konsensus → arah & kekuatan per pair. Tambah **probabilitas arah** + **rentang pergerakan ekspektasi**.
 - **"Berita + Dampak" timeline**: tiap berita penting → kartu yang menjelaskan *kenapa* menggerakkan dan berapa besar potensinya.
 - **COT (Commitments of Traders)** — sudah ada; jadikan panel posisi spekulatif vs komersial per aset + tren mingguan.
-- **Ide gila**: "Cheat sheet" — sebelum FOMC/NFP/CPI, tampilkan konsensus, riwayat surprise, sentimen pasar, dan 3 skenario lengkap dengan target harga utama & pasangan mana yang paling sensitif.
+- **Ide gila**: "Cheat sheet" — sebelum FOMC/NFP/CPI, tampilkan konsensus, riwayat surprise, sentimen pasar, dan 3 skenario lengkap dengan target harga utama & pasangan mana yang paling sensitif. | ✅ `/fundamentals` (cheat sheet rilis + scenario planner) |
 
 ---
 
@@ -69,7 +70,7 @@ Halaman **yang sudah saya bangun di rilis ini (v3.0)** ditandai ✅.
 ## 6. 🔥 Fitur "Gila" yang Bikin Beda (Moat)
 
 1. **AI Trade Assistant** (chat/gemini): tanya "Apa setup terbaik untuk GBP/JPY hari ini?" → jawab pakai data teknikal + fundamental + kalender.<br/>*⚠️ Sudah ada versi rule-based di `/copilot`; upgrade ke LLM di Fase 3.*
-2. **"Market Regime" detector**: identifikasi tren/nakal/range per pair → menyarankan strategi cocok (trend-following vs mean-reversion).
+2. **"Market Regime" detector**: identifikasi tren/nakal/range per pair → menyarankan strategi cocok (trend-following vs mean-reversion). | ✅ di `/technicals` |
 3. **Scenario Planner**: "Kalau CPI 3.5% vs 4.0%, EUR/USD cenderung ke mana?" → simulasi untuk beberapa skenario sekaligus.
 4. **Social/Community**: feed analis trader, upvote, leaderboard akurasi prediksi → membangun kompetisi & engagement.
 5. **Gamifikasi**: streak, badge, XP untuk belajar & konsisten. Trader retail rajin belajar jangka panjang.
@@ -81,7 +82,7 @@ Halaman **yang sudah saya bangun di rilis ini (v3.0)** ditandai ✅.
 ## 7. 🗺️ Roadmap Bertahap
 
 - **Fase 1 (selesai v3.0):** Command Center home, risk gauge, currency strength, live sessions, top movers, kalkulator trader, fallback data agar selalu hidup.
-- **Fase 2:** Technical dashboard agregat (matrix sinyal), watchlist + alerts, dark/light, PWA + notifikasi.
+- **Fase 2 (selesai v3.1):** Sidebar navigation, Technical dashboard agregat (matrix sinyal + regime), watchlist + alerts, Copilot AI, dark/light toggle, fundamental bias + scenario planner, PWA + notifikasi.
 - **Fase 3:** AI assistant, market regime detector, scenario planner, jurnal/paper-trading.
 - **Fase 4:** Komunitas + leaderboard prediksi, integrasi broker, monetisasi (premium data provider).
 

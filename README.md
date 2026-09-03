@@ -16,6 +16,10 @@ Jepang, dan Tiongkok.
 | --- | --- |
 | **Overview / Command Center** (`/`) | Satu layar: **Risk Appetite Gauge**, **sesi pasar live**, **kekuatan mata uang (currency strength)**, **top movers**, indikator AS paling berdampak, jadwal rilis, dan indikator pasar global. |
 | **Kalkulator Trader** (`/calculators`) | Position Size (risiko), Pip Value, Profit/Loss, Pivot Points (klasik), Fibonacci, dan konversi Lot↔Unit — semua real-time di browser. |
+| **Analisis Teknikal** (`/technicals`) | Matriks sinyal multi-timeframe (EMA/RSI/MACD/ATR) semua instrumen + skor confluence, grade setup A/B/C & **Market Regime** (tren/range). |
+| **Analisis Fundamental** (`/fundamentals`) | Bias fundamental per mata uang (suku bunga riil, kebijakan, pertumbuhan, pasar kerja) + **scenario planner** & cheat sheet rilis penting. |
+| **Watchlist & Alerts** (`/watchlist`) | Pantau instrumen favorit + **price alert** dengan notifikasi browser & bunyi. |
+| **Copilot** (`/copilot`) | Asisten AI berbasis data MacroLab: tanya setup, sentimen, jadwal rilis & manajemen risiko. |
 | **Analisis Dampak** (`/analysis`) | **Konsensus vs Actual** per rilis, "surprise", **metrik akurasi konsensus**, dan **dampak ke pasangan mata uang**. |
 | **Kalender Ekonomi** (`/calendar`) | Jadwal rilis (FOMC, NFP, CPI, PPI, ISM, dsb.) dengan filter kategori & dampak. |
 | **Indikator** (`/indicators`) | Tabel semua indikator dengan **filter** (pencarian, kategori, negara) & **urutan** dampak *High → Low*, nama, negara. |
@@ -27,11 +31,19 @@ Jepang, dan Tiongkok.
 > 💡 **Roadmap ide pengembangan** (dari tampilan, data akurat, hingga fitur AI/komunitas) tersedia
 > di [`IDEAS.md`](./IDEAS.md).
 
-### 🧭 Fitur Baru (v3.0)
+### 🧭 Fitur Baru (v3.x)
+- **Sidebar Navigation**: tombol navigasi header dipindah ke sidebar kiri (drawer di mobile) untuk
+  tampilan yang lebih rapi.
 - **Command Center Home**: Risk Appetite gauge (VIX + bias mata uang), sesi pasar live, currency
   strength meter (13 mata uang), dan top movers — semuanya hidup dari data live/fallback.
-- **Kalkulator Trader** (`/calculators`): hitung ukuran posisi & risiko, nilai pip, profit/loss,
-  pivot points, dan Fibonacci secara instan.
+- **Analisis Teknikal** (`/technicals`): matriks sinyal multi-timeframe + skor confluence + grade
+  setup + Market Regime.
+- **Analisis Fundamental** (`/fundamentals`): bias fundamental per mata uang + scenario planner &
+  cheat sheet rilis penting.
+- **Copilot AI** (`/copilot`): asisten berbasis data MacroLab.
+- **Watchlist & Alerts** (`/watchlist`): pantau instrumen + price alert (notifikasi & bunyi).
+- **Kalkulator Trader** (`/calculators`): position size, pip value, profit/loss, pivot & Fibonacci.
+- **Dark/Light toggle** di header.
 - **Fallback data otomatis**: jika penyedia live (FRED/Yahoo/ForexFactory) tak terjangkau, aplikasi
   otomatis memakai data cadangan yang jelas ditandai (tidak pernah blank).
 

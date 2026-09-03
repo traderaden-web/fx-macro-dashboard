@@ -110,6 +110,7 @@ export default function TechnicalsClient() {
               <tr>
                 <th>Instrumen</th>
                 <th>Grade</th>
+                <th>Regime</th>
                 {TIMEFRAMES.map((tf) => (
                   <th key={tf} className="tech-tf">{tf}</th>
                 ))}
@@ -128,6 +129,12 @@ export default function TechnicalsClient() {
                   <td>
                     <span className={`grade-chip grade-${row.grade || "C"}`}>
                       {row.grade || "C"}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={`regime-pill ${row.regime?.type === "TREND" ? "trend" : row.regime?.type === "RANGE" ? "range" : "trans"}`}>
+                      {row.regime?.type === "TREND" ? (row.regime.dir === "UP" ? "▲ " : "▼ ") : ""}
+                      {row.regime?.label || "—"}
                     </span>
                   </td>
                   {TIMEFRAMES.map((tf) => {

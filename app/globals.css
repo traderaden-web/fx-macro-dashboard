@@ -45,7 +45,8 @@ a { color: inherit; text-decoration: none; }
 .main {
   max-width: none; /* Full Width di desktop (Round-9) */
   margin: 0 auto;
-  padding: 24px 28px 64px;
+  width: 100%;
+  padding: 24px 26px 64px;
 }
 
 /* ================= Header ================= */
@@ -3830,3 +3831,102 @@ html[data-theme="light"] .ct-frame { color-scheme: dark; }
 .feature-ico { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: rgba(240,180,41,0.12); color: var(--accent); flex: 0 0 auto; }
 .feature-card h3 { margin: 0 0 5px; font-size: 15.5px; letter-spacing: -0.3px; }
 .feature-card p { margin: 0; font-size: 12.8px; color: var(--muted); line-height: 1.5; }
+
+/* ============================================================
+   APP SHELL + SIDEBAR NAVIGASI
+   ============================================================ */
+.shell { display: flex; min-height: 100vh; }
+
+/* ---- Sidebar (desktop: kolom kiri tetap) ---- */
+.sidebar {
+  width: 252px; flex: 0 0 252px; position: sticky; top: 0; height: 100vh;
+  overflow-y: auto; display: flex; flex-direction: column; gap: 10px;
+  padding: 16px 14px; z-index: 60;
+  background: var(--bg-soft) ; background: color-mix(in srgb, var(--panel) 55%, var(--bg) 45%);
+  border-right: 1px solid var(--border);
+}
+.sidebar-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 4px 12px; }
+.sidebar-close { display: none; }
+.sidebar-nav { display: flex; flex-direction: column; gap: 3px; flex: 1 1 auto; }
+.side-link {
+  display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 12px;
+  color: var(--muted); transition: all 0.16s ease; border: 1px solid transparent;
+}
+.side-link:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.side-link.active { color: var(--accent); background: rgba(240,180,41,0.13); border-color: rgba(240,180,41,0.22); font-weight: 700; }
+.side-link-text { display: flex; flex-direction: column; min-width: 0; }
+.side-label { font-size: 13.5px; font-weight: 600; }
+.side-link.active .side-label { font-weight: 700; }
+.side-desc { font-size: 10.5px; color: var(--dim); line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.side-link .nav-ico { margin-right: 0; }
+.sidebar-foot { padding-top: 12px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
+.side-foot-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.side-foot-meta { font-size: 10px; color: var(--dim); letter-spacing: 0.5px; display: flex; justify-content: space-between; gap: 8px; text-transform: uppercase; }
+
+/* ---- Overlay (mobile) ---- */
+.sidebar-overlay { display: none; }
+
+/* ---- Content area ---- */
+.shell-content { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+
+/* ---- Topbar (slim) ---- */
+.header.topbar { position: sticky; top: 0; z-index: 50; background: rgba(10,12,16,0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.topbar-inner { padding: 10px 22px; min-height: 52px; }
+.menu-btn { display: none; width: 36px; height: 36px; flex: 0 0 auto; border-radius: 9px; background: var(--panel-2); border: 1px solid var(--border-2); cursor: pointer; place-items: center; gap: 0; }
+.menu-btn span { display: block; width: 16px; height: 2px; background: var(--text); border-radius: 2px; margin: 2px 0; }
+.topbar-title { display: flex; align-items: baseline; gap: 7px; min-width: 0; }
+.topbar-bread { color: var(--dim); font-weight: 600; font-size: 13px; }
+.topbar-sep { color: var(--dim); }
+.topbar-section { color: var(--text); font-weight: 700; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar-clock { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.topbar-clock-tz { color: var(--dim); }
+.header-right { display: flex; align-items: center; gap: 10px; }
+
+/* ---- Responsive: sidebar jadi drawer di bawah 1024px ---- */
+@media (max-width: 1024px) {
+  .sidebar { position: fixed; left: 0; top: 0; height: 100vh; transform: translateX(-100%); transition: transform 0.24s ease; width: 268px; flex-basis: 268px; box-shadow: var(--shadow); }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-close { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--border); color: var(--muted); cursor: pointer; }
+  .sidebar-close:hover { color: var(--text); }
+  .sidebar-overlay { display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 55; }
+  .menu-btn { display: grid; }
+}
+
+/* ---- Light-theme tweaks untuk shell/sidebar ---- */
+html[data-theme="light"] .sidebar { background: color-mix(in srgb, var(--panel) 60%, var(--bg-soft) 40%); border-right-color: var(--border); }
+html[data-theme="light"] .header.topbar { background: rgba(245,247,252,0.9); }
+html[data-theme="light"] .menu-btn { background: var(--panel-2); }
+html[data-theme="light"] .side-link:hover { background: rgba(23,35,63,0.05); }
+
+/* ============================================================
+   FUNDAMENTALS (bias mata uang + scenario planner)
+   ============================================================ */
+.fund-card { display: flex; flex-direction: column; gap: 8px; }
+.fund-head { display: flex; align-items: center; gap: 10px; }
+.fund-ccy { font-weight: 800; font-size: 20px; letter-spacing: -0.3px; }
+.fund-name { color: var(--muted); font-size: 13px; flex: 1 1 auto; }
+.fund-blend { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.fund-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.fund-tag { font-size: 10px; font-weight: 800; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 999px; }
+.fund-tag.bull { color: var(--up); background: rgba(74,222,128,0.12); }
+.fund-tag.bear { color: var(--down); background: rgba(251,113,133,0.12); }
+.fund-tag.flat { color: var(--warn); background: rgba(251,191,36,0.10); }
+.fund-bar-groups { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin: 4px 0; }
+.fund-bar-groups div { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px; font-size: 11px; }
+.fund-bar-groups span { display: block; color: var(--dim); }
+.fund-bar-groups b { color: var(--text); font-variant-numeric: tabular-nums; }
+.fund-note { font-size: 11.5px; line-height: 1.4; }
+.fund-pairs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+.fund-pairs .badge { font-size: 10px; }
+.badge.bullUsd { color: var(--up); background: rgba(74,222,128,0.14); }
+.badge.bearUsd { color: var(--down); background: rgba(251,113,133,0.14); }
+.badge.flat { color: var(--warn); background: rgba(251,191,36,0.10); }
+.res-v.up { color: var(--up); }
+.res-v.down { color: var(--down); }
+
+/* Regime pill (technicals) */
+.regime-pill { font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; white-space: nowrap; min-width: 92px; display: inline-block; text-align: center; }
+.regime-pill.trend { color: var(--accent); background: rgba(240,180,41,0.14); }
+.regime-pill.range { color: var(--muted); background: rgba(255,255,255,0.06); }
+.regime-pill.trans { color: var(--warn); background: rgba(251,191,36,0.10); }
+html[data-theme="light"] .regime-pill.range { color: var(--muted); background: rgba(23,35,63,0.05); }
