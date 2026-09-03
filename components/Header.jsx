@@ -5,14 +5,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IconHome, IconAnalytics, IconCalendar, IconIndicators, IconChart, IconLearn, IconNews } from "./Icons";
+import { IconHome, IconAnalytics, IconCalendar, IconIndicators, IconChart, IconLearn, IconNews, IconCalculator } from "./Icons";
 
-const ICONS = { home: IconHome, analytics: IconAnalytics, calendar: IconCalendar, indicators: IconIndicators, chart: IconChart, learn: IconLearn, news: IconNews };
+const ICONS = { home: IconHome, analytics: IconAnalytics, calendar: IconCalendar, indicators: IconIndicators, chart: IconChart, learn: IconLearn, news: IconNews, calculator: IconCalculator };
 
 const LINKS = [
-  { href: "/", icon: "home", label: "Beranda", desc: "Ringkasan indikator & pasar global" },
+  { href: "/", icon: "home", label: "Beranda", desc: "Command Center — sentimen, sesi & kekuatan mata uang" },
   { href: "/charts", icon: "chart", label: "Chart", desc: "Chart Gold, Forex & Komoditas (TradingView)" },
   { href: "/analysis", icon: "analytics", label: "Analisis", desc: "Dampak rilis ekonomi ke pasangan mata uang" },
+  { href: "/calculators", icon: "calculator", label: "Kalkulator", desc: "Position size, pip value, risiko & pivot points" },
   { href: "/calendar", icon: "calendar", label: "Kalender", desc: "Jadwal rilis data ekonomi penting" },
   { href: "/indicators", icon: "indicators", label: "Indikator", desc: "Semua data indikator ekonomi" },
   { href: "/news", icon: "news", label: "Berita", desc: "Berita pasar + filter berdampak tinggi" },

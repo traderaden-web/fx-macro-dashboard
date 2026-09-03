@@ -3503,3 +3503,133 @@ tr:hover .ct-rm-go, .rm-clickable:focus-visible .ct-rm-go { opacity: 1; color: v
 @media (prefers-reduced-motion: reduce) {
   .rm-modal { animation: none !important; }
 }
+
+/* ============================================================
+   COMMAND CENTER — panel sentimen, sesi, kekuatan mata uang & kalkulator
+   ============================================================ */
+.page { max-width: 1200px; }
+
+.panel-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: all 0.22s ease;
+}
+.panel-card:hover {
+  border-color: var(--border-2);
+}
+.panel-card .section-title { margin-bottom: 16px; }
+.panel-card .section-title h3 { margin: 0; }
+
+.grid-pulse { grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr)); gap: 16px; }
+
+/* ---- Top Movers ---- */
+.grid-movers { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.mover { display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; }
+.mover:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: var(--shadow); }
+.mover-sym { font-weight: 800; font-size: 16px; letter-spacing: -0.3px; }
+.mover-dir { font-size: 13px; font-weight: 700; }
+.mover-val { font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--muted); }
+
+/* ---- Currency Strength ---- */
+.strength { display: flex; flex-direction: column; gap: 14px; }
+.strength-bias { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.strength-bias-label { font-size: 12px; color: var(--muted); font-weight: 600; }
+.strength-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.strength-item { background: var(--panel-2); border: 1px solid var(--border); border-radius: 12px; padding: 11px 12px; }
+.strength-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+.strength-ccy { font-weight: 800; font-size: 15px; letter-spacing: 0.3px; }
+.strength-pct { font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.strength-track { height: 7px; border-radius: 999px; background: rgba(255,255,255,0.06); overflow: hidden; }
+.strength-fill { height: 100%; border-radius: 999px; transition: width 0.6s ease; }
+.strength-foot { display: flex; align-items: baseline; justify-content: space-between; margin-top: 8px; }
+.strength-score { font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.strength-tag { font-size: 9.5px; font-weight: 700; letter-spacing: 0.4px; }
+.strength-legend { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+@media (max-width: 560px) {
+  .strength-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+}
+
+/* ---- Risk Gauge ---- */
+.gauge { display: flex; flex-direction: column; gap: 12px; }
+.gauge-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.gauge-title { font-size: 13px; color: var(--muted); font-weight: 600; }
+.gauge-value strong { font-size: 26px; letter-spacing: -0.5px; font-variant-numeric: tabular-nums; }
+.gauge-value span { font-size: 12px; font-weight: 700; margin-left: 6px; }
+.gauge-dial { display: flex; flex-direction: column; align-items: center; padding: 8px 0 4px; }
+.gauge-arc { position: relative; width: 180px; height: 96px; overflow: hidden; }
+.gauge-arc::before {
+  content: ""; position: absolute; inset: 0;
+  background: conic-gradient(from -90deg at 50% 100%, var(--down) 0deg, var(--warn) 90deg, var(--up) 180deg);
+  border-radius: 180px 180px 0 0;
+  opacity: 0.16;
+}
+.gauge-zones { position: absolute; inset: 0; display: flex; }
+.gauge-needle { position: absolute; left: 50%; bottom: 0; width: 2px; height: 82px; transform-origin: 50% 100%; background: var(--text); border-radius: 2px; transition: transform 0.8s cubic-bezier(.2,.8,.2,1); }
+.gauge-needle i { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px rgba(240,180,41,0.8); }
+.gauge-scale { display: flex; justify-content: space-between; width: 180px; font-size: 9.5px; color: var(--dim); letter-spacing: 0.5px; font-weight: 700; margin-top: 4px; }
+.gauge-meta { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+/* ---- Market Sessions ---- */
+.sessions { display: flex; flex-direction: column; gap: 12px; }
+.sessions-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.sessions-title { display: inline-flex; align-items: center; gap: 7px; font-weight: 700; font-size: 14px; }
+.sessions-clock { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--accent); }
+.sessions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+.session { background: var(--panel-2); border: 1px solid var(--border); border-radius: 12px; padding: 11px 12px; display: flex; flex-direction: column; gap: 8px; }
+.session.open { border-color: rgba(74,222,128,0.4); }
+.session-top { display: flex; align-items: center; gap: 7px; }
+.session-flag { font-size: 16px; }
+.session-name { font-weight: 700; font-size: 13px; }
+.session-state { margin-left: auto; font-size: 9px; font-weight: 800; letter-spacing: 0.5px; padding: 2px 6px; border-radius: 999px; }
+.session-state.open { color: var(--up); background: rgba(74,222,128,0.12); }
+.session-state.closed { color: var(--dim); background: rgba(255,255,255,0.05); }
+.session-time { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.session-track { height: 4px; border-radius: 999px; background: rgba(255,255,255,0.06); overflow: hidden; }
+.session-fill { height: 100%; border-radius: 999px; }
+.session-fill.open { background: linear-gradient(90deg, var(--up), #86efac); }
+.sessions-foot { font-size: 11.5px; }
+
+/* ---- Calculator ---- */
+.calc-wrap { margin-top: 8px; }
+.calc { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
+.calc-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+.calc-tab { padding: 8px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; color: var(--muted); background: var(--panel-2); border: 1px solid var(--border); cursor: pointer; transition: all 0.18s ease; }
+.calc-tab:hover { color: var(--text); border-color: var(--accent); }
+.calc-tab.active { color: #1a1205; background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: transparent; font-weight: 700; }
+.calc-body { }
+.calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 24px; }
+.calc-inputs { display: flex; flex-direction: column; gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field-label { font-size: 12px; color: var(--muted); font-weight: 600; }
+.field-input { display: flex; align-items: center; gap: 8px; }
+.field-input input, .field-input select {
+  flex: 1 1 auto; background: var(--panel-2); border: 1px solid var(--border-2); color: var(--text);
+  border-radius: 10px; padding: 11px 13px; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.field-input select { cursor: pointer; }
+.field-input input:focus, .field-input select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(240,180,41,0.12); }
+.field-suffix { font-size: 12px; color: var(--dim); }
+.field-hint { font-size: 11px; color: var(--dim); }
+.calc-result { background: var(--panel-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
+.calc-result h4 { margin: 0 0 14px; font-size: 15px; letter-spacing: -0.2px; }
+.res-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px dashed var(--border); }
+.res-row:last-of-type { border-bottom: none; }
+.res-k { font-size: 13px; color: var(--muted); }
+.res-v { font-size: 17px; font-weight: 700; }
+.res-accent { color: var(--accent); font-size: 20px; }
+.calc-note { font-size: 12px; color: var(--dim); line-height: 1.5; margin: 12px 0 0; }
+.calc-note code { background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 6px; color: var(--text); }
+.pivot-list { display: flex; flex-direction: column; gap: 6px; }
+.pivot { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+.pivot.piv { border-color: var(--accent); background: rgba(240,180,41,0.08); }
+.pivot.res .pivot-k { color: var(--up); }
+.pivot.sup .pivot-k { color: var(--down); }
+.pivot.fib .pivot-k { color: var(--accent); }
+.pivot-k { font-weight: 700; }
+.pivot-v { font-variant-numeric: tabular-nums; font-weight: 700; }
+.pivot-fib { margin-top: 12px; font-size: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+.lot-bars { display: flex; flex-direction: column; gap: 8px; }
+.lot-bar { padding: 12px; border-radius: 10px; background: var(--panel); border: 1px solid var(--border); font-size: 13px; }
+.lot-bar.accent { border-color: var(--accent); background: rgba(240,180,41,0.08); color: var(--accent); font-weight: 700; }

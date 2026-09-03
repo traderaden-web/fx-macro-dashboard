@@ -124,3 +124,32 @@ export function IconNews({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconCalculator({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <rect {...base} x="5" y="3" width="14" height="18" rx="2" />
+      <path {...base} d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01" />
+    </svg>
+  );
+}
+
+export function IconGauge({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <path {...base} d="M4 15a8 8 0 1 1 16 0" />
+      <path {...base} d="M12 15 16 9" />
+      <circle {...base} cx="12" cy="15" r="1.5" />
+    </svg>
+  );
+}
+
+export function IconWallet({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <rect {...base} x="3" y="6" width="18" height="14" rx="2" />
+      <path {...base} d="M3 10h18" />
+      <circle {...base} cx="16" cy="14" r="1.4" />
+    </svg>
+  );
+}

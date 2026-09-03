@@ -14,7 +14,8 @@ Jepang, dan Tiongkok.
 
 | Halaman | Deskripsi |
 | --- | --- |
-| **Overview** (`/`) | Ringkasan indikator AS paling berdampak, jadwal rilis terdekat, dan indikator pasar global. |
+| **Overview / Command Center** (`/`) | Satu layar: **Risk Appetite Gauge**, **sesi pasar live**, **kekuatan mata uang (currency strength)**, **top movers**, indikator AS paling berdampak, jadwal rilis, dan indikator pasar global. |
+| **Kalkulator Trader** (`/calculators`) | Position Size (risiko), Pip Value, Profit/Loss, Pivot Points (klasik), Fibonacci, dan konversi Lot↔Unit — semua real-time di browser. |
 | **Analisis Dampak** (`/analysis`) | **Konsensus vs Actual** per rilis, "surprise", **metrik akurasi konsensus**, dan **dampak ke pasangan mata uang**. |
 | **Kalender Ekonomi** (`/calendar`) | Jadwal rilis (FOMC, NFP, CPI, PPI, ISM, dsb.) dengan filter kategori & dampak. |
 | **Indikator** (`/indicators`) | Tabel semua indikator dengan **filter** (pencarian, kategori, negara) & **urutan** dampak *High → Low*, nama, negara. |
@@ -22,6 +23,17 @@ Jepang, dan Tiongkok.
 | **Pusat Belajar** (`/learn`) | Panduan memahami data makro + penjelasan lengkap **cara membaca** & **prospek ke depan** tiap indikator. |
 | **Ekonomi Global** (`/economy`) | Profil tiap negara: inflasi, pengangguran, suku bunga, pertumbuhan. |
 | **API** (`/api/fred/[id]`) | Endpoint JSON per indikator (live FRED + fallback seed). |
+
+> 💡 **Roadmap ide pengembangan** (dari tampilan, data akurat, hingga fitur AI/komunitas) tersedia
+> di [`IDEAS.md`](./IDEAS.md).
+
+### 🧭 Fitur Baru (v3.0)
+- **Command Center Home**: Risk Appetite gauge (VIX + bias mata uang), sesi pasar live, currency
+  strength meter (13 mata uang), dan top movers — semuanya hidup dari data live/fallback.
+- **Kalkulator Trader** (`/calculators`): hitung ukuran posisi & risiko, nilai pip, profit/loss,
+  pivot points, dan Fibonacci secara instan.
+- **Fallback data otomatis**: jika penyedia live (FRED/Yahoo/ForexFactory) tak terjangkau, aplikasi
+  otomatis memakai data cadangan yang jelas ditandai (tidak pernah blank).
 
 ### 🎨 Tema, Responsivitas & Animasi
 - **Tema** Dark netral (`#0a0f0c`) dengan aksen **Green Lime** (`#a3e635`).
