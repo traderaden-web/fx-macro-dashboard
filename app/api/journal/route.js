@@ -5,7 +5,9 @@
 // DELETE /api/journal?id=.. → hapus trade.
 
 import { NextResponse } from "next/server";
-import { getTrades, addTrade, updateTrade, deleteTrade, computeStats } from "../../../lib/journal";
+import {
+  getTrades, addTrade, updateTrade, deleteTrade, computeStats, isPersistent,
+} from "../../../lib/journal";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -13,7 +15,7 @@ export const revalidate = 0;
 export async function GET() {
   const trades = getTrades();
   const stats = computeStats(trades);
-  return NextResponse.json({ ok: true, trades, stats });
+  return NextResponse.json({ ok: true, trades, stats, persistent: isPersistent() });
 }
 
 export async function POST(req) {
@@ -24,7 +26,7 @@ export async function POST(req) {
     return NextResponse.json({ ok: false, error: "symbol & direction wajib diisi" }, { status: 400 });
   }
   const t = addTrade({ symbol, direction, entry, stopLoss, takeProfit, lots, pnl, note, status });
-  return NextResponse.json({ ok: true, trade: t, stats: computeStats(getTrades()) });
+  return NextResponse.json({ ok: true, trade: t, stats: computeStats(getTrades()), persistent: isPersistent() });
 }
 
 export async function PATCH(req) {

@@ -117,6 +117,31 @@ npm run build && npm run start
 
 ---
 
+## 🌐 Deploy otomatis (GitHub → Vercel)
+
+Alurnya sekali-setting, lalu otomatis selamanya:
+
+```
+git push origin main   →   Vercel build   →   https://<project>.vercel.app live
+```
+
+1. Buat akun Vercel dengan **Sign Up with GitHub**, lalu **Add New → Project → Import**
+   repo `traderaden-web/fx-macro-dashboard`.
+2. Framework terdeteksi **Next.js**; `vercel.json` sudah menyiapkan build command,
+   Node 20, region `sin1`, dan timeout API.
+3. Klik **Deploy**. Setelah terhubung, **setiap push ke `main` otomatis deploy ulang**,
+   dan setiap Pull Request mendapat *preview URL* sendiri.
+
+Environment variable (opsional, isi di **Vercel → Project → Settings → Environment
+Variables** — jangan di-commit): Copilot butuh `OPENAI_API_KEY` / `GEMINI_API_KEY` /
+`ANTHROPIC_API_KEY`, broker butuh `METAAPI_TOKEN` + `METAAPI_ACCOUNT_ID`.
+Detail lengkap (dan opsi Netlify / GitHub Actions): lihat **`DEPLOYMENT.md`**.
+
+> Catatan: di Vercel, penyimpanan jurnal trade jatuh ke `/tmp` (filesystem read-only),
+> jadi bersifat sementara. Untuk riwayat permanen, tambahkan database — lihat `DEPLOYMENT.md`.
+
+---
+
 ## 📁 Struktur Proyek
 
 ```

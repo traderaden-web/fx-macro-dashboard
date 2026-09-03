@@ -29,6 +29,7 @@ export default function JournalClient() {
     symbol: "", direction: "BUY", entry: "", stopLoss: "", takeProfit: "",
     lots: "", pnl: "", note: "",
   });
+  const [persistent, setPersistent] = useState(true);
   const [editingId, setEditingId] = useState(null);
   const [editingPnl, setEditingPnl] = useState("");
   const [error, setError] = useState("");
@@ -39,6 +40,7 @@ export default function JournalClient() {
       const j = await r.json();
       setTrades(j.trades || []);
       setStats(j.stats || null);
+      setPersistent(j.persistent !== false);
       setStatus("ok");
     } catch {
       setStatus("error");
@@ -100,6 +102,13 @@ export default function JournalClient() {
       <form className="panel-card journal-form" onSubmit={submit}>
         <h3>{editingId ? "Tutup / Edit Trade" : "Tambah Trade"}</h3>
         {error ? <div className="error-banner">{error}</div> : null}
+        {!persistent ? (
+          <div className="notice-banner">
+            Penyimpanan sementara (<code>/tmp</code>): trade tetap ada selama server instance hidup, tapi
+            hilang setelah redeploy/idle. Untuk riwayat permanen, hubungkan database
+            (lihat <code>DEPLOYMENT.md</code>).
+          </div>
+        ) : null}
         <label>Simbol<span className="req">*</span></label>
         <input value={form.symbol} onChange={(e) => update("symbol", e.target.value)} placeholder="EURUSD" />
 

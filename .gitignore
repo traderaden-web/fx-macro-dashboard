@@ -30,3 +30,11 @@ Thumbs.db
 # broker connection (berisi token MetaAPI — jangan di-commit)
 data/broker.json
 data/journal.json
+
+# Vercel
+.vercel/
+
+# artefak smoke-test / debug dari sesi agent — jangan pernah di-commit
+.smoke*
+.dbg*
+*.log.
