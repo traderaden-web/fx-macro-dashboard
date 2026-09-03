@@ -63,7 +63,7 @@ Halaman **yang sudah saya bangun di rilis ini (v3.0)** ditandai ✅.
 - **Price & Event Alerts**: browser notification + bunyi (paling ditunggu trader). | ✅ |
 - **Ai Trade Assistant (Copilot)** `/copilot` + `/api/copilot` — jawaban berbasis data MacroLab (teknikal + sentimen + kalender + risiko). | ✅ |
 - **Risk Calculator terhubung**: dari posisi terpilih → auto hitung lot sesuai akun. 
-- **Ide gila**: "Papan Skor Trading" — log jurnal otomatis (entry, SL, TP, hasil) + statistik win-rate, expectancy, drawdown → trader jadi disiplin.
+- **Ide gila**: "Papan Skor Trading" — log jurnal otomatis (entry, SL, TP, hasil) + statistik win-rate, expectancy, drawdown → trader jadi disiplin. | ✅ `/journal` (log trade + statistik kinerja) |
 
 ---
 
@@ -84,7 +84,7 @@ Halaman **yang sudah saya bangun di rilis ini (v3.0)** ditandai ✅.
 - **Fase 1 (selesai v3.0):** Command Center home, risk gauge, currency strength, live sessions, top movers, kalkulator trader, fallback data agar selalu hidup.
 - **Fase 2 (selesai v3.1):** Sidebar navigation, Technical dashboard agregat (matrix sinyal + regime), watchlist + alerts, Copilot AI, dark/light toggle, fundamental bias + scenario planner, PWA + notifikasi.
 - **Fase 3 (selesai v3.3):** Pattern screener (candlestick + breakout), Copilot LLM (OpenAI/Gemini/Anthropic), Komunitas + leaderboard prediksi.
-- **Fase 3:** AI assistant, market regime detector, scenario planner, jurnal/paper-trading.
+- **Fase 3 (selesai v3.4):** AI assistant, market regime detector, scenario planner, jurnal/paper-trading (Papan Skor `/journal`).
 - **Fase 4:** Komunitas + leaderboard prediksi, integrasi broker, monetisasi (premium data provider).
 
 ---

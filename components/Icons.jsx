@@ -181,3 +181,13 @@ export function IconUsers({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconBook({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <path {...base} d="M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z" />
+      <path {...base} d="M19 19v2H6a2 2 0 0 1-2-2" />
+      <path {...base} d="M9 7h6M9 11h6" />
+    </svg>
+  );
+}

@@ -29,3 +29,4 @@ Thumbs.db
 
 # broker connection (berisi token MetaAPI — jangan di-commit)
 data/broker.json
+data/journal.json

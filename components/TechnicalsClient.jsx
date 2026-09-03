@@ -174,12 +174,21 @@ export default function TechnicalsClient() {
         </div>
       )}
 
-      <p className="cell-muted" style={{ marginTop: 12 }}>
-        <b>Baca tabel:</b> ▲ = LONG (beli) · ▼ = SHORT (jual) · • = Netral. Skor confluence
-        berkisar +10 (semua TF setuju beli) hingga −10 (setuju jual). Grade A = sinyal selaras &
-        kuat; B = cukup; C = campuran (tunggu konfirmasi). Sinyal dihitung dari EMA 20/50, RSI 14,
-        MACD & ATR.
-      </p>
+        <p className="cell-muted" style={{ marginTop: 12 }}>
+          <b>Baca tabel:</b> ▲ = LONG (beli) · ▼ = SHORT (jual) · • = Netral. Skor confluence
+          berkisar +10 (semua TF setuju beli) hingga −10 (setuju jual). Grade A = sinyal selaras &
+          kuat; B = cukup; C = campuran (tunggu konfirmasi). Sinyal dihitung dari EMA 20/50, RSI 14,
+          MACD & ATR.
+        </p>
+
+        <div className="regime-strategy">
+          {filtered.filter((x) => x.regime?.strategy).slice(0, 4).map((x) => (
+            <div className="panel-card strategy-note" key={x.id}>
+              <strong>{x.label} — {x.regime?.label}</strong>
+              <span className="cell-muted">{x.regime?.strategy}</span>
+            </div>
+          ))}
+        </div>
     </div>
   );
 }

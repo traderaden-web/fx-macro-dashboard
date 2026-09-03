@@ -3990,3 +3990,51 @@ html[data-theme="light"] .regime-pill.range { color: var(--muted); background: r
 }
 .llm-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 .copilot-foot { font-size: 11px; }
+
+/* ============================================================
+   TRADING JOURNAL + REGIME STRATEGY
+   ============================================================ */
+.journal-grid { display: grid; grid-template-columns: minmax(280px, 340px) 1fr; gap: 18px; align-items: start; }
+.journal-form { padding: 18px; }
+.journal-form h3 { margin: 0 0 12px; font-size: 15px; }
+.journal-form label { display: block; margin: 10px 0 4px; font-size: 12px; color: var(--muted); }
+.journal-form input,
+.journal-form textarea {
+  width: 100%; padding: 9px 11px; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--panel-2); color: var(--text); font-size: 13px;
+}
+.journal-form .req { color: var(--down); margin-left: 2px; }
+.dir-toggle { display: flex; gap: 8px; }
+.dir-toggle button {
+  flex: 1; padding: 8px; border-radius: 9px; border: 1px solid var(--border);
+  background: var(--panel-2); color: var(--text); font-weight: 600; font-size: 13px; cursor: pointer;
+}
+.dir-toggle button.active { background: var(--accent); color: #1a1206; border-color: var(--accent); }
+.btn-row { display: flex; gap: 10px; margin-top: 14px; }
+
+.journal-stats { display: flex; flex-direction: column; gap: 12px; }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px; }
+.stat-value { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; font-variant-numeric: tabular-nums; }
+.stat-up .stat-value { color: var(--up); }
+.stat-down .stat-value { color: var(--down); }
+
+.journal-table { padding: 18px; margin-top: 0; }
+.journal-table h3 { margin: 0 0 12px; font-size: 15px; }
+.pnl-up { color: var(--up); }
+.pnl-down { color: var(--down); }
+.pnl-flat { color: var(--muted); }
+.row-actions { display: flex; gap: 6px; }
+.error-banner {
+  background: rgba(251,113,133,0.12); border: 1px solid rgba(251,113,133,0.3);
+  color: var(--down); padding: 8px 10px; border-radius: 8px; font-size: 12px; margin-bottom: 8px;
+}
+
+/* Regime → strategi rekomendasi */
+.regime-strategy { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 12px; margin-top: 14px; }
+.strategy-note { padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
+.strategy-note strong { font-size: 13px; }
+.strategy-note .cell-muted { font-size: 12px; line-height: 1.5; }
+
+@media (max-width: 860px) {
+  .journal-grid { grid-template-columns: 1fr; }
+}

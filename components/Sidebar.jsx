@@ -11,7 +11,7 @@ import ThemeToggle from "./ThemeToggle";
 import {
   IconHome, IconAnalytics, IconCalendar, IconIndicators, IconChart,
   IconLearn, IconNews, IconCalculator, IconGauge, IconWallet, IconLightbulb,
-  IconScan, IconUsers,
+  IconScan, IconUsers, IconBook,
 } from "./Icons";
 
 const ICONS = {
@@ -19,6 +19,7 @@ const ICONS = {
   indicators: IconIndicators, chart: IconChart, learn: IconLearn, news: IconNews,
   calculator: IconCalculator, technicals: IconGauge, watchlist: IconWallet, copilot: IconLightbulb,
   screener: IconScan, community: IconUsers, broker: IconWallet, settings: IconGauge,
+  journal: IconBook,
 };
 
 export const LINKS = [
@@ -38,6 +39,7 @@ export const LINKS = [
   { href: "/copilot", icon: "copilot", label: "Copilot", desc: "Asisten AI berbasis data MacroLab" },
   { href: "/learn", icon: "learn", label: "Belajar", desc: "Panduan & glosarium istilah pasar" },
   { href: "/settings", icon: "settings", label: "Pengaturan", desc: "LLM & integrasi broker" },
+  { href: "/journal", icon: "journal", label: "Jurnal", desc: "Papan skor: catat trade & statistik kinerja" },
 ];
 
 const SECTION_OF = (pathname) => {
