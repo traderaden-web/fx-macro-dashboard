@@ -30,9 +30,15 @@ const INSTRUMENTS = [
 
 export async function POST(req) {
   let question = "";
+  let bodyApiKey = "";
+  let bodyProvider = "";
+  let bodyModel = "";
   try {
     const body = await req.json();
     question = body?.question || "";
+    bodyApiKey = body?.apiKey || "";
+    bodyProvider = body?.provider || "";
+    bodyModel = body?.model || "";
   } catch { /* no-op */ }
 
   try {
@@ -57,15 +63,29 @@ export async function POST(req) {
 
     const ctx = { matrix, strength, bias, vix: vixSeries?.last?.value ?? null, events };
 
-    // 1) Coba LLM bila tersedia.
-    const provider = llmProvider();
+    // 1) Coba LLM bila tersedia (key dari body dulu, lalu env).
+    const provider = bodyProvider || llmProvider();
     if (provider) {
-      const system = buildSystemPrompt(ctx);
-      const raw = await askLLM(system, question, { provider });
-      if (raw) {
-        // Bersihkan markdown ringan & formatting berlebih dari model.
-        const text = cleanLLM(raw);
-        return NextResponse.json({ ok: true, source: "llm", provider, text });
+      // Suntik key sementara bila dikirim dari client (unpersonal settings).
+      const keyVar = provider === "openai" ? "OPENAI_API_KEY" : provider === "gemini" ? "GEMINI_API_KEY" : "ANTHROPIC_API_KEY";
+      const modelVar = provider === "openai" ? "OPENAI_MODEL" : provider === "gemini" ? "GEMINI_MODEL" : "ANTHROPIC_MODEL";
+      const prevKey = process.env[keyVar];
+      const prevModel = process.env[modelVar];
+      if (bodyApiKey) process.env[keyVar] = bodyApiKey;
+      if (bodyModel) process.env[modelVar] = bodyModel;
+      try {
+        const system = buildSystemPrompt(ctx);
+        const raw = await askLLM(system, question, { provider });
+        if (raw) {
+          const text = cleanLLM(raw);
+          return NextResponse.json({ ok: true, source: "llm", provider, text });
+        }
+      } catch (e) {
+        // Log lalu lanjut ke fallback.
+        console.error("[copilot] LLM gagal:", e?.message || e);
+      } finally {
+        process.env[keyVar] = prevKey;
+        process.env[modelVar] = prevModel;
       }
     }
 

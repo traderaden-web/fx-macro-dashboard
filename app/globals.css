@@ -3965,3 +3965,28 @@ html[data-theme="light"] .regime-pill.range { color: var(--muted); background: r
 
 /* ---- Community ---- */
 .community-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr)); gap: 16px; }
+
+/* ============================================================
+   BROKER / PORTFOLIO + SETTINGS + LLM
+   ============================================================ */
+.broker-connect { margin-bottom: 4px; }
+.connect-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.live-pill.off { color: var(--warn); background: rgba(251,191,36,0.12); }
+.connect-info { display: flex; flex-direction: column; }
+.connect-info strong { font-size: 15px; }
+.connect-actions { margin-left: auto; }
+.broker-form { margin-top: 14px; }
+.connect-cta { display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap; }
+.connect-cta p { flex: 1 1 220px; }
+.broker-kpis .kpi-value.val-up { color: var(--up); }
+.broker-kpis .kpi-value.val-down { color: var(--down); }
+.badge.dir-up { color: var(--up); background: rgba(74,222,128,0.14); }
+.badge.dir-down { color: var(--down); background: rgba(251,113,133,0.14); }
+
+.code-block {
+  background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px 14px; font-size: 12px; color: var(--text); overflow-x: auto;
+  line-height: 1.5; white-space: pre; margin: 4px 0;
+}
+.llm-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.copilot-foot { font-size: 11px; }

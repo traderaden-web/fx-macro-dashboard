@@ -26,3 +26,6 @@ Thumbs.db
 .idea/
 .vscode/
 .env.local
+
+# broker connection (berisi token MetaAPI — jangan di-commit)
+data/broker.json

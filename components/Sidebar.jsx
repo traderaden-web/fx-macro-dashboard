@@ -18,7 +18,7 @@ const ICONS = {
   home: IconHome, analytics: IconAnalytics, calendar: IconCalendar,
   indicators: IconIndicators, chart: IconChart, learn: IconLearn, news: IconNews,
   calculator: IconCalculator, technicals: IconGauge, watchlist: IconWallet, copilot: IconLightbulb,
-  screener: IconScan, community: IconUsers,
+  screener: IconScan, community: IconUsers, broker: IconWallet, settings: IconGauge,
 };
 
 export const LINKS = [
@@ -28,6 +28,7 @@ export const LINKS = [
   { href: "/charts", icon: "chart", label: "Chart", desc: "Chart Gold, Forex & Komoditas (TradingView)" },
   { href: "/analysis", icon: "analytics", label: "Analisis", desc: "Dampak rilis ekonomi ke pasangan mata uang" },
   { href: "/fundamentals", icon: "analytics", label: "Fundamental", desc: "Bias fundamental & cheat sheet rilis penting" },
+  { href: "/broker", icon: "broker", label: "Broker", desc: "Sinkron posisi nyata (MetaAPI) & portfolio" },
   { href: "/community", icon: "community", label: "Komunitas", desc: "Prediksi rilis & leaderboard akurasi" },
   { href: "/calculators", icon: "calculator", label: "Kalkulator", desc: "Position size, pip value, risiko & pivot points" },
   { href: "/watchlist", icon: "watchlist", label: "Watchlist", desc: "Pantau instrumen & pasang price alert" },
@@ -36,6 +37,7 @@ export const LINKS = [
   { href: "/news", icon: "news", label: "Berita", desc: "Berita pasar + filter berdampak tinggi" },
   { href: "/copilot", icon: "copilot", label: "Copilot", desc: "Asisten AI berbasis data MacroLab" },
   { href: "/learn", icon: "learn", label: "Belajar", desc: "Panduan & glosarium istilah pasar" },
+  { href: "/settings", icon: "settings", label: "Pengaturan", desc: "LLM & integrasi broker" },
 ];
 
 const SECTION_OF = (pathname) => {
