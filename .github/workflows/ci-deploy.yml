@@ -1,12 +1,18 @@
 # .github/workflows/ci-deploy.yml
-# GitHub Actions: tiap push ke main → (1) CI build check, (2) deploy ke Netlify
-# (hanya aktif jika secret/variable Netlify sudah di-set di repo).
+# GitHub Actions: tiap push ke main → (1) CI build check, (2) deploy otomatis.
 #
-# Setup sekali (di GitHub):
-#   Settings → Secrets and variables → Actions:
-#     Variables: NETLIFY_SITE_ID  = ID site Netlify-mu
-#     Secrets:   NETLIFY_AUTH_TOKEN = token Netlify (App → Applications → Generate)
-#   Jika tidak di-set, job deploy otomatis dilewati — CI tetap jalan.
+#   • Vercel  : deploy aktif jika VERCEL_TOKEN + VERCEL_PROJECT_ID (+ VERCEL_ORG_ID)
+#               sudah di-set di repo.
+#   • Netlify : deploy aktif jika NETLIFY_SITE_ID + NETLIFY_AUTH_TOKEN sudah di-set.
+#
+# Cukup pakai salah satu. Vercel juga bisa deploy sendiri lewat GitHub Integration
+# (tanpa workflow ini) — workflow ini berguna kalau ingin preview deploy per PR
+# atau kalau ingin log deploy terlihat di tab Actions.
+#
+# Setup sekali (di GitHub → Settings → Secrets and variables → Actions):
+#   Variables:  VERCEL_PROJECT_ID, VERCEL_ORG_ID, NETLIFY_SITE_ID
+#   Secrets:    VERCEL_TOKEN, NETLIFY_AUTH_TOKEN
+# Jika tidak di-set, job deploy otomatis dilewati — CI tetap jalan.
 
 name: CI & Deploy
 
@@ -30,6 +36,37 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+
+  deploy-vercel:
+    name: Deploy → Vercel
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.VERCEL_PROJECT_ID != ''
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Pull Vercel environment
+        run: npx vercel pull --yes --environment=production
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+      - name: Build
+        run: npx vercel build
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+      - name: Deploy
+        run: npx vercel deploy --prebuilt --prod
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
 
   deploy-netlify:
     name: Deploy → Netlify

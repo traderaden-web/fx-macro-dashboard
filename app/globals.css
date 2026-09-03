@@ -4029,6 +4029,13 @@ html[data-theme="light"] .regime-pill.range { color: var(--muted); background: r
   color: var(--down); padding: 8px 10px; border-radius: 8px; font-size: 12px; margin-bottom: 8px;
 }
 
+.notice-banner {
+  background: rgba(251,191,36,0.10); border: 1px solid rgba(251,191,36,0.28);
+  color: var(--warn); padding: 8px 10px; border-radius: 8px; font-size: 12px;
+  line-height: 1.5; margin-bottom: 8px;
+}
+.notice-banner code { font-size: 11px; }
+
 /* Regime → strategi rekomendasi */
 .regime-strategy { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 12px; margin-top: 14px; }
 .strategy-note { padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
