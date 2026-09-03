@@ -124,3 +124,70 @@ export function IconNews({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconCalculator({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <rect {...base} x="5" y="3" width="14" height="18" rx="2" />
+      <path {...base} d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01" />
+    </svg>
+  );
+}
+
+export function IconGauge({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <path {...base} d="M4 15a8 8 0 1 1 16 0" />
+      <path {...base} d="M12 15 16 9" />
+      <circle {...base} cx="12" cy="15" r="1.5" />
+    </svg>
+  );
+}
+
+export function IconWallet({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <rect {...base} x="3" y="6" width="18" height="14" rx="2" />
+      <path {...base} d="M3 10h18" />
+      <circle {...base} cx="16" cy="14" r="1.4" />
+    </svg>
+  );
+}
+
+export function IconSend({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <path {...base} d="M22 2 11 13" />
+      <path {...base} d="M22 2 15 22l-4-9-9-4z" />
+    </svg>
+  );
+}
+
+export function IconScan({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <path {...base} d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3" />
+      <path {...base} d="M4 12h16" />
+    </svg>
+  );
+}
+
+export function IconUsers({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <circle {...base} cx="9" cy="8" r="3.5" />
+      <path {...base} d="M2.5 20a6.5 6.5 0 0 1 13 0" />
+      <path {...base} d="M17 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-6.5-6.5" />
+    </svg>
+  );
+}
+
+export function IconBook({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <path {...base} d="M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z" />
+      <path {...base} d="M19 19v2H6a2 2 0 0 1-2-2" />
+      <path {...base} d="M9 7h6M9 11h6" />
+    </svg>
+  );
+}

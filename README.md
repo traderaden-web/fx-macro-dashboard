@@ -14,7 +14,14 @@ Jepang, dan Tiongkok.
 
 | Halaman | Deskripsi |
 | --- | --- |
-| **Overview** (`/`) | Ringkasan indikator AS paling berdampak, jadwal rilis terdekat, dan indikator pasar global. |
+| **Overview / Command Center** (`/`) | Satu layar: **Risk Appetite Gauge**, **sesi pasar live**, **kekuatan mata uang (currency strength)**, **top movers**, indikator AS paling berdampak, jadwal rilis, dan indikator pasar global. |
+| **Kalkulator Trader** (`/calculators`) | Position Size (risiko), Pip Value, Profit/Loss, Pivot Points (klasik), Fibonacci, dan konversi Lot↔Unit — semua real-time di browser. |
+| **Analisis Teknikal** (`/technicals`) | Matriks sinyal multi-timeframe (EMA/RSI/MACD/ATR) semua instrumen + skor confluence, grade setup A/B/C & **Market Regime** (tren/range). |
+| **Analisis Fundamental** (`/fundamentals`) | Bias fundamental per mata uang (suku bunga riil, kebijakan, pertumbuhan, pasar kerja) + **scenario planner** & cheat sheet rilis penting. |
+| **Watchlist & Alerts** (`/watchlist`) | Pantau instrumen favorit + **price alert** dengan notifikasi browser & bunyi. |
+| **Copilot** (`/copilot`) | Asisten AI berbasis data MacroLab. Mendukung **LLM sungguhan** (OpenAI/Gemini/Anthropic bila API key di-set) + fallback rule-based. |
+| **Pattern Screener** (`/screener`) | Scan otomatis pola candlestick (engulfing, pin bar, doji, inside bar, three soldiers) & breakout untuk semua pasangan. |
+| **Komunitas** (`/community`) | Prediksi rilis penting (NFP/CPI/FOMC) + **leaderboard akurasi** terhadap ACTUAL. |
 | **Analisis Dampak** (`/analysis`) | **Konsensus vs Actual** per rilis, "surprise", **metrik akurasi konsensus**, dan **dampak ke pasangan mata uang**. |
 | **Kalender Ekonomi** (`/calendar`) | Jadwal rilis (FOMC, NFP, CPI, PPI, ISM, dsb.) dengan filter kategori & dampak. |
 | **Indikator** (`/indicators`) | Tabel semua indikator dengan **filter** (pencarian, kategori, negara) & **urutan** dampak *High → Low*, nama, negara. |
@@ -22,6 +29,37 @@ Jepang, dan Tiongkok.
 | **Pusat Belajar** (`/learn`) | Panduan memahami data makro + penjelasan lengkap **cara membaca** & **prospek ke depan** tiap indikator. |
 | **Ekonomi Global** (`/economy`) | Profil tiap negara: inflasi, pengangguran, suku bunga, pertumbuhan. |
 | **API** (`/api/fred/[id]`) | Endpoint JSON per indikator (live FRED + fallback seed). |
+
+> 💡 **Roadmap ide pengembangan** (dari tampilan, data akurat, hingga fitur AI/komunitas) tersedia
+> di [`IDEAS.md`](./IDEAS.md).
+
+### 🔑 Aktifkan Copilot LLM (opsional)
+Copilot otomatis memakai LLM bila salah satu variabel env di-set (tanpa key, tetap berjalan
+pakai engine rule-based):
+```bash
+# .env.local
+OPENAI_API_KEY=sk-...        # atau
+GEMINI_API_KEY=...           # atau
+ANTHROPIC_API_KEY=...
+```
+Setiap jawaban LLM menyuntikkan data MacroLab (sinyal teknikal, currency strength, risk bias,
+VIX, jadwal rilis) ke dalam prompt sehingga konteksnya nyata, bukan generalisasi.
+
+### 🧭 Fitur Baru (v3.x)
+- **Sidebar Navigation**: tombol navigasi header dipindah ke sidebar kiri (drawer di mobile) untuk
+  tampilan yang lebih rapi.
+- **Command Center Home**: Risk Appetite gauge (VIX + bias mata uang), sesi pasar live, currency
+  strength meter (13 mata uang), dan top movers — semuanya hidup dari data live/fallback.
+- **Analisis Teknikal** (`/technicals`): matriks sinyal multi-timeframe + skor confluence + grade
+  setup + Market Regime.
+- **Analisis Fundamental** (`/fundamentals`): bias fundamental per mata uang + scenario planner &
+  cheat sheet rilis penting.
+- **Copilot AI** (`/copilot`): asisten berbasis data MacroLab.
+- **Watchlist & Alerts** (`/watchlist`): pantau instrumen + price alert (notifikasi & bunyi).
+- **Kalkulator Trader** (`/calculators`): position size, pip value, profit/loss, pivot & Fibonacci.
+- **Dark/Light toggle** di header.
+- **Fallback data otomatis**: jika penyedia live (FRED/Yahoo/ForexFactory) tak terjangkau, aplikasi
+  otomatis memakai data cadangan yang jelas ditandai (tidak pernah blank).
 
 ### 🎨 Tema, Responsivitas & Animasi
 - **Tema** Dark netral (`#0a0f0c`) dengan aksen **Green Lime** (`#a3e635`).

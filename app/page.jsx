@@ -1,10 +1,24 @@
 import Link from "next/link";
-import { getAllSeriesData } from "../lib/data";
-import { SEED_META } from "../lib/data";
+import { getAllSeriesData, SEED_META } from "../lib/data";
+import { getForexRates } from "../lib/forex";
+import { computeCurrencyStrength, riskBias } from "../lib/strength";
 import StatCard from "../components/StatCard";
 import Onboarding from "../components/Onboarding";
 import TopNews from "../components/TopNews";
-import { IconAnalytics, IconCalendar, IconChart, IconLearn } from "../components/Icons";
+import CurrencyStrength from "../components/CurrencyStrength";
+import RiskGauge from "../components/RiskGauge";
+import MarketSessions from "../components/MarketSessions";
+import {
+  IconAnalytics,
+  IconCalendar,
+  IconChart,
+  IconLearn,
+  IconCalculator,
+  IconGlobe,
+  IconGauge,
+  IconWallet,
+  IconLightbulb,
+} from "../components/Icons";
 import { ImpactBadge, CountryFlag } from "../components/Badges";
 import { UPCOMING } from "../data/calendar";
 import BootScreen from "../components/BootScreen";
@@ -32,8 +46,30 @@ const BANNER = [
   "╚═════╝  ╚═════╝  ╚═════╝ ╚═════╝  ╚═════╝ ╚═════╝  ╚═════╝ ╚═════╝",
 ].join("\n");
 
+const FX_ONLY = (p) => p.symbol.includes("/") && !p.symbol.startsWith("XAU") && !p.symbol.startsWith("XAG");
+
 export default async function Home() {
   const all = await getAllSeriesData();
+
+  // ── Data live (dengan fallback demo) ──────────────────────────────────
+  let fx = { pairs: [], source: "demo" };
+  try {
+    fx = await getForexRates();
+  } catch {
+    /* abaikan; pakai pairs kosong */
+  }
+  const pairs = fx.pairs || [];
+  const strength = computeCurrencyStrength(pairs);
+  const bias = riskBias(strength);
+  const vixDef = all.find((s) => s.id === "vix");
+  const vix = vixDef?.last?.value ?? null;
+
+  // Pergerakan terbesar (hanya pair FX).
+  const movers = [...pairs]
+    .filter(FX_ONLY)
+    .sort((a, b) => Math.abs(b.pct || 0) - Math.abs(a.pct || 0))
+    .slice(0, 6);
+
   // Indikator pasar & komoditas: kategori "pasar" (WTI, Brent, Gas, Tembaga, VIX, 10Y Yield).
   const global = all
     .filter((s) => s.category === "pasar")
@@ -59,11 +95,11 @@ export default async function Home() {
       <header className="home-head">
         <span className="ct-dots" aria-hidden="true"><i /><i /><i /></span>
         <span className="home-title mono">
-          MACROLAB <em>//</em> HOME.SYS <span className="ct-ver">v2.2</span>
+          MACROLAB <em>//</em> HOME.SYS <span className="ct-ver">v3.0</span>
         </span>
         <span className="home-head-right">
           <span className="live-pill">
-            <span className="pulse-dot" /> FRED·LIVE
+            <span className="pulse-dot" /> {fx.source === "demo" ? "DEMO DATA" : "FRED·LIVE"}
           </span>
           <TermClock />
         </span>
@@ -82,30 +118,126 @@ export default async function Home() {
           <span className="hp-cur">▮</span>
         </div>
         <h1>
-          Data Makro Ekonomi untuk <span style={{ color: "var(--accent)" }}>Trader Forex</span>
+          Command Center <span style={{ color: "var(--accent)" }}>Trader Forex</span>
         </h1>
         <p>
-          Pantau indikator yang benar-benar menggerakkan pasar — NFP, CPI, PPI, FOMC, suku bunga, dan
-          lainnya — lengkap dengan data historis dan analisis dampaknya terhadap mata uang. Data ditarik
-          live dari FRED, dengan cache lokal sebagai cadangan.
+          Satu layar untuk semua yang menggerakkan pasar — NFP, CPI, PPI, FOMC, suku bunga,
+          plus sentimen pasar, kekuatan mata uang, sesi live, dan pergerakan terbesar hari ini.
+          Data ditarik live dari FRED & Yahoo, dengan cache lokal sebagai cadangan.
         </p>
         <div className="hero-actions">
           <Link href="/analysis" className="btn btn-primary">
             <IconAnalytics size={16} /> Analisis Dampak Rilis
           </Link>
-          <Link href="/charts" className="btn btn-ghost">
-            <IconChart size={16} /> Chart Gold &amp; Komoditas
+          <Link href="/technicals" className="btn btn-ghost">
+            <IconGauge size={16} /> Analisis Teknikal
           </Link>
-          <Link href="/learn" className="btn btn-ghost">
-            <IconLearn size={16} /> Belajar Data Makro
+          <Link href="/copilot" className="btn btn-ghost">
+            <IconLightbulb size={16} /> Copilot AI
+          </Link>
+          <Link href="/watchlist" className="btn btn-ghost">
+            <IconWallet size={16} /> Watchlist &amp; Alerts
+          </Link>
+          <Link href="/calculators" className="btn btn-ghost">
+            <IconCalculator size={16} /> Kalkulator Trader
+          </Link>
+          <Link href="/charts" className="btn btn-ghost">
+            <IconChart size={16} /> Chart &amp; Teknikal
           </Link>
           <Link href="/calendar" className="btn btn-ghost">
             <IconCalendar size={16} /> Kalender Ekonomi
           </Link>
         </div>
         <div className="legend" style={{ marginTop: 20 }}>
-          <span><span className="pulse-dot" /> Sumber: FRED (live)</span>
+          <span><span className="pulse-dot" /> Sumber: FRED + Yahoo Finance</span>
           <span>Dikumpulkan: {SEED_META.generated?.slice(0, 10) || "—"}</span>
+          {fx.source === "demo" && <span className="cell-muted">· kurs tampil dalam mode demo</span>}
+        </div>
+      </section>
+
+      {/* ── Fitur Utama / Akses Cepat ── */}
+      <section className="section">
+        <div className="section-head">
+          <h2>Toolkit Trader Ritel</h2>
+          <span className="cell-muted">Analisis · Alat · AI</span>
+        </div>
+        <div className="grid grid-features">
+          <Link href="/technicals" className="feature-card reveal">
+            <span className="feature-ico"><IconGauge size={20} /></span>
+            <div><h3>Analisis Teknikal</h3><p>Matriks sinyal multi-timeframe + skor confluence &amp; grade setup untuk semua instrumen.</p></div>
+          </Link>
+          <Link href="/copilot" className="feature-card reveal">
+            <span className="feature-ico"><IconLightbulb size={20} /></span>
+            <div><h3>Copilot AI</h3><p>Tanya setup, sentimen, jadwal rilis &amp; manajemen risiko — dijawab dari data real-time.</p></div>
+          </Link>
+          <Link href="/watchlist" className="feature-card reveal">
+            <span className="feature-ico"><IconWallet size={20} /></span>
+            <div><h3>Watchlist &amp; Alerts</h3><p>Pantau instrumen favorit + notifikasi &amp; bunyi saat harga menyentuh target.</p></div>
+          </Link>
+          <Link href="/calculators" className="feature-card reveal">
+            <span className="feature-ico"><IconCalculator size={20} /></span>
+            <div><h3>Kalkulator Trader</h3><p>Position size, pip value, profit/loss, pivot points &amp; Fibonacci secara instan.</p></div>
+          </Link>
+        </div>
+      </section>
+
+      {/* ── Pantauan Pasar (Command Center) ── */}
+      <section className="section">
+        <div className="section-head">
+          <h2>Pantauan Pasar Sekarang</h2>
+          <span className="cell-muted">Risk · Sesi · Kekuatan Mata Uang</span>
+        </div>
+        <div className="grid grid-pulse">
+          <div className="panel-card reveal">
+            <div className="section-title">
+              <span className="inline-ico"><IconChart size={18} /></span>
+              <h3>Sentimen / Risk Appetite</h3>
+            </div>
+            <RiskGauge vix={vix} biasGap={bias?.gap} biasLabel={bias?.label} />
+          </div>
+          <div className="panel-card reveal">
+            <div className="section-title">
+              <span className="inline-ico"><IconAnalytics size={18} /></span>
+              <h3>Sesi Pasar Live</h3>
+            </div>
+            <MarketSessions />
+          </div>
+        </div>
+        <div className="panel-card reveal" style={{ marginTop: 16 }}>
+          <div className="section-title">
+            <span className="inline-ico"><IconGlobe size={18} /></span>
+            <h3>Kekuatan Mata Uang (Currency Strength)</h3>
+          </div>
+          <CurrencyStrength pairs={pairs} />
+        </div>
+      </section>
+
+      {/* ── Top Movers ── */}
+      <section className="section">
+        <div className="section-head">
+          <h2>Pergerakan Terbesar Hari Ini</h2>
+          <span className="cell-muted">Berdasarkan perubahan %</span>
+        </div>
+        <div className="grid grid-movers">
+          {movers.length === 0 ? (
+            <div className="cell-muted">Menunggu data kurs…</div>
+          ) : (
+            movers.map((p, i) => {
+              const dir = p.pct > 0 ? "up" : p.pct < 0 ? "down" : "flat";
+              return (
+                <Link href="/charts" className="panel-card mover" key={p.symbol}>
+                  <span className="mover-sym">{p.symbol}</span>
+                  <span className="mover-dir">
+                    {dir === "up" ? "▲" : dir === "down" ? "▼" : "—"}{" "}
+                    <span className={dir === "up" ? "val-up" : dir === "down" ? "val-down" : ""}>
+                      {p.pct > 0 ? "+" : ""}{Number(p.pct).toFixed(2)}%
+                    </span>
+                  </span>
+                  <span className="mover-val mono">{p.value >= 100 ? p.value.toFixed(2) : p.value.toFixed(4)}</span>
+                </Link>
+              );
+            })
+          )}
         </div>
       </section>
 

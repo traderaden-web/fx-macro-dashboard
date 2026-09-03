@@ -1,0 +1,10 @@
+{
+  "predictions": [
+    { "id": 1, "name": "FX Hunter", "indicatorId": "nfp", "releaseDate": "2026-08-07", "title": "Nonfarm Payrolls (NFP)", "predicted": 42, "note": "Perlambatan pasar kerja berlanjut", "ts": "2026-08-06T10:00:00Z" },
+    { "id": 2, "name": "Sultan Pip", "indicatorId": "nfp", "releaseDate": "2026-08-07", "title": "Nonfarm Payrolls (NFP)", "predicted": 95, "note": "Data masih kuat", "ts": "2026-08-06T11:00:00Z" },
+    { "id": 3, "name": "Rupiah Rider", "indicatorId": "nfp", "releaseDate": "2026-08-07", "title": "Nonfarm Payrolls (NFP)", "predicted": -20, "note": "Revisi & kejutan negatif", "ts": "2026-08-06T12:00:00Z" },
+    { "id": 4, "name": "DXY Watch", "indicatorId": "cpi", "releaseDate": "2026-08-12", "title": "CPI y/y (AS)", "predicted": 3.1, "note": "Inflasi mendingin", "ts": "2026-08-11T08:00:00Z" },
+    { "id": 5, "name": "Sultan Pip", "indicatorId": "cpi", "releaseDate": "2026-08-12", "title": "CPI y/y (AS)", "predicted": 3.6, "note": "Inflasi masih panas", "ts": "2026-08-11T09:00:00Z" },
+    { "id": 6, "name": "FX Hunter", "indicatorId": "cpi", "releaseDate": "2026-08-12", "title": "CPI y/y (AS)", "predicted": 3.4, "note": "Sesuai konsensus", "ts": "2026-08-11T10:00:00Z" }
+  ]
+}
