@@ -6,7 +6,7 @@
 
 import { NextResponse } from "next/server";
 import {
-  metaFetchAll, normalizeAccount, normalizePosition, normalizeOrder,
+  metaFetchAll, normalizeAccount, normalizePosition, normalizeOrder, friendlyError,
 } from "../../../lib/metaapi";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import path from "path";
@@ -82,7 +82,7 @@ export async function GET() {
   } catch (e) {
     // Bila gagal konek (token salah / akun off), tampilkan error + fallback demo.
     return NextResponse.json({
-      ok: false, connected: false, demo: true, error: String(e?.message || e),
+      ok: false, connected: false, demo: true, error: friendlyError(e),
       info: null, positions: [], orders: [], updated: new Date().toISOString(),
     }, { status: 502 });
   }
@@ -114,6 +114,6 @@ export async function POST(req) {
       updated: new Date().toISOString(),
     });
   } catch (e) {
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 502 });
+    return NextResponse.json({ ok: false, error: friendlyError(e) }, { status: 502 });
   }
 }
