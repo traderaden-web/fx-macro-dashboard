@@ -3930,3 +3930,38 @@ html[data-theme="light"] .side-link:hover { background: rgba(23,35,63,0.05); }
 .regime-pill.range { color: var(--muted); background: rgba(255,255,255,0.06); }
 .regime-pill.trans { color: var(--warn); background: rgba(251,191,36,0.10); }
 html[data-theme="light"] .regime-pill.range { color: var(--muted); background: rgba(23,35,63,0.05); }
+
+/* ============================================================
+   SCREENER (pola candlestick) + COMMUNITY (prediksi & leaderboard)
+   ============================================================ */
+.screener-card { cursor: pointer; }
+.screener-card.has-bullish { border-top: 2px solid var(--up); }
+.screener-card.has-bearish { border-top: 2px solid var(--down); }
+.screener-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+.screener-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.screener-sym { font-weight: 800; font-size: 15px; }
+.chip-dir { font-size: 10px; font-weight: 800; letter-spacing: 0.4px; padding: 3px 8px; border-radius: 999px; }
+.chip-dir.up { color: var(--up); background: rgba(74,222,128,0.12); }
+.chip-dir.down { color: var(--down); background: rgba(251,113,133,0.12); }
+.chip-dir.flat { color: var(--dim); background: rgba(255,255,255,0.06); }
+.screener-strength { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 12px 0 10px; }
+.edit-link { color: var(--accent); font-weight: 700; font-size: 13px; }
+.screener-str { font-size: 11px; color: var(--dim); }
+.screener-tfs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tf-chip { font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--border); }
+.tf-chip.up { color: var(--up); border-color: rgba(74,222,128,0.5); }
+.tf-chip.down { color: var(--down); border-color: rgba(251,113,133,0.5); }
+.tf-chip.flat { color: var(--dim); }
+.screener-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+.pattern-block { padding: 8px 0; border-bottom: 1px solid var(--border); }
+.pattern-block:last-child { border-bottom: none; }
+.pattern-tf { font-size: 12px; color: var(--accent); font-weight: 700; margin-bottom: 6px; }
+.pattern-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.pattern-list li { display: flex; align-items: center; gap: 10px; }
+.pattern-list li.up .pattern-name { color: var(--up); }
+.pattern-list li.down .pattern-name { color: var(--down); }
+.pattern-name { font-size: 13px; font-weight: 600; flex: 1 1 auto; }
+.pattern-str { font-size: 11px; color: var(--dim); font-variant-numeric: tabular-nums; }
+
+/* ---- Community ---- */
+.community-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr)); gap: 16px; }

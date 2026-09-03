@@ -19,7 +19,9 @@ Jepang, dan Tiongkok.
 | **Analisis Teknikal** (`/technicals`) | Matriks sinyal multi-timeframe (EMA/RSI/MACD/ATR) semua instrumen + skor confluence, grade setup A/B/C & **Market Regime** (tren/range). |
 | **Analisis Fundamental** (`/fundamentals`) | Bias fundamental per mata uang (suku bunga riil, kebijakan, pertumbuhan, pasar kerja) + **scenario planner** & cheat sheet rilis penting. |
 | **Watchlist & Alerts** (`/watchlist`) | Pantau instrumen favorit + **price alert** dengan notifikasi browser & bunyi. |
-| **Copilot** (`/copilot`) | Asisten AI berbasis data MacroLab: tanya setup, sentimen, jadwal rilis & manajemen risiko. |
+| **Copilot** (`/copilot`) | Asisten AI berbasis data MacroLab. Mendukung **LLM sungguhan** (OpenAI/Gemini/Anthropic bila API key di-set) + fallback rule-based. |
+| **Pattern Screener** (`/screener`) | Scan otomatis pola candlestick (engulfing, pin bar, doji, inside bar, three soldiers) & breakout untuk semua pasangan. |
+| **Komunitas** (`/community`) | Prediksi rilis penting (NFP/CPI/FOMC) + **leaderboard akurasi** terhadap ACTUAL. |
 | **Analisis Dampak** (`/analysis`) | **Konsensus vs Actual** per rilis, "surprise", **metrik akurasi konsensus**, dan **dampak ke pasangan mata uang**. |
 | **Kalender Ekonomi** (`/calendar`) | Jadwal rilis (FOMC, NFP, CPI, PPI, ISM, dsb.) dengan filter kategori & dampak. |
 | **Indikator** (`/indicators`) | Tabel semua indikator dengan **filter** (pencarian, kategori, negara) & **urutan** dampak *High → Low*, nama, negara. |
@@ -30,6 +32,18 @@ Jepang, dan Tiongkok.
 
 > 💡 **Roadmap ide pengembangan** (dari tampilan, data akurat, hingga fitur AI/komunitas) tersedia
 > di [`IDEAS.md`](./IDEAS.md).
+
+### 🔑 Aktifkan Copilot LLM (opsional)
+Copilot otomatis memakai LLM bila salah satu variabel env di-set (tanpa key, tetap berjalan
+pakai engine rule-based):
+```bash
+# .env.local
+OPENAI_API_KEY=sk-...        # atau
+GEMINI_API_KEY=...           # atau
+ANTHROPIC_API_KEY=...
+```
+Setiap jawaban LLM menyuntikkan data MacroLab (sinyal teknikal, currency strength, risk bias,
+VIX, jadwal rilis) ke dalam prompt sehingga konteksnya nyata, bukan generalisasi.
 
 ### 🧭 Fitur Baru (v3.x)
 - **Sidebar Navigation**: tombol navigasi header dipindah ke sidebar kiri (drawer di mobile) untuk

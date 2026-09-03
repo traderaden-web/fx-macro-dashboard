@@ -162,3 +162,22 @@ export function IconSend({ size = 16 }) {
     </svg>
   );
 }
+
+export function IconScan({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <path {...base} d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3" />
+      <path {...base} d="M4 12h16" />
+    </svg>
+  );
+}
+
+export function IconUsers({ size = 17 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <circle {...base} cx="9" cy="8" r="3.5" />
+      <path {...base} d="M2.5 20a6.5 6.5 0 0 1 13 0" />
+      <path {...base} d="M17 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-6.5-6.5" />
+    </svg>
+  );
+}

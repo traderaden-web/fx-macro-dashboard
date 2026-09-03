@@ -43,7 +43,7 @@ Halaman **yang sudah saya bangun di rilis ini (v3.0)** ditandai ✅.
 - **📊 Teknikal Dashboard** `/technicals`: tabel matrix semua instrumen × semua timeframe + skor "BUY/SELL/TUNGGU" + level SL/TP berbasis ATR. | ✅ |
 - **Pivot Points & S/R otomatis** per pair (klasik + Fibonacci) ditumpuk di chart.
 - **Deteksi struktur** (higher-high/lower-low, breakout, divergence RSI-harga) → label otomatis.
-- **Ide gila**: "Pola candlestick" (engulfing, doji, pin bar) + **screener** yang scan semua pair & timeframe untuk pola + sinyal bersama → daftar setup siap eksekusi.
+- **Pola candlestick + screener** `/screener`: scan otomatis semua pasangan × timeframe untuk engulfing, pin bar, doji, inside bar, three soldiers & breakout — plus `/api/patterns`. | ✅ |
 
 ## 4. 📈 Analisis Fundamental ("tempat informasi fundamental")
 
@@ -69,10 +69,10 @@ Halaman **yang sudah saya bangun di rilis ini (v3.0)** ditandai ✅.
 
 ## 6. 🔥 Fitur "Gila" yang Bikin Beda (Moat)
 
-1. **AI Trade Assistant** (chat/gemini): tanya "Apa setup terbaik untuk GBP/JPY hari ini?" → jawab pakai data teknikal + fundamental + kalender.<br/>*⚠️ Sudah ada versi rule-based di `/copilot`; upgrade ke LLM di Fase 3.*
+1. **AI Trade Assistant** (chat/gemini): tanya "Apa setup terbaik untuk GBP/JPY hari ini?" → jawab pakai data teknikal + fundamental + kalender.<br/>*✅ `/copilot` kini mendukung LLM sungguhan (OPENAI/GEMINI/ANTHROPIC) dengan prompt yang menyuntikkan data MacroLab; fallback ke rule-based bila tak ada key.*
 2. **"Market Regime" detector**: identifikasi tren/nakal/range per pair → menyarankan strategi cocok (trend-following vs mean-reversion). | ✅ di `/technicals` |
 3. **Scenario Planner**: "Kalau CPI 3.5% vs 4.0%, EUR/USD cenderung ke mana?" → simulasi untuk beberapa skenario sekaligus.
-4. **Social/Community**: feed analis trader, upvote, leaderboard akurasi prediksi → membangun kompetisi & engagement.
+4. **Social/Community**: feed analis trader, upvote, leaderboard akurasi prediksi → membangun kompetisi & engagement. | ✅ `/community` (prediksi rilis + leaderboard akurasi) |
 5. **Gamifikasi**: streak, badge, XP untuk belajar & konsisten. Trader retail rajin belajar jangka panjang.
 6. **Browser extension** / PWA offline + notifikasi — hadir di mana trader berada.
 7. **Multi-akun & broker connection** (meta-api) → posisi nyata tersinkron dengan analisis.
@@ -83,6 +83,7 @@ Halaman **yang sudah saya bangun di rilis ini (v3.0)** ditandai ✅.
 
 - **Fase 1 (selesai v3.0):** Command Center home, risk gauge, currency strength, live sessions, top movers, kalkulator trader, fallback data agar selalu hidup.
 - **Fase 2 (selesai v3.1):** Sidebar navigation, Technical dashboard agregat (matrix sinyal + regime), watchlist + alerts, Copilot AI, dark/light toggle, fundamental bias + scenario planner, PWA + notifikasi.
+- **Fase 3 (selesai v3.3):** Pattern screener (candlestick + breakout), Copilot LLM (OpenAI/Gemini/Anthropic), Komunitas + leaderboard prediksi.
 - **Fase 3:** AI assistant, market regime detector, scenario planner, jurnal/paper-trading.
 - **Fase 4:** Komunitas + leaderboard prediksi, integrasi broker, monetisasi (premium data provider).
 
