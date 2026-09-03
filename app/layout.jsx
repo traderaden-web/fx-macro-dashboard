@@ -4,9 +4,9 @@ import ForexTicker from "../components/ForexTicker";
 import TermFx from "../components/TermFx";
 
 export const metadata = {
-  title: "MacroLab — Data Makroekonomi untuk Trader Forex",
+  title: "MacroLab — Command Center Data & Analisis untuk Trader Forex",
   description:
-    "Dashboard makroekonomi untuk trader forex: kalender ekonomi (NFP, CPI, PPI, FOMC), data historis, dan analisis dampak terhadap mata uang.",
+    "Pusat data & analisis terlengkap untuk ritel trader forex: makroekonomi (NFP, CPI, PPI, FOMC), analisis teknikal multi-timeframe, analisis fundamental, kalender ekonomi, kekuatan mata uang, risk appetite, watchlist & alert, kalkulator trader, dan asisten AI.",
 };
 
 export default function RootLayout({ children }) {

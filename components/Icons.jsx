@@ -153,3 +153,12 @@ export function IconWallet({ size = 17 }) {
     </svg>
   );
 }
+
+export function IconSend({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <path {...base} d="M22 2 11 13" />
+      <path {...base} d="M22 2 15 22l-4-9-9-4z" />
+    </svg>
+  );
+}

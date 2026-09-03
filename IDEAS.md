@@ -17,7 +17,7 @@ Halaman **yang sudah saya bangun di rilis ini (v3.0)** ditandai ✅.
 | **Currency Strength Meter** | Kekuatan relatif 13 mata uang (0–100) dari pergerakan hari ini. | ✅ |
 | **Live Session Strip** | Sydney/Tokyo/London/NY: BUKA/TUTUP + jam WIB + progress bar saat berjalan. | ✅ |
 | **Top Movers** | Pair bergerak terbesar hari ini, satu klik ke chart. | ✅ |
-| Dark/Light toggle | Trader yang begadang butuh mode gelap super kontras + mode terang siang. | 🔜 |
+| **Dark/Light toggle** | Trader yang begadang butuh mode gelap super kontras + mode terang siang. | ✅ |
 | Terminal "Pro view" | Layout 3 kolom ala Bloomberg (watchlist | chart | terminal/berita) dengan hotkey. | 🔜 |
 | Spesial efek | Latar "market tape" bergerak halus di belakang hero; subtle glow saat angka berubah. | 🔜 |
 
@@ -39,7 +39,7 @@ Halaman **yang sudah saya bangun di rilis ini (v3.0)** ditandai ✅.
 ## 3. 🧠 Analisis Teknikal ("tempat informasi teknikal")
 
 - **Sinyal Multi-Timeframe** (15m → 1M): EMA 20/50 + RSI + MACD + ATR per pair/komoditas, digabung jadi "bias confluence". *Engine sudah ada → perlu UI agregat.*
-- **📊 Teknikal Dashboard** `/technicals`: tabel matrix semua instrumen × semua timeframe + skor "BUY/SELL/TUNGGU" + level SL/TP berbasis ATR.
+- **📊 Teknikal Dashboard** `/technicals`: tabel matrix semua instrumen × semua timeframe + skor "BUY/SELL/TUNGGU" + level SL/TP berbasis ATR. | ✅ |
 - **Pivot Points & S/R otomatis** per pair (klasik + Fibonacci) ditumpuk di chart.
 - **Deteksi struktur** (higher-high/lower-low, breakout, divergence RSI-harga) → label otomatis.
 - **Ide gila**: "Pola candlestick" (engulfing, doji, pin bar) + **screener** yang scan semua pair & timeframe untuk pola + sinyal bersama → daftar setup siap eksekusi.
@@ -58,8 +58,9 @@ Halaman **yang sudah saya bangun di rilis ini (v3.0)** ditandai ✅.
 
 - **Kalkulator Trader** `/calculators` — Position Size (risiko), Pip Value, Profit/Loss, Pivot Points, Fibonacci, Lot↔Unit. Semua real-time. | ✅ |
 - **Pip/unit & risk 1–2%** tersedia langsung di satu tempat. | ✅ |
-- **Watchlist / Favorit** (localStorage) + harga tersemat di header.
-- **Price & Event Alerts**: browser notification + bunyi (paling ditunggu trader).
+- **Watchlist / Favorit** (localStorage) + harga tersemat di header. | ✅ |
+- **Price & Event Alerts**: browser notification + bunyi (paling ditunggu trader). | ✅ |
+- **Ai Trade Assistant (Copilot)** `/copilot` + `/api/copilot` — jawaban berbasis data MacroLab (teknikal + sentimen + kalender + risiko). | ✅ |
 - **Risk Calculator terhubung**: dari posisi terpilih → auto hitung lot sesuai akun. 
 - **Ide gila**: "Papan Skor Trading" — log jurnal otomatis (entry, SL, TP, hasil) + statistik win-rate, expectancy, drawdown → trader jadi disiplin.
 
@@ -67,7 +68,7 @@ Halaman **yang sudah saya bangun di rilis ini (v3.0)** ditandai ✅.
 
 ## 6. 🔥 Fitur "Gila" yang Bikin Beda (Moat)
 
-1. **AI Trade Assistant** (chat/gemini): tanya "Apa setup terbaik untuk GBP/JPY hari ini?" → jawab pakai data teknikal + fundamental + kalender.
+1. **AI Trade Assistant** (chat/gemini): tanya "Apa setup terbaik untuk GBP/JPY hari ini?" → jawab pakai data teknikal + fundamental + kalender.<br/>*⚠️ Sudah ada versi rule-based di `/copilot`; upgrade ke LLM di Fase 3.*
 2. **"Market Regime" detector**: identifikasi tren/nakal/range per pair → menyarankan strategi cocok (trend-following vs mean-reversion).
 3. **Scenario Planner**: "Kalau CPI 3.5% vs 4.0%, EUR/USD cenderung ke mana?" → simulasi untuk beberapa skenario sekaligus.
 4. **Social/Community**: feed analis trader, upvote, leaderboard akurasi prediksi → membangun kompetisi & engagement.

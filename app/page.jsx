@@ -15,6 +15,9 @@ import {
   IconLearn,
   IconCalculator,
   IconGlobe,
+  IconGauge,
+  IconWallet,
+  IconLightbulb,
 } from "../components/Icons";
 import { ImpactBadge, CountryFlag } from "../components/Badges";
 import { UPCOMING } from "../data/calendar";
@@ -126,14 +129,20 @@ export default async function Home() {
           <Link href="/analysis" className="btn btn-primary">
             <IconAnalytics size={16} /> Analisis Dampak Rilis
           </Link>
+          <Link href="/technicals" className="btn btn-ghost">
+            <IconGauge size={16} /> Analisis Teknikal
+          </Link>
+          <Link href="/copilot" className="btn btn-ghost">
+            <IconLightbulb size={16} /> Copilot AI
+          </Link>
+          <Link href="/watchlist" className="btn btn-ghost">
+            <IconWallet size={16} /> Watchlist &amp; Alerts
+          </Link>
           <Link href="/calculators" className="btn btn-ghost">
             <IconCalculator size={16} /> Kalkulator Trader
           </Link>
           <Link href="/charts" className="btn btn-ghost">
             <IconChart size={16} /> Chart &amp; Teknikal
-          </Link>
-          <Link href="/learn" className="btn btn-ghost">
-            <IconLearn size={16} /> Belajar Data Makro
           </Link>
           <Link href="/calendar" className="btn btn-ghost">
             <IconCalendar size={16} /> Kalender Ekonomi
@@ -143,6 +152,32 @@ export default async function Home() {
           <span><span className="pulse-dot" /> Sumber: FRED + Yahoo Finance</span>
           <span>Dikumpulkan: {SEED_META.generated?.slice(0, 10) || "—"}</span>
           {fx.source === "demo" && <span className="cell-muted">· kurs tampil dalam mode demo</span>}
+        </div>
+      </section>
+
+      {/* ── Fitur Utama / Akses Cepat ── */}
+      <section className="section">
+        <div className="section-head">
+          <h2>Toolkit Trader Ritel</h2>
+          <span className="cell-muted">Analisis · Alat · AI</span>
+        </div>
+        <div className="grid grid-features">
+          <Link href="/technicals" className="feature-card reveal">
+            <span className="feature-ico"><IconGauge size={20} /></span>
+            <div><h3>Analisis Teknikal</h3><p>Matriks sinyal multi-timeframe + skor confluence &amp; grade setup untuk semua instrumen.</p></div>
+          </Link>
+          <Link href="/copilot" className="feature-card reveal">
+            <span className="feature-ico"><IconLightbulb size={20} /></span>
+            <div><h3>Copilot AI</h3><p>Tanya setup, sentimen, jadwal rilis &amp; manajemen risiko — dijawab dari data real-time.</p></div>
+          </Link>
+          <Link href="/watchlist" className="feature-card reveal">
+            <span className="feature-ico"><IconWallet size={20} /></span>
+            <div><h3>Watchlist &amp; Alerts</h3><p>Pantau instrumen favorit + notifikasi &amp; bunyi saat harga menyentuh target.</p></div>
+          </Link>
+          <Link href="/calculators" className="feature-card reveal">
+            <span className="feature-ico"><IconCalculator size={20} /></span>
+            <div><h3>Kalkulator Trader</h3><p>Position size, pip value, profit/loss, pivot points &amp; Fibonacci secara instan.</p></div>
+          </Link>
         </div>
       </section>
 

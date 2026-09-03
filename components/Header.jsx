@@ -5,18 +5,22 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IconHome, IconAnalytics, IconCalendar, IconIndicators, IconChart, IconLearn, IconNews, IconCalculator } from "./Icons";
+import ThemeToggle from "./ThemeToggle";
+import { IconHome, IconAnalytics, IconCalendar, IconIndicators, IconChart, IconLearn, IconNews, IconCalculator, IconGauge, IconWallet, IconLightbulb } from "./Icons";
 
-const ICONS = { home: IconHome, analytics: IconAnalytics, calendar: IconCalendar, indicators: IconIndicators, chart: IconChart, learn: IconLearn, news: IconNews, calculator: IconCalculator };
+const ICONS = { home: IconHome, analytics: IconAnalytics, calendar: IconCalendar, indicators: IconIndicators, chart: IconChart, learn: IconLearn, news: IconNews, calculator: IconCalculator, technicals: IconGauge, watchlist: IconWallet, copilot: IconLightbulb };
 
 const LINKS = [
   { href: "/", icon: "home", label: "Beranda", desc: "Command Center — sentimen, sesi & kekuatan mata uang" },
   { href: "/charts", icon: "chart", label: "Chart", desc: "Chart Gold, Forex & Komoditas (TradingView)" },
+  { href: "/technicals", icon: "technicals", label: "Teknikal", desc: "Matriks sinyal multi-timeframe & skor confluence" },
   { href: "/analysis", icon: "analytics", label: "Analisis", desc: "Dampak rilis ekonomi ke pasangan mata uang" },
   { href: "/calculators", icon: "calculator", label: "Kalkulator", desc: "Position size, pip value, risiko & pivot points" },
+  { href: "/watchlist", icon: "watchlist", label: "Watchlist", desc: "Pantau instrumen & pasang price alert" },
   { href: "/calendar", icon: "calendar", label: "Kalender", desc: "Jadwal rilis data ekonomi penting" },
   { href: "/indicators", icon: "indicators", label: "Indikator", desc: "Semua data indikator ekonomi" },
   { href: "/news", icon: "news", label: "Berita", desc: "Berita pasar + filter berdampak tinggi" },
+  { href: "/copilot", icon: "copilot", label: "Copilot", desc: "Asisten AI berbasis data MacroLab" },
   { href: "/learn", icon: "learn", label: "Belajar", desc: "Panduan & glosarium istilah pasar" },
 ];
 
@@ -45,6 +49,7 @@ export default function Header() {
           <span className="live-pill">
             <span className="pulse-dot" /> LIVE FRED
           </span>
+          <ThemeToggle />
         </div>
       </div>
     </header>

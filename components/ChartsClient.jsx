@@ -7,7 +7,7 @@
 
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import TradingViewWidget from "./TradingViewWidget";
 import SignalPanel from "./SignalPanel";
@@ -68,6 +68,17 @@ export default function ChartsClient({ news = [], upcoming = [] }) {
   const [active, setActive] = useState(SYMBOLS[0]);
   const [tf, setTf] = useState("1h"); // timeframe sinyal + chart (sync)
   const [modalNews, setModalNews] = useState(null); // berita yang dibuka di popup
+
+  // Baca ?sym= dari URL (mis. /charts?sym=gold) agar tautan dari halaman
+  // Teknikal/Watchlist langsung membuka aset tersebut.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sym = params.get("sym");
+    if (sym) {
+      const found = SYMBOLS.find((s) => s.id === sym.toLowerCase());
+      if (found) setActive(found);
+    }
+  }, []);
 
   const cot = useMemo(() => cotForAsset(active.id), [active]);
   const assetNews = useMemo(
