@@ -19,7 +19,6 @@ Halaman **yang sudah saya bangun di rilis ini (v3.0)** ditandai ✅.
 | **Top Movers** | Pair bergerak terbesar hari ini, satu klik ke chart. | ✅ |
 | **Dark/Light toggle** | Trader yang begadang butuh mode gelap super kontras + mode terang siang. | ✅ |
 | **Sidebar Navigation** | Navigasi utama dipindah dari tombol di header ke sidebar kiri (drawer di mobile) → tampilan lebih rapi. | ✅ |
-| **Sidebar responsif v2** | Grup menu, icon-rail collapse (desktop), drawer + overlay + Escape (tablet), bottom tab bar (ponsel), skip-link & aria. | ✅ |
 | Terminal "Pro view" | Layout 3 kolom ala Bloomberg (watchlist | chart | terminal/berita) dengan hotkey. | 🔜 |
 | Spesial efek | Latar "market tape" bergerak halus di belakang hero; subtle glow saat angka berubah. | 🔜 |
 
