@@ -4,7 +4,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import ForexTicker from "./ForexTicker";
@@ -13,6 +13,25 @@ export default function Shell({ children }) {
   const [open, setOpen] = useState(false);
   const toggle = () => setOpen((o) => !o);
   const close = () => setOpen(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && open) close();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open]);
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
   return (
     <div className="shell">
