@@ -1,20 +1,19 @@
 // components/Header.jsx
-// Topbar tipis: hamburger (mobile), judul seksi aktif, status & theme toggle.
-// Navigasi utama dipindah ke Sidebar (components/Sidebar.jsx).
+// Topbar tipis: hamburger (mobile/tablet), judul seksi aktif, jam WIB, status & theme toggle.
+// Navigasi utama ada di Sidebar (components/Sidebar.jsx).
 
 "use client";
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
-import { LINKS } from "./Sidebar";
+import { LINKS, isActivePath } from "./Sidebar";
 
 function sectionOf(pathname) {
-  const l = LINKS.find((x) => (x.href === "/" ? pathname === "/" : pathname.startsWith(x.href)));
-  return l?.label || "Command Center";
+  return LINKS.find((x) => isActivePath(pathname, x.href))?.label || "Command Center";
 }
 
-export default function Header({ onMenu }) {
+export default function Header({ onMenu, menuOpen = false }) {
   const pathname = usePathname();
   const [clock, setClock] = useState(null);
 
@@ -29,7 +28,14 @@ export default function Header({ onMenu }) {
   return (
     <header className="header topbar">
       <div className="header-inner topbar-inner">
-        <button className="menu-btn" onClick={onMenu} aria-label="Buka menu">
+        <button
+          type="button"
+          className={`menu-btn ${menuOpen ? "is-open" : ""}`}
+          onClick={onMenu}
+          aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
+          aria-expanded={menuOpen}
+          aria-controls="app-sidebar"
+        >
           <span /><span /><span />
         </button>
         <span className="topbar-title">
@@ -38,7 +44,7 @@ export default function Header({ onMenu }) {
           <span className="topbar-section">{section}</span>
         </span>
         <div className="header-right">
-          <span className="topbar-clock mono">
+          <span className="topbar-clock mono" suppressHydrationWarning>
             {clock
               ? new Intl.DateTimeFormat("id-ID", {
                   timeZone: "Asia/Jakarta",
@@ -47,7 +53,7 @@ export default function Header({ onMenu }) {
               : "—"}
             <span className="topbar-clock-tz"> WIB</span>
           </span>
-          <span className="live-pill"><span className="pulse-dot" /> LIVE</span>
+          <span className="live-pill topbar-live"><span className="pulse-dot" /> LIVE</span>
           <ThemeToggle />
         </div>
       </div>
