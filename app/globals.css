@@ -3849,34 +3849,108 @@ html[data-theme="light"] .ct-frame { color-scheme: dark; }
 
 /* ============================================================
    APP SHELL + SIDEBAR NAVIGASI
+   Breakpoint:
+     > 1024px  : sidebar kolom kiri tetap (bisa diringkas → icon rail 72px)
+     ≤ 1024px  : sidebar jadi drawer off-canvas (hamburger)
+     ≤ 640px   : + bottom tab bar (4 tujuan utama + Menu)
    ============================================================ */
-.shell { display: flex; min-height: 100vh; width: 100%; }
+:root {
+  --sidebar-w: 252px;
+  --sidebar-w-collapsed: 72px;
+  --tabbar-h: 58px;
+}
+
+.shell { display: flex; min-height: 100vh; min-height: 100dvh; width: 100%; }
+
+/* Skip link (aksesibilitas keyboard) */
+.skip-link {
+  position: absolute; left: 12px; top: -60px; z-index: 200;
+  padding: 8px 14px; border-radius: 10px; font-weight: 700; font-size: 13px;
+  background: var(--accent); color: #1a1205; transition: top 0.15s ease;
+}
+.skip-link:focus { top: 12px; outline: 2px solid var(--text); }
+#main-content:focus { outline: none; }
 
 /* ---- Sidebar (desktop: kolom kiri tetap) ---- */
 .sidebar {
-  width: 252px; flex: 0 0 252px; position: sticky; top: 0; height: 100vh;
-  overflow-y: auto; display: flex; flex-direction: column; gap: 10px;
+  width: var(--sidebar-w); flex: 0 0 var(--sidebar-w);
+  position: sticky; top: 0; height: 100vh; height: 100dvh;
+  overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;
+  display: flex; flex-direction: column; gap: 10px;
   padding: 16px 14px; z-index: 60;
   background: var(--bg-soft); background: color-mix(in srgb, var(--panel) 55%, var(--bg) 45%);
   border-right: 1px solid var(--border);
+  scrollbar-width: thin; scrollbar-color: var(--border-2) transparent;
+  transition: width 0.22s ease, flex-basis 0.22s ease, padding 0.22s ease;
 }
+.sidebar::-webkit-scrollbar { width: 6px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 6px; }
+
 .sidebar-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 4px 12px; }
+.sidebar-head .brand { min-width: 0; }
+.sidebar-head .brand-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sidebar-close { display: none; }
-.sidebar-nav { display: flex; flex-direction: column; gap: 3px; flex: 1 1 auto; }
+.sidebar-collapse {
+  display: grid; place-items: center; width: 28px; height: 28px; flex: 0 0 auto;
+  border-radius: 8px; background: var(--panel-2); border: 1px solid var(--border);
+  color: var(--muted); cursor: pointer; transition: all 0.16s ease;
+}
+.sidebar-collapse:hover { color: var(--text); border-color: var(--accent); }
+.sidebar-collapse:focus-visible, .sidebar-close:focus-visible, .menu-btn:focus-visible, .side-link:focus-visible, .tab-item:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+
+.sidebar-nav { display: flex; flex-direction: column; gap: 14px; flex: 1 1 auto; }
+.side-group { display: flex; flex-direction: column; gap: 3px; }
+.side-group-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase;
+  color: var(--dim); padding: 2px 12px 4px; white-space: nowrap; overflow: hidden;
+}
+
 .side-link {
-  display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 12px;
+  display: flex; align-items: center; gap: 11px; padding: 9px 12px; border-radius: 12px;
   color: var(--muted); transition: all 0.16s ease; border: 1px solid transparent;
+  position: relative;
 }
 .side-link:hover { color: var(--text); background: rgba(255,255,255,0.04); }
 .side-link.active { color: var(--accent); background: rgba(240,180,41,0.13); border-color: rgba(240,180,41,0.22); font-weight: 700; }
+.side-link.active::before {
+  content: ""; position: absolute; left: -14px; top: 9px; bottom: 9px; width: 3px;
+  border-radius: 0 3px 3px 0; background: var(--accent);
+}
+.side-link .nav-ico { margin-right: 0; flex: 0 0 auto; }
 .side-link-text { display: flex; flex-direction: column; min-width: 0; }
-.side-label { font-size: 13.5px; font-weight: 600; }
+.side-label { font-size: 13.5px; font-weight: 600; white-space: nowrap; }
 .side-link.active .side-label { font-weight: 700; }
 .side-desc { font-size: 10.5px; color: var(--dim); line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.side-link .nav-ico { margin-right: 0; }
+
 .sidebar-foot { padding-top: 12px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
 .side-foot-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .side-foot-meta { font-size: 10px; color: var(--dim); letter-spacing: 0.5px; display: flex; justify-content: space-between; gap: 8px; text-transform: uppercase; }
+.side-foot-meta span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---- Sidebar ringkas (icon rail) — hanya desktop ---- */
+@media (min-width: 1025px) {
+  .shell.sidebar-collapsed .sidebar {
+    width: var(--sidebar-w-collapsed); flex-basis: var(--sidebar-w-collapsed);
+    padding: 16px 10px;
+  }
+  .shell.sidebar-collapsed .sidebar-head { flex-direction: column; gap: 10px; padding: 4px 0 12px; }
+  .shell.sidebar-collapsed .brand-text,
+  .shell.sidebar-collapsed .side-link-text,
+  .shell.sidebar-collapsed .side-group-label,
+  .shell.sidebar-collapsed .live-pill-text,
+  .shell.sidebar-collapsed .side-foot-meta { display: none; }
+  .shell.sidebar-collapsed .side-group { gap: 4px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .shell.sidebar-collapsed .side-group:first-child { padding-top: 0; border-top: none; }
+  .shell.sidebar-collapsed .side-link { justify-content: center; padding: 11px 0; gap: 0; }
+  .shell.sidebar-collapsed .side-link.active::before { left: -10px; }
+  .shell.sidebar-collapsed .side-link .nav-ico svg { width: 19px; height: 19px; }
+  .shell.sidebar-collapsed .side-foot-row { flex-direction: column; gap: 10px; }
+  .shell.sidebar-collapsed .live-pill { padding: 6px; gap: 0; }
+  .shell.sidebar-collapsed .theme-toggle { margin-left: 0; }
+}
+@media (max-width: 1024px) { .sidebar-collapse { display: none; } }
 
 /* ---- Overlay (mobile) ---- */
 .sidebar-overlay { display: none; }
@@ -3885,58 +3959,98 @@ html[data-theme="light"] .ct-frame { color-scheme: dark; }
 .shell-content { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; width: 100%; }
 
 /* ---- Topbar (slim) ---- */
-.header.topbar { position: sticky; top: 0; z-index: 50; background: rgba(10,12,16,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); width: 100%; }
-.topbar-inner { padding: 10px 24px; min-height: 52px; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.menu-btn { display: none; width: 38px; height: 38px; flex: 0 0 auto; border-radius: 9px; background: var(--panel-2); border: 1px solid var(--border-2); cursor: pointer; place-items: center; justify-content: center; align-items: center; }
-.menu-btn span { display: block; width: 16px; height: 2px; background: var(--text); border-radius: 2px; margin: 2px 0; }
+.header.topbar { position: sticky; top: 0; z-index: 50; background: rgba(10,12,16,0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.topbar-inner { padding: 10px 22px; min-height: 52px; flex-wrap: nowrap; }
+.menu-btn {
+  display: none; width: 38px; height: 38px; flex: 0 0 auto; border-radius: 10px;
+  background: var(--panel-2); border: 1px solid var(--border-2); cursor: pointer;
+  place-items: center; gap: 0; padding: 0;
+}
+.menu-btn span { display: block; width: 16px; height: 2px; background: var(--text); border-radius: 2px; margin: 2px 0; transition: transform 0.2s ease, opacity 0.2s ease; }
+.menu-btn.is-open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.menu-btn.is-open span:nth-child(2) { opacity: 0; }
+.menu-btn.is-open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 .topbar-title { display: flex; align-items: baseline; gap: 7px; min-width: 0; flex: 1 1 auto; }
 .topbar-bread { color: var(--dim); font-weight: 600; font-size: 13px; }
 .topbar-sep { color: var(--dim); }
-.topbar-section { color: var(--text); font-weight: 700; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.topbar-section { color: var(--text); font-weight: 700; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .topbar-clock { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .topbar-clock-tz { color: var(--dim); }
-.header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.header-right { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
 
-/* ---- Responsive: sidebar jadi drawer di bawah 1024px ---- */
+/* ---- Bottom tab bar (ponsel) ---- */
+.tabbar { display: none; }
+
+/* ---- Responsive: sidebar jadi drawer di ≤ 1024px ---- */
 @media (max-width: 1024px) {
   .sidebar {
-    position: fixed; left: 0; top: 0; height: 100vh;
-    transform: translateX(-100%);
-    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.3, 1);
-    width: min(280px, 85vw); flex-basis: min(280px, 85vw);
-    box-shadow: 0 0 40px rgba(0,0,0,0.6);
-    z-index: 70;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
+    position: fixed; left: 0; top: 0; height: 100vh; height: 100dvh;
+    width: min(288px, 86vw); flex-basis: auto;
+    transform: translateX(-100%); transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: none; z-index: 120; visibility: hidden;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
   }
-  .sidebar.open { transform: translateX(0); }
+  .sidebar.open { transform: translateX(0); box-shadow: var(--shadow); visibility: visible; }
+  /* Tetap tersembunyi dari tab order saat tertutup, tetapi biarkan transisi keluar berjalan */
+  .sidebar:not(.open) { transition: transform 0.22s ease, visibility 0s linear 0.22s; }
   .sidebar-close {
-    display: grid; place-items: center;
-    width: 32px; height: 32px; border-radius: 8px;
-    background: var(--panel-2); border: 1px solid var(--border);
-    color: var(--muted); cursor: pointer;
+    display: grid; place-items: center; width: 34px; height: 34px; border-radius: 9px;
+    background: var(--panel-2); border: 1px solid var(--border); color: var(--muted); cursor: pointer; font-size: 14px;
   }
   .sidebar-close:hover { color: var(--text); border-color: var(--accent); }
   .sidebar-overlay {
-    display: block; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.65);
-    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-    z-index: 65;
+    display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+    z-index: 110; opacity: 0; pointer-events: none; transition: opacity 0.22s ease;
   }
+  .sidebar-overlay.show { opacity: 1; pointer-events: auto; }
   .menu-btn { display: grid; }
+  .side-link { padding: 11px 12px; }   /* target sentuh ≥ 44px */
+  .topbar-inner { padding: 10px 16px; }
 }
 
 @media (max-width: 640px) {
-  .topbar-inner { padding: 8px 12px; min-height: 48px; gap: 8px; }
-  .topbar-clock { display: none; }
+  .topbar-inner { padding: 8px 12px; gap: 10px; min-height: 50px; }
+  .topbar-bread, .topbar-sep { display: none; }
+  .topbar-section { font-size: 15px; }
+  .topbar-clock { font-size: 11.5px; }
+  .topbar-live { display: none; }           /* status LIVE sudah ada di ticker & sidebar */
   .header-right { gap: 6px; }
-  .live-pill { padding: 5px 9px; font-size: 11px; }
+  .header-right .theme-toggle { margin-left: 0; }
+
+  /* Bottom tab bar */
+  .tabbar {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 100;
+    height: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+    padding: 4px 4px calc(4px + env(safe-area-inset-bottom));
+    background: rgba(10,12,16,0.9); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--border);
+  }
+  .tab-item {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    border-radius: 10px; color: var(--dim); font-size: 10.5px; font-weight: 600; letter-spacing: 0.1px;
+    background: none; border: 0; cursor: pointer; padding: 4px 0; min-height: 44px; font-family: inherit;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+  .tab-item .tab-ico { display: inline-flex; }
+  .tab-item .tab-ico svg { width: 19px; height: 19px; }
+  .tab-item:active { background: rgba(255,255,255,0.05); }
+  .tab-item.active { color: var(--accent); }
+  .tab-item.active .tab-ico { filter: drop-shadow(0 0 6px rgba(240,180,41,0.45)); }
+
+  /* Ruang untuk tab bar agar footer / konten paling bawah tidak tertutup */
+  .shell-content { padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom)); }
+  .shell-content .footer { margin-bottom: 0; }
 }
 
-@media (max-width: 480px) {
-  .topbar-bread, .topbar-sep { display: none; }
-  .topbar-section { font-size: 14px; }
-  .topbar-inner { padding: 6px 10px; }
+@media (max-width: 380px) {
+  .topbar-clock-tz { display: none; }
+  .tab-item { font-size: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar, .sidebar:not(.open), .sidebar-overlay, .menu-btn span, .skip-link, .tab-item { transition: none; }
 }
 
 /* ---- Light-theme tweaks untuk shell/sidebar ---- */
@@ -3944,6 +4058,9 @@ html[data-theme="light"] .sidebar { background: color-mix(in srgb, var(--panel) 
 html[data-theme="light"] .header.topbar { background: rgba(245,247,252,0.9); }
 html[data-theme="light"] .menu-btn { background: var(--panel-2); }
 html[data-theme="light"] .side-link:hover { background: rgba(23,35,63,0.05); }
+html[data-theme="light"] .tabbar { background: rgba(245,247,252,0.92); }
+html[data-theme="light"] .tab-item:active { background: rgba(23,35,63,0.06); }
+html[data-theme="light"] .sidebar-overlay { background: rgba(15,23,42,0.35); }
 
 /* ============================================================
    FUNDAMENTALS (bias mata uang + scenario planner)
