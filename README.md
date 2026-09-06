@@ -46,10 +46,8 @@ Setiap jawaban LLM menyuntikkan data MacroLab (sinyal teknikal, currency strengt
 VIX, jadwal rilis) ke dalam prompt sehingga konteksnya nyata, bukan generalisasi.
 
 ### 🧭 Fitur Baru (v3.x)
-- **Sidebar Navigation (responsif)**: navigasi utama di sidebar kiri, dikelompokkan (Utama /
-  Analisis & Data / Alat Trader / Akun & Komunitas). Desktop bisa diringkas jadi *icon rail*
-  (preferensi tersimpan), tablet ≤1024px jadi drawer off-canvas (overlay, Escape, kunci scroll),
-  dan ponsel ≤640px mendapat *bottom tab bar* (Beranda · Teknikal · Chart · Kalender · Menu).
+- **Sidebar Navigation**: tombol navigasi header dipindah ke sidebar kiri (drawer di mobile) untuk
+  tampilan yang lebih rapi.
 - **Command Center Home**: Risk Appetite gauge (VIX + bias mata uang), sesi pasar live, currency
   strength meter (13 mata uang), dan top movers — semuanya hidup dari data live/fallback.
 - **Analisis Teknikal** (`/technicals`): matriks sinyal multi-timeframe + skor confluence + grade
