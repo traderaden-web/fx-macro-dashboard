@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function SettingsPage() {
   return (
-    <div className="page" style={{ maxWidth: 860 }}>
+    <div className="page">
       <header className="detail-head">
         <div className="detail-title-row">
           <span className="brand-mark" style={{ width: 40, height: 40 }}>ST</span>
