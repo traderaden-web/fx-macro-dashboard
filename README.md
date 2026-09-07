@@ -16,11 +16,10 @@ Jepang, dan Tiongkok.
 | --- | --- |
 | **Overview / Command Center** (`/`) | Satu layar: **Risk Appetite Gauge**, **sesi pasar live**, **kekuatan mata uang (currency strength)**, **top movers**, indikator AS paling berdampak, jadwal rilis, dan indikator pasar global. |
 | **Kalkulator Trader** (`/calculators`) | Position Size (risiko), Pip Value, Profit/Loss, Pivot Points (klasik), Fibonacci, dan konversi Lot↔Unit — semua real-time di browser. |
-| **Analisis Teknikal** (`/technicals`) | Matriks sinyal multi-timeframe (EMA/RSI/MACD/ATR) semua instrumen + skor confluence, grade setup A/B/C & **Market Regime** (tren/range). |
+| **Terminal Teknikal Pro** (`/terminal`) | Gabungan Teknikal + Screener + Chart dalam SATU halaman: **sinyal terukur** (Entry · SL · TP1/TP2/TP3 · R:R · pip), struktur **SMC** (BOS/CHoCH, Order Block, FVG, liquidity sweep), **ICT** (Premium/Discount, OTE, Killzone WIB), **SNR**, **Breakout** (range + retest), **Chart Pattern** bullish/bearish (H&S, Double Top/Bottom, Triangle, Wedge, Flag) + target terukur, matriks **7 timeframe** per instrumen, dan screener 11 instrumen × 7 TF. Halaman lama `/technicals` `/screener` `/charts` me-redirect ke sini. |
 | **Analisis Fundamental** (`/fundamentals`) | **Denyut Makro** (Fed, CPI, yield, VIX, emas + gauge risk-on/off), **Papan 11 Bank Sentral** (suku bunga, riil, inflasi vs target, pertemuan + countdown, sikap), **Matriks Carry** antar mata uang, bias fundamental per mata uang (skor 0–100 klik-untuk-rincian), **Fokus Rupiah 🇮🇩** (USD/IDR live + grafik interaktif, jalur BI-Rate, 9 indikator BPS/BI, faktor penggerak, kalender) & **Radar Rilis** dengan countdown detik + simulasi dampak. |
 | **Watchlist & Alerts** (`/watchlist`) | Pantau instrumen favorit + **price alert** dengan notifikasi browser & bunyi. |
 | **Copilot** (`/copilot`) | Asisten AI berbasis data MacroLab. Mendukung **LLM sungguhan** (OpenAI/Gemini/Anthropic bila API key di-set) + fallback rule-based. |
-| **Pattern Screener** (`/screener`) | Scan otomatis pola candlestick (engulfing, pin bar, doji, inside bar, three soldiers) & breakout untuk semua pasangan. |
 | **Komunitas** (`/community`) | Prediksi rilis penting (NFP/CPI/FOMC) + **leaderboard akurasi** terhadap ACTUAL. |
 | **Analisis Dampak** (`/analysis`) | **Konsensus vs Actual** per rilis, "surprise", **metrik akurasi konsensus**, dan **dampak ke pasangan mata uang**. |
 | **Kalender Ekonomi** (`/calendar`) | Jadwal rilis (FOMC, NFP, CPI, PPI, ISM, dsb.) dengan filter kategori & dampak. |
@@ -50,8 +49,8 @@ VIX, jadwal rilis) ke dalam prompt sehingga konteksnya nyata, bukan generalisasi
   tampilan yang lebih rapi.
 - **Command Center Home**: Risk Appetite gauge (VIX + bias mata uang), sesi pasar live, currency
   strength meter (13 mata uang), dan top movers — semuanya hidup dari data live/fallback.
-- **Analisis Teknikal** (`/technicals`): matriks sinyal multi-timeframe + skor confluence + grade
-  setup + Market Regime.
+- **Terminal Teknikal Pro** (`/terminal`): sinyal SL/TP terukur + SMC/ICT + SNR + breakout +
+  chart pattern klasik + matriks 7 timeframe + screener semua instrumen — satu halaman interaktif.
 - **Analisis Fundamental** (`/fundamentals`): denyut makro + papan 11 bank sentral + matriks carry +
   bias per mata uang + **fokus Rupiah** (BI-Rate, BPS, USD/IDR) + radar rilis & simulasi dampak.
 - **Copilot AI** (`/copilot`): asisten berbasis data MacroLab.

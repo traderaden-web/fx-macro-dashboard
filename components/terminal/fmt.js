@@ -56,16 +56,13 @@ export const SIG = {
 };
 
 export const TF_LABEL = {
-  "1m": "1 Menit", "5m": "5 Menit",
   "15m": "15 Menit", "30m": "30 Menit", "1h": "1 Jam", "4h": "4 Jam",
   "1d": "Harian", "1w": "Mingguan", "1mo": "Bulanan",
 };
 export const TF_SHORT = {
-  "1m": "M1", "5m": "M5",
   "15m": "15m", "30m": "30m", "1h": "1H", "4h": "4H", "1d": "1D", "1w": "1W", "1mo": "1B",
 };
 export const TV_INTERVAL = {
-  "1m": "1", "5m": "5",
   "15m": "15", "30m": "30", "1h": "60", "4h": "240", "1d": "D", "1w": "W", "1mo": "1M",
 };
 /** TF pola candlestick (API /api/patterns mendukung 4 TF ini). */

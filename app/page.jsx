@@ -141,8 +141,8 @@ export default async function Home() {
           <Link href="/analysis" className="btn btn-primary">
             <IconAnalytics size={16} /> Analisis Dampak Rilis
           </Link>
-          <Link href="/technicals" className="btn btn-ghost">
-            <IconGauge size={16} /> Analisis Teknikal
+          <Link href="/terminal" className="btn btn-ghost">
+            <IconGauge size={16} /> Terminal Teknikal
           </Link>
           <Link href="/copilot" className="btn btn-ghost">
             <IconLightbulb size={16} /> Copilot AI
@@ -153,8 +153,8 @@ export default async function Home() {
           <Link href="/calculators" className="btn btn-ghost">
             <IconCalculator size={16} /> Kalkulator Trader
           </Link>
-          <Link href="/charts" className="btn btn-ghost">
-            <IconChart size={16} /> Chart &amp; Teknikal
+          <Link href="/terminal" className="btn btn-ghost">
+            <IconChart size={16} /> Chart Live &amp; Sinyal
           </Link>
           <Link href="/calendar" className="btn btn-ghost">
             <IconCalendar size={16} /> Kalender Ekonomi
@@ -174,9 +174,9 @@ export default async function Home() {
           <span className="cell-muted">Analisis · Alat · AI</span>
         </div>
         <div className="grid grid-features">
-          <Link href="/technicals" className="feature-card reveal">
+          <Link href="/terminal" className="feature-card reveal">
             <span className="feature-ico"><IconGauge size={20} /></span>
-            <div><h3>Analisis Teknikal</h3><p>Matriks sinyal multi-timeframe + skor confluence &amp; grade setup untuk semua instrumen.</p></div>
+            <div><h3>Terminal Teknikal</h3><p>Sinyal SL/TP terukur, SMC·ICT, SNR, chart pattern &amp; screener 7 timeframe — satu halaman.</p></div>
           </Link>
           <Link href="/copilot" className="feature-card reveal">
             <span className="feature-ico"><IconLightbulb size={20} /></span>
@@ -237,7 +237,7 @@ export default async function Home() {
             movers.map((p, i) => {
               const dir = p.pct > 0 ? "up" : p.pct < 0 ? "down" : "flat";
               return (
-                <Link href="/charts" className="panel-card mover" key={p.symbol}>
+                <Link href="/terminal" className="panel-card mover" key={p.symbol}>
                   <span className="mover-sym">{p.symbol}</span>
                   <span className="mover-dir">
                     {dir === "up" ? "▲" : dir === "down" ? "▼" : "—"}{" "}
