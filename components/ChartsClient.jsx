@@ -26,6 +26,7 @@ const SYMBOLS = [
   { id: "eurusd", label: "EUR/USD", tv: "FX:EURUSD", desc: "Major pair" },
   { id: "gbpusd", label: "GBP/USD", tv: "FX:GBPUSD", desc: "Major pair" },
   { id: "usdjpy", label: "USD/JPY", tv: "FX:USDJPY", desc: "Major pair" },
+  { id: "usdchf", label: "USD/CHF", tv: "FX:USDCHF", desc: "Major pair · safe-haven" },
   { id: "audusd", label: "AUD/USD", tv: "FX:AUDUSD", desc: "Major pair" },
   { id: "usdcad", label: "USD/CAD", tv: "FX:USDCAD", desc: "Major pair" },
   { id: "nzdusd", label: "NZD/USD", tv: "FX:NZDUSD", desc: "Major pair" },
