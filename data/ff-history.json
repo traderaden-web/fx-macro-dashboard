@@ -1,7 +1,7 @@
 {
  "source": "ForexFactory (nfs.faireconomy.media/ff_calendar_thisweek.json)",
  "note": "Arsip event kalender FF per minggu (forecast & previous). Diperbarui otomatis oleh scripts/fetch-ff.mjs (GitHub Actions). Kolom actual TIDAK berasal dari file ini — selalu dari FRED.",
- "updated": "2026-09-06T12:00:00.000Z",
+ "updated": "2026-09-07T18:14:04.054Z",
  "weeks": [
   "2026-09-07"
  ],
@@ -17,11 +17,13 @@
   {"title":"Final GDP q/q","country":"JPY","date":"2026-09-07T19:50:00-04:00","impact":"Low","forecast":"0.4%","previous":"0.3%"},
   {"title":"Westpac Consumer Sentiment","country":"AUD","date":"2026-09-07T20:30:00-04:00","impact":"Low","forecast":"","previous":"6.0%"},
   {"title":"Economy Watchers Sentiment","country":"JPY","date":"2026-09-08T01:00:00-04:00","impact":"Low","forecast":"46.3","previous":"45.7"},
-  {"title":"CPI y/y","country":"CNY","date":"2026-09-08T21:30:00-04:00","impact":"Low","forecast":"0.9%","previous":"0.5%"},
+  {"title":"Monetary Policy Report Hearings","country":"GBP","date":"2026-09-08T09:15:00-04:00","impact":"Medium","forecast":"","previous":""},
+  {"title":"CPI y/y","country":"CNY","date":"2026-09-08T21:30:00-04:00","impact":"Low","forecast":"0.8%","previous":"0.5%"},
   {"title":"PPI y/y","country":"CNY","date":"2026-09-08T21:30:00-04:00","impact":"Low","forecast":"3.6%","previous":"3.5%"},
   {"title":"French Industrial Production m/m","country":"EUR","date":"2026-09-09T02:45:00-04:00","impact":"Low","forecast":"0.1%","previous":"0.1%"},
   {"title":"ADP Weekly Employment Change","country":"USD","date":"2026-09-09T08:15:00-04:00","impact":"Low","forecast":"","previous":""},
   {"title":"ADP Weekly Employment Change","country":"USD","date":"2026-09-09T08:16:00-04:00","impact":"Low","forecast":"","previous":"11.8K"},
+  {"title":"ECB President Lagarde Speaks","country":"EUR","date":"2026-09-09T13:00:00-04:00","impact":"Medium","forecast":"","previous":""},
   {"title":"German Final CPI m/m","country":"EUR","date":"2026-09-10T02:00:00-04:00","impact":"Low","forecast":"0.2%","previous":"0.2%"},
   {"title":"Italian Industrial Production m/m","country":"EUR","date":"2026-09-10T04:00:00-04:00","impact":"Low","forecast":"0.3%","previous":"-1.0%"},
   {"title":"Main Refinancing Rate","country":"EUR","date":"2026-09-10T08:15:00-04:00","impact":"High","forecast":"2.65%","previous":"2.40%"},
@@ -39,6 +41,7 @@
   {"title":"Core CPI y/y","country":"USD","date":"2026-09-11T08:30:00-04:00","impact":"High","forecast":"2.4%","previous":"2.5%"},
   {"title":"CPI m/m","country":"USD","date":"2026-09-11T08:30:00-04:00","impact":"High","forecast":"0.4%","previous":"0.1%"},
   {"title":"CPI y/y","country":"USD","date":"2026-09-11T08:30:00-04:00","impact":"High","forecast":"3.4%","previous":"3.4%"},
+  {"title":"ECB President Lagarde Speaks","country":"EUR","date":"2026-09-11T10:00:00-04:00","impact":"Medium","forecast":"","previous":""},
   {"title":"Prelim UoM Consumer Sentiment","country":"USD","date":"2026-09-11T10:00:00-04:00","impact":"Medium","forecast":"51.0","previous":"51.0"},
   {"title":"Prelim UoM Inflation Expectations","country":"USD","date":"2026-09-11T10:00:00-04:00","impact":"Medium","forecast":"","previous":"4.3%"},
   {"title":"ECB President Lagarde Speaks","country":"EUR","date":"2026-09-12T03:30:00-04:00","impact":"Medium","forecast":"","previous":""}
