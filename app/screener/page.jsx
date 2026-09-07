@@ -18,7 +18,7 @@ export default function ScreenerPage() {
             <p className="cell-muted" style={{ margin: 0, maxWidth: 720 }}>
               Mesin pemindai yang <b>scan semua pasangan otomatis</b> untuk pola candlestick
               (engulfing, pin bar, doji, inside bar, three soldiers) &amp; breakout. Klik kartu
-              untuk melihat detail pola per timeframe, lalu buka chart untuk konfirmasi.
+              untuk melihat detail pola per timeframe dan mengganti preview chart live untuk konfirmasi.
             </p>
           </div>
         </div>

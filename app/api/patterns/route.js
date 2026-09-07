@@ -18,6 +18,7 @@ const INSTRUMENTS = [
   { id: "eurusd", label: "EUR/USD", kind: "fx" },
   { id: "gbpusd", label: "GBP/USD", kind: "fx" },
   { id: "usdjpy", label: "USD/JPY", kind: "fx" },
+  { id: "usdchf", label: "USD/CHF", kind: "fx" },
   { id: "audusd", label: "AUD/USD", kind: "fx" },
   { id: "usdcad", label: "USD/CAD", kind: "fx" },
   { id: "nzdusd", label: "NZD/USD", kind: "fx" },

@@ -1,15 +1,17 @@
 // components/ScreenerClient.jsx
 // Screener pola candlestick + breakout — scan otomatis semua instrumen ×
-// timeframe. Menampilkan setup yang terdeteksi dengan arah, kekuatan & link chart.
+// timeframe. Menampilkan setup yang terdeteksi dengan arah, kekuatan & chart live.
 
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { IconSearch, IconChart } from "./Icons";
+import TradingViewWidget from "./TradingViewWidget";
+import LiveChartModal, { tradingViewSymbol } from "./LiveChartModal";
 
 const TF_TABS = ["15m", "1h", "4h", "1d"];
 const TF_LABEL = { "15m": "15 Menit", "1h": "1 Jam", "4h": "4 Jam", "1d": "Harian" };
+const TV_INTERVAL = { "15m": "15", "1h": "60", "4h": "240", "1d": "D" };
 
 const DIR_CLASS = { bullish: "up", bearish: "down", neutral: "flat" };
 const DIR_ARROW = { bullish: "▲", bearish: "▼", neutral: "•" };
@@ -22,6 +24,8 @@ export default function ScreenerClient() {
   const [filter, setFilter] = useState("");
   const [updated, setUpdated] = useState(null);
   const [detail, setDetail] = useState(null); // instrumen yang dibuka detailnya
+  const [previewId, setPreviewId] = useState("eurusd");
+  const [chartInstrument, setChartInstrument] = useState(null);
 
   useEffect(() => {
     let active = true;
@@ -53,6 +57,7 @@ export default function ScreenerClient() {
   }, [instruments, filter]);
 
   const totalSignals = instruments.reduce((s, x) => s + (x.signalCount || 0), 0);
+  const preview = filtered.find((inst) => inst.id === previewId) || filtered[0] || null;
 
   return (
     <div>
@@ -73,6 +78,50 @@ export default function ScreenerClient() {
         </span>
       </div>
 
+      {!loading && preview && (
+        <section className="screener-live-panel" aria-label="Preview chart live">
+          <div className="screener-live-head">
+            <div>
+              <span className="live-chart-kicker"><span className="pulse-dot" /> LIVE MARKET PREVIEW</span>
+              <h2>{preview.label} <span>· {TF_LABEL[tf]}</span></h2>
+              <p>
+                Chart live TradingView untuk konfirmasi setup sebelum membuka detail pola.
+              </p>
+            </div>
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={() => setChartInstrument(preview)}
+            >
+              <IconChart size={14} /> Perbesar chart
+            </button>
+          </div>
+          <div className="screener-live-chart">
+            <TradingViewWidget
+              type="advanced-chart"
+              className="screener-live-widget"
+              height="none"
+              config={{
+                autosize: true,
+                symbol: tradingViewSymbol(preview.id),
+                interval: TV_INTERVAL[tf],
+                timezone: "Asia/Jakarta",
+                theme: "dark",
+                style: "1",
+                locale: "en",
+                allow_symbol_change: true,
+                save_image: false,
+                support_host: "https://www.tradingview.com",
+              }}
+            />
+          </div>
+          <div className="screener-live-foot">
+            <span>Pair aktif: <b>{preview.label}</b></span>
+            <span>Klik kartu di bawah untuk mengganti preview dan melihat pola.</span>
+          </div>
+        </section>
+      )}
+
       {loading ? (
         <div className="cell-muted">Scanning pola…</div>
       ) : filtered.length === 0 ? (
@@ -82,7 +131,11 @@ export default function ScreenerClient() {
           {filtered.map((inst) => {
             const top = inst.top;
             return (
-              <div className={`panel-card screener-card ${top ? `has-${top.dir}` : ""}`} key={inst.id} onClick={() => setDetail(inst)}>
+              <div
+                className={`panel-card screener-card ${top ? `has-${top.dir}` : ""} ${preview?.id === inst.id ? "is-preview" : ""}`}
+                key={inst.id}
+                onClick={() => { setPreviewId(inst.id); setDetail(inst); }}
+              >
                 <div className="screener-head">
                   <span className="screener-sym">{inst.label}</span>
                   <span className={`chip-dir ${top ? DIR_CLASS[top.dir] : "flat"}`}>
@@ -111,9 +164,14 @@ export default function ScreenerClient() {
                 </div>
                 <div className="screener-foot">
                   <span className="cell-muted">{inst.signalCount} timeframe bersinyal</span>
-                  <Link href={`/charts?sym=${inst.id}`} className="btn btn-ghost btn-sm" onClick={(e) => e.stopPropagation()}>
-                    <IconChart size={14} /> Chart
-                  </Link>
+                  <button
+                    type="button"
+                    className="btn btn-ghost btn-sm"
+                    onClick={(event) => { event.stopPropagation(); setPreviewId(inst.id); setChartInstrument(inst); }}
+                    aria-label={`Buka chart live ${inst.label}`}
+                  >
+                    <IconChart size={14} /> Chart Live
+                  </button>
                 </div>
               </div>
             );
@@ -123,7 +181,7 @@ export default function ScreenerClient() {
 
       {detail && (
         <div className="modal-backdrop" onClick={() => setDetail(null)}>
-          <div className="modal" style={{ maxWidth: 560 }}>
+          <div className="modal" style={{ maxWidth: 560 }} onClick={(event) => event.stopPropagation()}>
             <div className="modal-title">{detail.label} — Deteksi Pola</div>
             <div className="modal-meta">Scan otomatis per timeframe</div>
             <div className="modal-body">
@@ -147,9 +205,13 @@ export default function ScreenerClient() {
               ))}
               <div className="modal-actions">
                 <button className="btn btn-ghost" onClick={() => setDetail(null)}>Tutup</button>
-                <Link href={`/charts?sym=${detail.id}`} className="btn btn-primary" onClick={() => setDetail(null)}>
-                  <IconChart size={14} /> Buka Chart
-                </Link>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => { setChartInstrument(detail); setDetail(null); }}
+                >
+                  <IconChart size={14} /> Buka Chart Live
+                </button>
               </div>
               <p className="cell-muted" style={{ fontSize: 12 }}>
                 Pola adalah alat identifikasi, bukan sinyal otomatis — konfirmasi dengan level
@@ -158,6 +220,14 @@ export default function ScreenerClient() {
             </div>
           </div>
         </div>
+      )}
+
+      {chartInstrument && (
+        <LiveChartModal
+          instrument={chartInstrument}
+          timeframe={tf}
+          onClose={() => setChartInstrument(null)}
+        />
       )}
     </div>
   );
