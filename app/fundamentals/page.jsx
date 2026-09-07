@@ -1,40 +1,44 @@
 import FundamentalsDashboard from "../../components/FundamentalsDashboard";
+import { getFundamentalsBoardData } from "../../lib/fundamentalsData";
 import { IconAnalytics } from "../../components/Icons";
 
 export const metadata = {
-  title: "Analisis Fundamental — MacroLab",
+  title: "Fundamental — MacroLab",
   description:
-    "Bias fundamental per mata uang dari data makro resmi dan harga pasar terbaru, dengan scenario planner untuk rilis penting.",
+    "Papan fundamental lengkap: suku bunga 11 bank sentral, inflasi vs target, bias per mata uang, fokus Rupiah (BI-Rate, BPS) & simulasi rilis.",
 };
 
-// Snapshot diambil oleh klien dari /api/fundamentals tanpa HTTP cache dan
-// diperbarui berkala. Halaman ini tidak menyimpan angka makro statis saat build.
+// Dirender per request agar angka awal (FRED, ForexFactory, Yahoo) segar;
+// klien lalu menyegarkan otomatis tiap 5 menit via /api/fundamentals/board.
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default function FundamentalsPage() {
+export default async function FundamentalsPage() {
+  const initial = await getFundamentalsBoardData().catch(() => null);
+
   return (
     <div className="page">
       <header className="detail-head">
         <div className="detail-title-row">
           <span className="brand-mark" style={{ width: 40, height: 40 }}>FU</span>
           <div>
-            <h1>Analisis Fundamental</h1>
-            <p className="cell-muted" style={{ margin: 0, maxWidth: 720 }}>
-              Pahami <b>mengapa</b> mata uang bergerak melalui suku bunga, inflasi, pertumbuhan,
-              pasar kerja, dan harga pasar. Snapshot mengecek publikasi resmi terbaru secara otomatis
-              serta menandai data fallback secara transparan.
+            <h1>Fundamental</h1>
+            <p className="cell-muted" style={{ margin: 0, maxWidth: 780 }}>
+              Papan lengkap <b>mengapa mata uang bergerak</b>: suku bunga 11 bank sentral, inflasi vs target,
+              bias per mata uang, sorotan khusus <b>Rupiah 🇮🇩</b>, dan radar rilis dengan simulasi dampak —
+              semua bertanda sumber &amp; tanggal.
             </p>
           </div>
         </div>
         <div className="tags">
           <span className="badge cat"><IconAnalytics size={13} /> Bias Fundamental</span>
           <span className="badge cat">Auto refresh 5 menit</span>
-          <span className="badge cat">Sumber &amp; status data</span>
+          <span className="badge cat">🇮🇩 Fokus Rupiah</span>
+          <span className="badge cat">📡 Radar Rilis + Simulasi</span>
         </div>
       </header>
 
-      <FundamentalsDashboard />
+      <FundamentalsDashboard initial={initial} />
     </div>
   );
 }

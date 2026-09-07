@@ -17,7 +17,7 @@ Jepang, dan Tiongkok.
 | **Overview / Command Center** (`/`) | Satu layar: **Risk Appetite Gauge**, **sesi pasar live**, **kekuatan mata uang (currency strength)**, **top movers**, indikator AS paling berdampak, jadwal rilis, dan indikator pasar global. |
 | **Kalkulator Trader** (`/calculators`) | Position Size (risiko), Pip Value, Profit/Loss, Pivot Points (klasik), Fibonacci, dan konversi Lot↔Unit — semua real-time di browser. |
 | **Analisis Teknikal** (`/technicals`) | Matriks sinyal multi-timeframe (EMA/RSI/MACD/ATR) semua instrumen + skor confluence, grade setup A/B/C & **Market Regime** (tren/range). |
-| **Analisis Fundamental** (`/fundamentals`) | Bias fundamental per mata uang (suku bunga riil, kebijakan, pertumbuhan, pasar kerja) + **scenario planner** & cheat sheet rilis penting. |
+| **Analisis Fundamental** (`/fundamentals`) | **Denyut Makro** (Fed, CPI, yield, VIX, emas + gauge risk-on/off), **Papan 11 Bank Sentral** (suku bunga, riil, inflasi vs target, pertemuan + countdown, sikap), **Matriks Carry** antar mata uang, bias fundamental per mata uang (skor 0–100 klik-untuk-rincian), **Fokus Rupiah 🇮🇩** (USD/IDR live + grafik interaktif, jalur BI-Rate, 9 indikator BPS/BI, faktor penggerak, kalender) & **Radar Rilis** dengan countdown detik + simulasi dampak. |
 | **Watchlist & Alerts** (`/watchlist`) | Pantau instrumen favorit + **price alert** dengan notifikasi browser & bunyi. |
 | **Copilot** (`/copilot`) | Asisten AI berbasis data MacroLab. Mendukung **LLM sungguhan** (OpenAI/Gemini/Anthropic bila API key di-set) + fallback rule-based. |
 | **Pattern Screener** (`/screener`) | Scan otomatis pola candlestick (engulfing, pin bar, doji, inside bar, three soldiers) & breakout untuk semua pasangan. |
@@ -52,8 +52,8 @@ VIX, jadwal rilis) ke dalam prompt sehingga konteksnya nyata, bukan generalisasi
   strength meter (13 mata uang), dan top movers — semuanya hidup dari data live/fallback.
 - **Analisis Teknikal** (`/technicals`): matriks sinyal multi-timeframe + skor confluence + grade
   setup + Market Regime.
-- **Analisis Fundamental** (`/fundamentals`): bias fundamental per mata uang + scenario planner &
-  cheat sheet rilis penting.
+- **Analisis Fundamental** (`/fundamentals`): denyut makro + papan 11 bank sentral + matriks carry +
+  bias per mata uang + **fokus Rupiah** (BI-Rate, BPS, USD/IDR) + radar rilis & simulasi dampak.
 - **Copilot AI** (`/copilot`): asisten berbasis data MacroLab.
 - **Watchlist & Alerts** (`/watchlist`): pantau instrumen + price alert (notifikasi & bunyi).
 - **Kalkulator Trader** (`/calculators`): position size, pip value, profit/loss, pivot & Fibonacci.

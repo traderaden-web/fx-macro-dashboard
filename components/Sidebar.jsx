@@ -28,7 +28,7 @@ export const LINKS = [
   { href: "/screener", icon: "screener", label: "Screener", desc: "Scan pola candlestick & breakout semua pasangan" },
   { href: "/charts", icon: "chart", label: "Chart", desc: "Chart Gold, Forex & Komoditas (TradingView)" },
   { href: "/analysis", icon: "analytics", label: "Analisis", desc: "Dampak rilis ekonomi ke pasangan mata uang" },
-  { href: "/fundamentals", icon: "analytics", label: "Fundamental", desc: "Bias fundamental & cheat sheet rilis penting" },
+  { href: "/fundamentals", icon: "analytics", label: "Fundamental", desc: "Bank sentral, bias mata uang & fokus Rupiah" },
   { href: "/broker", icon: "broker", label: "Broker", desc: "Sinkron posisi nyata (MetaAPI) & portfolio" },
   { href: "/community", icon: "community", label: "Komunitas", desc: "Prediksi rilis & leaderboard akurasi" },
   { href: "/calculators", icon: "calculator", label: "Kalkulator", desc: "Position size, pip value, risiko & pivot points" },
