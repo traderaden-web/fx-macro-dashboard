@@ -97,7 +97,20 @@ existing project** → pilih repo → Build `npm run build`, Publish `.next` →
 
 ## Data & fallback
 
-- Jalankan `npm run fetch` sebelum deploy bila ingin snapshot data lokal ikut ter-commit
+- Halaman `/analysis`, `/calendar`, `/indicators` dirender per request dan menarik FRED **live**
+  (cache 30 menit; 3 menit di jendela rilis AS) — tidak perlu build ulang agar angka baru muncul.
+- **Refresh otomatis (GitHub Actions)** — `.github/workflows/refresh-data.yml` berjalan tiap 6 jam
+  + Senin–Jumat 12:45/13:10/13:45/14:10/15:10 UTC (jendela rilis 08:30 & 10:00 ET). Ia menjalankan
+  `npm run fetch`, `fetch:ff`, `fetch:schedule`, meng-commit `data/seed.json`, `data/ff-history.json`,
+  `data/schedule-us.json` ke `main` bila berubah, lalu memicu `ci-deploy.yml` (`repository_dispatch:
+  data-refreshed`) agar Vercel/Netlify mem-build ulang dengan fallback terbaru.
+  - Tidak butuh secret tambahan — memakai `GITHUB_TOKEN` bawaan (`permissions: contents: write`).
+  - Bila repo memakai **branch protection** di `main`, izinkan push dari GitHub Actions atau ganti
+    langkah commit dengan PR otomatis.
+  - Bila deploy lewat **Vercel Git Integration** (tanpa workflow), commit data otomatis langsung
+    memicu deploy Vercel — tidak perlu pengaturan tambahan. (Jika memakai keduanya, akan ada dua
+    deploy per refresh; nonaktifkan salah satu.)
+- Jalankan `npm run fetch:all` sebelum deploy bila ingin snapshot data lokal ikut ter-commit
   (`data/seed.json` dipakai sebagai fallback saat API publik gagal).
 - File yang **tidak** boleh ter-commit: `.env*`, `data/broker.json`,
   `data/journal.json`, `.vercel/`, `.smoke*`, `.dbg*` (semua sudah ada di `.gitignore`).

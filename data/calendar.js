@@ -1,170 +1,281 @@
 // data/calendar.js
-// Kalender ekonomi (jadwal rilis) — disusun mengikuti kalender resmi BLS / Federal Reserve
-// dan gaya tampilan ForexFactory. Semua waktu dalam WIB (UTC+7).
+// Kalender ekonomi (jadwal rilis) — DIBANGKITKAN dari jadwal resmi, bukan
+// diketik baris per baris:
 //
-// Aturan konversi ke WIB (hasil dihitung otomatis di bawah):
-//   - Major rilis AS (NFP, CPI, PPI, claims) 08:30 ET
-//       DST (Mar–Nov): 08:30 ET = 12:30 UTC = 19:30 WIB
-//       Standar (Nov–Mar): 08:30 ET = 13:30 UTC = 20:30 WIB
-//   - ISM Manufacturing PMI 10:00 ET → 21:00 WIB (DST)
-//   - FOMC decision 14:00 ET (hari kedua) = 01:00 WIB (besok, DST) / 02:00 WIB (besok, standar)
+//   • BLS  (NFP/Unemp/AHE, CPI, PPI, JOLTS, ECI) ← data/schedule-us.json,
+//          hasil `npm run fetch:schedule` (bls.gov/schedule/news_release/bls.ics),
+//          diperbarui otomatis oleh GitHub Actions.
+//   • Fed  (FOMC) ← tabel resmi federalreserve.gov (2026 + tentatif 2027).
+//   • BEA  (GDP advance/second/third, Core PCE) ← bea.gov/news/schedule.
+//   • Census (Retail Sales) ← census.gov/retail/release_schedule.html.
+//   • Fed G.17 (Industrial Production & Capacity Utilization) ← release_dates.htm.
+//   • ISM  (Manufacturing/Services PMI) ← ismworld.org ROB calendar 2026.
+//   • UMich (Consumer Sentiment prelim) ← sca.isr.umich.edu release dates 2026.
+//   • ADP  (National Employment Report) ← adpemploymentreport.com.
+//   • DOL  (Initial Jobless Claims) ← tiap Kamis 08:30 ET (Rabu bila Kamis libur).
+//   • ECB  (rate decision) ← ecb.europa.eu kalender Governing Council 2026.
 //
-// Setiap event memiliki `indicatorId` yang menautkan ke halaman analisis indikator
-// (`/indicators/[id]`), sehingga saat news diklik pengguna dibawa ke halaman yang
-// menjelaskan news tersebut + data historis bulan-bulan sebelumnya + analisis prospek.
+// Semua waktu dikonversi ke WIB dengan DST Amerika/Eropa yang dihitung otomatis
+// (lib/schedule.js). Setiap event memiliki `indicatorId` yang menautkan ke
+// halaman indikator (/indicators/[id]) dan dipakai lib/consensus.js untuk
+// mencocokkan rilis ↔ titik FRED secara otomatis (aturan obsForRelease).
+//
+// Event ForexFactory (pidato pejabat, data negara lain, dll.) TIDAK ditulis di
+// sini — halaman kalender menggabungkannya secara live (lib/provider.js).
 
-// DST 2026: mulai 8 Maret (Minggu ke-2) sampai 1 November (Minggu ke-1).
-function isDst(month) {
-  return month >= 3 && month <= 10;
+import schedule from "./schedule-us.json";
+import { etToWib, toWib, zonedTimeToUtc, weekdaysBetween, addDays, isUsHoliday } from "../lib/schedule";
+
+const ET_0830 = "08:30";
+const ET_1000 = "10:00";
+
+// Batas jendela kalender: dari awal 2025 sampai akhir tahun depan (rolling).
+const NOW = new Date();
+const YEAR = NOW.getUTCFullYear();
+const RANGE_START = "2025-01-01";
+const RANGE_END = `${YEAR + 1}-12-31`;
+
+function ev(dateEt, timeEt, title, category, country, impact, indicatorId, extra = {}) {
+  const w = etToWib(dateEt, timeEt);
+  return { date: w.date, time: w.time, title, category, country, impact, indicatorId, sourceDate: dateEt, ...extra };
 }
 
-// ---- Jadwal FOMC 2026 (hari keputusan, waktu ET; hari pertama = H-1) ----
-const FOMC_2026 = [
-  { et: "2026-01-28", sep: false },
-  { et: "2026-03-18", sep: true },
-  { et: "2026-04-29", sep: false },
-  { et: "2026-06-17", sep: true },
-  { et: "2026-07-29", sep: false },
-  { et: "2026-09-16", sep: true }, // keputusan 16 Sep 14:00 ET → WIB 17 Sep 01:00
-  { et: "2026-10-28", sep: false },
-  { et: "2026-12-09", sep: true },
-];
+// ---------------------------------------------------------------------------
+// 1) BLS — dari data/schedule-us.json (otomatis)
+// ---------------------------------------------------------------------------
+const BLS_TITLES = {
+  nfp: ["Nonfarm Payrolls (NFP)", "tenaga-kerja", "High"],
+  unemp: ["Unemployment Rate", "tenaga-kerja", "High"],
+  ahe: ["Average Hourly Earnings m/m", "tenaga-kerja", "Medium"],
+  cpi: ["Consumer Price Index (CPI) y/y", "inflasi", "High"],
+  corecpi: ["Core CPI y/y", "inflasi", "High"],
+  ppi: ["Producer Price Index (PPI) m/m", "inflasi", "High"],
+};
 
-// Rincian FOMC ala ForexFactory: Federal Funds Rate, Economic Projections (bila SEP),
-// Statement (14:00 ET) lalu Press Conference (14:30 ET). Semua menaut ke indikator `fedfunds`.
-function fomcEvents() {
+function blsEvents() {
   const out = [];
-  for (const f of FOMC_2026) {
-    const m = Number(f.et.slice(5, 7));
-    const dst = isDst(m);
-    const t1 = dst ? "01:00" : "02:00"; // 14:00 ET
-    const t2 = dst ? "01:30" : "02:30"; // 14:30 ET
-    const d = new Date(`${f.et}T00:00:00Z`);
-    d.setUTCDate(d.getUTCDate() + 1);
-    const date = d.toISOString().slice(0, 10);
-    out.push({ date, time: t1, title: "FOMC Federal Funds Rate", category: "moneter", country: "US", impact: "High", indicatorId: "fedfunds" });
-    if (f.sep) out.push({ date, time: t1, title: "FOMC Economic Projections", category: "moneter", country: "US", impact: "High", indicatorId: "fedfunds" });
-    out.push({ date, time: t1, title: "FOMC Statement", category: "moneter", country: "US", impact: "High", indicatorId: "fedfunds" });
-    out.push({ date, time: t2, title: "FOMC Press Conference", category: "moneter", country: "US", impact: "Medium", indicatorId: "fedfunds" });
+  for (const r of schedule.releases || []) {
+    if (r.date < RANGE_START || r.date > RANGE_END) continue;
+    const time = r.time || ET_0830;
+    if (r.indicators?.length) {
+      for (const id of r.indicators) {
+        const t = BLS_TITLES[id];
+        if (!t) continue;
+        out.push(ev(r.date, time, t[0], t[1], "US", t[2], id, r.obs ? { obs: r.obs } : {}));
+      }
+    } else if (r.title) {
+      out.push(ev(r.date, time, r.title, r.category || "tenaga-kerja", "US", r.impact || "Medium", null));
+    }
   }
   return out;
 }
 
-export const EVENTS = [
-  ...fomcEvents(),
-
-  // ---- NFP (Employment Situation) — 08:30 ET ----
-  // ⚑ 30-Agu-2026: jadwal rilis NFP di kalender ini IRREGULER (validasi earningsapi:
-  // 3 Jul-25, 5 Sep-25, 16 Des-25, 9 Jan-26, 11 Feb-26, 8 Mei-26, 5 Jun-26, 2 Jul-26).
-  // Tanggal di bawah = ESTIMASI (belum terverifikasi API), masih pakai pola Jumat kedua.
-  { date: "2026-09-04", time: "19:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
-  { date: "2026-10-09", time: "19:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
-  { date: "2026-11-13", time: "20:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
-  { date: "2026-12-11", time: "20:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
-
-  // ---- ISM PMI — 10:00 ET ----
-  // ⚑ 30-Agu-2026: jadwal rilis ISM IRREGULER (tervalidasi: Mfg 2 Jul-26, Svc 6 Jul-26
-  // & 5 Agu-26). Tanggal di bawah = ESTIMASI (hari kerja pertama / +3 hari kerja).
-    { date: "2026-10-26", time: "19:30", title: "Core PCE Price Index m/m", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
-  { date: "2026-11-25", time: "19:30", title: "Core PCE Price Index m/m", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
-  { date: "2026-10-28", time: "19:30", title: "GDP (Advance) q/q", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "gdp" },
-  { date: "2026-11-25", time: "19:30", title: "GDP (Prelim) q/q", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "gdp" },
-  { date: "2026-12-23", time: "19:30", title: "GDP (Final) q/q", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "gdp" },// ── Rilis sudah lewat (Jan–Mar 2026) — verified FF user; baris menampilkan P/K/A lengkap ──
-  { date: "2026-01-05", time: "22:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
-  { date: "2026-01-07", time: "22:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
-  { date: "2026-01-07", time: "20:15", title: "ADP Non-Farm Employment Change", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "adp" },
-  { date: "2026-01-09", time: "20:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
-  { date: "2026-01-09", time: "22:00", title: "Prelim UoM Consumer Sentiment", category: "konsumen", country: "US", impact: "Medium", indicatorId: "umich" },
-  { date: "2026-01-13", time: "20:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
-  { date: "2026-01-14", time: "20:30", title: "Retail Sales m/m", category: "konsumen", country: "US", impact: "High", indicatorId: "retail" },
-  { date: "2026-01-22", time: "22:00", title: "Core PCE Price Index (m/m)", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
-  { date: "2026-02-02", time: "22:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
-  { date: "2026-02-04", time: "20:15", title: "ADP Non-Farm Employment Change", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "adp" },
-  { date: "2026-02-04", time: "22:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
-  { date: "2026-02-06", time: "22:00", title: "Prelim UoM Consumer Sentiment", category: "konsumen", country: "US", impact: "Medium", indicatorId: "umich" },
-  { date: "2026-02-10", time: "20:30", title: "Retail Sales m/m", category: "konsumen", country: "US", impact: "High", indicatorId: "retail" },
-  { date: "2026-02-11", time: "20:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
-  { date: "2026-02-13", time: "20:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
-  { date: "2026-02-20", time: "20:30", title: "Core PCE Price Index (m/m)", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
-  { date: "2026-03-02", time: "22:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
-  { date: "2026-03-04", time: "20:15", title: "ADP Non-Farm Employment Change", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "adp" },
-  { date: "2026-03-04", time: "22:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
-  { date: "2026-03-06", time: "20:30", title: "Retail Sales m/m", category: "konsumen", country: "US", impact: "High", indicatorId: "retail" },
-  { date: "2026-03-06", time: "20:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
-  { date: "2026-03-11", time: "19:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
-  { date: "2026-03-13", time: "19:30", title: "Core PCE Price Index (m/m)", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
-
-// ── Rilis sudah lewat (Jul–Agu 2026) — verified FF user; baris menampilkan P/K/A lengkap ──
-  { date: "2026-07-01", time: "21:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
-// ---- APR–JUN 2026 (diperbaiki 30 Agu 2026 — menutup gap R45; tanggal CONSENSUS
-//      terverifikasi API, waktu WIB dgn DST) ----
-  { date: "2026-04-01", time: "19:15", title: "ADP Non-Farm Employment Change", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "adp" },
-  { date: "2026-04-01", time: "19:30", title: "Retail Sales m/m", category: "konsumen", country: "US", impact: "High", indicatorId: "retail" },
-  { date: "2026-04-01", time: "21:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
-  { date: "2026-04-03", time: "19:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
-  { date: "2026-04-06", time: "21:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
-  { date: "2026-04-10", time: "19:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
-  { date: "2026-04-10", time: "21:00", title: "Prelim UoM Consumer Sentiment", category: "konsumen", country: "US", impact: "Medium", indicatorId: "umich" },
-  { date: "2026-04-21", time: "19:30", title: "Retail Sales m/m", category: "konsumen", country: "US", impact: "High", indicatorId: "retail" },
-  { date: "2026-04-30", time: "19:30", title: "Core PCE Price Index (m/m)", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
-  { date: "2026-05-05", time: "21:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
-  { date: "2026-05-08", time: "19:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
-  { date: "2026-05-08", time: "21:00", title: "Prelim UoM Consumer Sentiment", category: "konsumen", country: "US", impact: "Medium", indicatorId: "umich" },
-  { date: "2026-05-12", time: "19:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
-  { date: "2026-05-14", time: "19:30", title: "Retail Sales m/m", category: "konsumen", country: "US", impact: "High", indicatorId: "retail" },
-  { date: "2026-05-28", time: "19:30", title: "Core PCE Price Index (m/m)", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
-  { date: "2026-06-01", time: "21:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
-  { date: "2026-06-03", time: "19:15", title: "ADP Non-Farm Employment Change", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "adp" },
-  { date: "2026-06-04", time: "21:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
-  { date: "2026-06-05", time: "19:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
-  { date: "2026-06-09", time: "19:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
-  { date: "2026-06-12", time: "21:00", title: "Prelim UoM Consumer Sentiment", category: "konsumen", country: "US", impact: "Medium", indicatorId: "umich" },
-  { date: "2026-06-16", time: "19:30", title: "Retail Sales m/m", category: "konsumen", country: "US", impact: "High", indicatorId: "retail" },
-  { date: "2026-06-25", time: "19:30", title: "Core PCE Price Index (m/m)", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
-  { date: "2026-07-02", time: "19:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
-  { date: "2026-07-06", time: "21:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
-  { date: "2026-07-14", time: "19:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
-  { date: "2026-07-15", time: "19:30", title: "Producer Price Index (PPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "ppi" },
-  { date: "2026-07-30", time: "19:30", title: "Core PCE Price Index (m/m)", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
-  { date: "2026-08-03", time: "21:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
-  { date: "2026-08-05", time: "21:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
-  { date: "2026-08-07", time: "19:30", title: "Nonfarm Payrolls (NFP)", category: "tenaga-kerja", country: "US", impact: "High", indicatorId: "nfp" },
-  { date: "2026-08-12", time: "19:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
-  { date: "2026-08-13", time: "19:30", title: "Producer Price Index (PPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "ppi" },
-  { date: "2026-08-26", time: "19:30", title: "Core PCE Price Index (m/m)", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
-  { date: "2026-08-26", time: "19:30", title: "GDP (Prelim) q/q", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "gdp" },
-  { date: "2026-09-01", time: "21:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
-  { date: "2026-09-04", time: "21:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
-  { date: "2026-10-01", time: "21:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
-  { date: "2026-10-06", time: "21:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
-  { date: "2026-11-02", time: "22:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
-  { date: "2026-11-05", time: "22:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
-  { date: "2026-12-01", time: "22:00", title: "ISM Manufacturing PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismmfg" },
-  { date: "2026-12-04", time: "22:00", title: "ISM Services PMI", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "ismsvc" },
-
-  // ---- CPI AS — 08:30 ET ----
-  { date: "2026-09-11", time: "19:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
-  { date: "2026-10-14", time: "19:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
-  { date: "2026-11-10", time: "20:30", title: "Consumer Price Index (CPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "cpi" },
-
-  // ---- PPI AS — 08:30 ET (dampak: High) ----
-  { date: "2026-09-10", time: "19:30", title: "Producer Price Index (PPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "ppi" },
-  { date: "2026-10-15", time: "19:30", title: "Producer Price Index (PPI)", category: "inflasi", country: "US", impact: "High", indicatorId: "ppi" },
-
-  // ---- Core PCE Price Index m/m (indikator inflasi favorit The Fed) — 08:30 ET ----
-  { date: "2026-09-30", time: "19:30", title: "Core PCE Price Index (m/m)", category: "inflasi", country: "US", impact: "High", indicatorId: "corepce" },
-
-  // ---- Final GDP q/q — 08:30 ET ----
-  { date: "2026-09-30", time: "19:30", title: "Final GDP (q/q)", category: "pertumbuhan", country: "US", impact: "High", indicatorId: "gdp" },
-
-  // ---- Event pasar khusus (agenda simposium & pidato bank sentral) ----
-  { date: "2026-08-28", time: "08:00", title: "Jackson Hole Symposium", category: "moneter", country: "US", impact: "High", indicatorId: "fedfunds" },
-  { date: "2026-08-28", time: "21:00", title: "Prelim Benchmark Payrolls Revision", category: "tenaga-kerja", country: "US", impact: "Medium", indicatorId: "nfp" },
-  { date: "2026-08-28", time: "21:30", title: "Fed Chairman Warsh Speaks", category: "moneter", country: "US", impact: "Medium", indicatorId: "fedfunds" },
-
-  // ---- Indikator lain (patokan bulanan) ----
-  { date: "2026-09-03", time: "19:30", title: "Initial Jobless Claims", category: "tenaga-kerja", country: "US", impact: "Medium", indicatorId: "claims" },
-  { date: "2026-09-15", time: "19:30", title: "Retail Sales", category: "konsumen", country: "US", impact: "Medium", indicatorId: "retail" },
+// ---------------------------------------------------------------------------
+// 2) FOMC — hari keputusan (ET). Sumber: federalreserve.gov (2027 tentatif).
+// ---------------------------------------------------------------------------
+const FOMC = [
+  { et: "2025-01-29", sep: false }, { et: "2025-03-19", sep: true }, { et: "2025-05-07", sep: false },
+  { et: "2025-06-18", sep: true }, { et: "2025-07-30", sep: false }, { et: "2025-09-17", sep: true },
+  { et: "2025-10-29", sep: false }, { et: "2025-12-10", sep: true },
+  { et: "2026-01-28", sep: false }, { et: "2026-03-18", sep: true }, { et: "2026-04-29", sep: false },
+  { et: "2026-06-17", sep: true }, { et: "2026-07-29", sep: false }, { et: "2026-09-16", sep: true },
+  { et: "2026-10-28", sep: false }, { et: "2026-12-09", sep: true },
+  { et: "2027-01-27", sep: false }, { et: "2027-03-17", sep: true }, { et: "2027-04-28", sep: false },
+  { et: "2027-06-09", sep: true }, { et: "2027-07-28", sep: false }, { et: "2027-09-15", sep: true },
+  { et: "2027-10-27", sep: false }, { et: "2027-12-08", sep: true },
 ];
 
+function fomcEvents() {
+  const out = [];
+  for (const f of FOMC) {
+    if (f.et < RANGE_START || f.et > RANGE_END) continue;
+    out.push(ev(f.et, "14:00", "FOMC Federal Funds Rate", "moneter", "US", "High", "fedfunds"));
+    if (f.sep) out.push(ev(f.et, "14:00", "FOMC Economic Projections", "moneter", "US", "High", "fedfunds"));
+    out.push(ev(f.et, "14:00", "FOMC Statement", "moneter", "US", "High", "fedfunds"));
+    out.push(ev(f.et, "14:30", "FOMC Press Conference", "moneter", "US", "Medium", "fedfunds"));
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// 3) BEA — GDP (3 estimasi per kuartal) & Personal Income and Outlays (Core PCE)
+// ---------------------------------------------------------------------------
+// [tanggal ET, jenis GDP ("adv"|"second"|"third"|null), kuartal data, bulan PCE (obs)]
+const BEA = [
+  ["2025-04-30", "adv", "2025-01-01", "2025-03-01"],
+  ["2025-05-29", "second", "2025-01-01", "2025-04-01"],
+  ["2025-06-26", "third", "2025-01-01", "2025-05-01"],
+  ["2025-07-30", "adv", "2025-04-01", "2025-06-01"],
+  ["2025-08-28", "second", "2025-04-01", "2025-07-01"],
+  ["2025-09-25", "third", "2025-04-01", "2025-08-01"],
+  ["2025-12-05", null, null, "2025-09-01"], // pasca-shutdown
+  ["2025-12-23", "adv", "2025-07-01", null], // GDP Q3 (gabungan, pasca-shutdown)
+  ["2026-01-22", "third", "2025-07-01", "2025-11-01"], // Q3 updated + PCE Okt/Nov (Nov dipakai)
+  ["2026-02-20", "adv", "2025-10-01", "2025-12-01"],
+  ["2026-03-13", "second", "2025-10-01", "2026-01-01"],
+  ["2026-04-09", "third", "2025-10-01", "2026-02-01"],
+  ["2026-04-30", "adv", "2026-01-01", "2026-03-01"],
+  ["2026-05-28", "second", "2026-01-01", "2026-04-01"],
+  ["2026-06-25", "third", "2026-01-01", "2026-05-01"],
+  ["2026-07-30", "adv", "2026-04-01", "2026-06-01"],
+  ["2026-08-26", "second", "2026-04-01", "2026-07-01"],
+  ["2026-09-30", "third", "2026-04-01", "2026-08-01"],
+  ["2026-10-29", "adv", "2026-07-01", "2026-09-01"],
+  ["2026-11-25", "second", "2026-07-01", "2026-10-01"],
+  ["2026-12-23", "third", "2026-07-01", "2026-11-01"],
+];
+const GDP_LABEL = { adv: "GDP (Advance) q/q", second: "GDP (Prelim) q/q", third: "GDP (Final) q/q" };
+
+function beaEvents() {
+  const out = [];
+  for (const [d, kind, q, pce] of BEA) {
+    if (d < RANGE_START || d > RANGE_END) continue;
+    if (kind) out.push(ev(d, ET_0830, GDP_LABEL[kind], "pertumbuhan", "US", "High", "gdp", { obs: q, estimate: kind }));
+    if (pce) out.push(ev(d, ET_0830, "Core PCE Price Index m/m", "inflasi", "US", "High", "corepce", { obs: pce }));
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// 4) Census — Advance Monthly Retail Trade (08:30 ET)
+// ---------------------------------------------------------------------------
+const RETAIL = [
+  ["2025-01-16", "2024-12-01"], ["2025-02-14", "2025-01-01"], ["2025-03-17", "2025-02-01"], ["2025-04-16", "2025-03-01"],
+  ["2025-05-15", "2025-04-01"], ["2025-06-17", "2025-05-01"], ["2025-07-17", "2025-06-01"], ["2025-08-15", "2025-07-01"],
+  ["2025-09-16", "2025-08-01"], ["2025-11-25", "2025-09-01"], ["2025-12-16", "2025-10-01"],
+  ["2026-01-14", "2025-11-01"], ["2026-02-10", "2025-12-01"], ["2026-03-06", "2026-01-01"], ["2026-04-01", "2026-02-01"],
+  ["2026-04-21", "2026-03-01"], ["2026-05-14", "2026-04-01"], ["2026-06-17", "2026-05-01"], ["2026-07-16", "2026-06-01"],
+  ["2026-08-14", "2026-07-01"], ["2026-09-16", "2026-08-01"], ["2026-10-15", "2026-09-01"], ["2026-11-17", "2026-10-01"],
+  ["2026-12-16", "2026-11-01"],
+];
+
+// ---------------------------------------------------------------------------
+// 5) Fed G.17 — Industrial Production & Capacity Utilization (09:15 ET)
+// ---------------------------------------------------------------------------
+const G17 = [
+  ["2025-01-17", "2024-12-01"], ["2025-02-14", "2025-01-01"], ["2025-03-18", "2025-02-01"], ["2025-04-16", "2025-03-01"],
+  ["2025-05-15", "2025-04-01"], ["2025-06-17", "2025-05-01"], ["2025-07-16", "2025-06-01"], ["2025-08-15", "2025-07-01"],
+  ["2025-09-16", "2025-08-01"], ["2025-12-03", "2025-10-01"], ["2025-12-23", "2025-11-01"],
+  ["2026-01-16", "2025-12-01"], ["2026-02-18", "2026-01-01"], ["2026-03-16", "2026-02-01"], ["2026-04-16", "2026-03-01"],
+  ["2026-05-15", "2026-04-01"], ["2026-06-15", "2026-05-01"], ["2026-07-17", "2026-06-01"], ["2026-08-18", "2026-07-01"],
+  ["2026-09-18", "2026-08-01"], ["2026-10-16", "2026-09-01"], ["2026-11-17", "2026-10-01"], ["2026-12-16", "2026-11-01"],
+  ["2027-01-15", "2026-12-01"], ["2027-02-17", "2027-01-01"], ["2027-03-15", "2027-02-01"], ["2027-04-15", "2027-03-01"],
+  ["2027-05-17", "2027-04-01"], ["2027-06-16", "2027-05-01"], ["2027-07-16", "2027-06-01"], ["2027-08-17", "2027-07-01"],
+  ["2027-09-16", "2027-08-01"], ["2027-10-18", "2027-09-01"], ["2027-11-17", "2027-10-01"], ["2027-12-16", "2027-11-01"],
+];
+
+// ---------------------------------------------------------------------------
+// 6) ISM — Manufacturing (hari kerja ke-1) & Services (hari kerja ke-3), 10:00 ET
+// ---------------------------------------------------------------------------
+const ISM = [
+  // [Mfg, Svc, bulan data]
+  ["2025-07-01", "2025-07-03", "2025-06-01"], ["2025-08-01", "2025-08-05", "2025-07-01"],
+  ["2025-09-02", "2025-09-04", "2025-08-01"], ["2025-10-01", "2025-10-03", "2025-09-01"],
+  ["2025-11-03", "2025-11-05", "2025-10-01"], ["2025-12-01", "2025-12-03", "2025-11-01"],
+  ["2026-01-05", "2026-01-07", "2025-12-01"], ["2026-02-02", "2026-02-04", "2026-01-01"],
+  ["2026-03-02", "2026-03-04", "2026-02-01"], ["2026-04-01", "2026-04-06", "2026-03-01"],
+  ["2026-05-01", "2026-05-05", "2026-04-01"], ["2026-06-01", "2026-06-03", "2026-05-01"],
+  ["2026-07-01", "2026-07-06", "2026-06-01"], ["2026-08-03", "2026-08-05", "2026-07-01"],
+  ["2026-09-01", "2026-09-03", "2026-08-01"], ["2026-10-01", "2026-10-05", "2026-09-01"],
+  ["2026-11-02", "2026-11-04", "2026-10-01"], ["2026-12-01", "2026-12-03", "2026-11-01"],
+];
+
+// ---------------------------------------------------------------------------
+// 7) UMich — Consumer Sentiment PRELIM (10:00 ET); final tidak dijadwalkan
+//    sebagai event terpisah (angka FRED = final).
+// ---------------------------------------------------------------------------
+const UMICH = [
+  ["2025-07-18", "2025-07-01"], ["2025-08-15", "2025-08-01"], ["2025-09-12", "2025-09-01"], ["2025-10-10", "2025-10-01"],
+  ["2025-11-07", "2025-11-01"], ["2025-12-05", "2025-12-01"],
+  ["2026-01-09", "2026-01-01"], ["2026-02-06", "2026-02-01"], ["2026-03-13", "2026-03-01"], ["2026-04-10", "2026-04-01"],
+  ["2026-05-08", "2026-05-01"], ["2026-06-12", "2026-06-01"], ["2026-07-17", "2026-07-01"], ["2026-08-14", "2026-08-01"],
+  ["2026-09-11", "2026-09-01"], ["2026-10-09", "2026-10-01"], ["2026-11-06", "2026-11-01"], ["2026-12-04", "2026-12-01"],
+];
+
+// ---------------------------------------------------------------------------
+// 8) ADP National Employment Report (08:15 ET) — 2 hari kerja sebelum NFP
+// ---------------------------------------------------------------------------
+const ADP = [
+  ["2025-07-02", "2025-06-01"], ["2025-07-30", "2025-07-01"], ["2025-09-04", "2025-08-01"], ["2025-10-01", "2025-09-01"],
+  ["2025-11-05", "2025-10-01"], ["2025-12-03", "2025-11-01"],
+  ["2026-01-07", "2025-12-01"], ["2026-02-04", "2026-01-01"], ["2026-03-04", "2026-02-01"], ["2026-04-01", "2026-03-01"],
+  ["2026-05-06", "2026-04-01"], ["2026-06-03", "2026-05-01"], ["2026-07-01", "2026-06-01"], ["2026-08-05", "2026-07-01"],
+  ["2026-09-02", "2026-08-01"], ["2026-09-30", "2026-09-01"], ["2026-11-04", "2026-10-01"], ["2026-12-02", "2026-11-01"],
+];
+
+// ---------------------------------------------------------------------------
+// 9) ECB — keputusan suku bunga (14:15 CET/CEST) + konferensi pers 14:45
+// ---------------------------------------------------------------------------
+const ECB = [
+  "2025-01-30", "2025-03-06", "2025-04-17", "2025-06-05", "2025-07-24", "2025-09-11", "2025-10-30", "2025-12-18",
+  "2026-02-05", "2026-03-19", "2026-04-30", "2026-06-11", "2026-07-23", "2026-09-10", "2026-10-29", "2026-12-17",
+];
+
+function ecbEvents() {
+  const out = [];
+  for (const d of ECB) {
+    if (d < RANGE_START || d > RANGE_END) continue;
+    const w1 = toWib(zonedTimeToUtc(d, "14:15", "Europe/Berlin"));
+    const w2 = toWib(zonedTimeToUtc(d, "14:45", "Europe/Berlin"));
+    out.push({ date: w1.date, time: w1.time, title: "ECB Main Refinancing Rate", category: "moneter", country: "EZ", impact: "High", indicatorId: null, sourceDate: d });
+    out.push({ date: w2.date, time: w2.time, title: "ECB Press Conference", category: "moneter", country: "EZ", impact: "High", indicatorId: null, sourceDate: d });
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// 10) Initial Jobless Claims — tiap Kamis 08:30 ET (Rabu bila Kamis libur federal)
+// ---------------------------------------------------------------------------
+function claimsEvents() {
+  const out = [];
+  for (const thu of weekdaysBetween("2025-06-05", RANGE_END, 4)) {
+    const d = isUsHoliday(thu) ? addDays(thu, -1) : thu;
+    out.push(ev(d, ET_0830, "Initial Jobless Claims", "tenaga-kerja", "US", "Medium", "claims"));
+  }
+  return out;
+}
+
+function tableEvents(rows, timeEt, title, category, impact, indicatorId) {
+  return rows
+    .filter(([d]) => d >= RANGE_START && d <= RANGE_END)
+    .map(([d, obs]) => ev(d, timeEt, title, category, "US", impact, indicatorId, obs ? { obs } : {}));
+}
+
+// ---------------------------------------------------------------------------
+// Gabungan
+// ---------------------------------------------------------------------------
+const ALL = [
+  ...fomcEvents(),
+  ...blsEvents(),
+  ...beaEvents(),
+  ...tableEvents(RETAIL, ET_0830, "Retail Sales m/m", "konsumen", "High", "retail"),
+  ...tableEvents(G17, "09:15", "Industrial Production m/m", "pertumbuhan", "Low", "indpro"),
+  ...tableEvents(G17, "09:15", "Capacity Utilization Rate", "pertumbuhan", "Low", "capacity"),
+  ...ISM.filter(([d]) => d >= RANGE_START && d <= RANGE_END).flatMap(([mfg, svc, obs]) => [
+    ev(mfg, ET_1000, "ISM Manufacturing PMI", "pertumbuhan", "US", "High", "ismmfg", { obs }),
+    ev(svc, ET_1000, "ISM Services PMI", "pertumbuhan", "US", "High", "ismsvc", { obs }),
+  ]),
+  ...tableEvents(UMICH, ET_1000, "Prelim UoM Consumer Sentiment", "konsumen", "Medium", "umich"),
+  ...tableEvents(ADP, "08:15", "ADP Non-Farm Employment Change", "tenaga-kerja", "High", "adp"),
+  ...ecbEvents(),
+  ...claimsEvents(),
+];
+
+// Dedupe (tanggal WIB + judul) lalu urutkan kronologis.
+const seen = new Set();
+export const EVENTS = ALL.filter((e) => {
+  const k = `${e.date}|${e.time}|${e.title}`;
+  if (seen.has(k)) return false;
+  seen.add(k);
+  return true;
+}).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+
 export const UPCOMING = EVENTS.map((e) => ({ ...e, iso: `${e.date}T${e.time}:00+07:00` }));
+
+/** Metadata sumber jadwal (untuk footer/asOf). */
+export const CALENDAR_META = {
+  blsUpdated: schedule.updated || null,
+  blsSource: schedule.source || null,
+  range: { start: RANGE_START, end: RANGE_END },
+  count: EVENTS.length,
+};

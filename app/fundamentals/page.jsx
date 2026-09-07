@@ -3,7 +3,12 @@ import { getSeriesData } from "../../lib/data";
 import FundamentalsView from "../../components/FundamentalsView";
 import { IconAnalytics } from "../../components/Icons";
 import { EVENTS } from "../../data/calendar";
-import { CONSENSUS } from "../../data/releases";
+import { getReleaseAnalytics } from "../../lib/consensus";
+import { todayWib } from "../../lib/schedule";
+
+// Dirender per request agar cheat sheet (konsensus FF + previous FRED) selalu baru.
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata = {
   title: "Analisis Fundamental — MacroLab",
@@ -11,27 +16,35 @@ export const metadata = {
     "Bias fundamental per mata uang (suku bunga riil, kebijakan, pertumbuhan, pasar kerja) + scenario planner untuk rilis penting (NFP, CPI, FOMC).",
 };
 
-// Kumpulkan cheat sheet rilis penting dari kalender (terdekat yang belum lewat).
-function upcomingCheat(limit = 6) {
-  const now = new Date();
-  const isoNow = now.toISOString();
+// Kumpulkan cheat sheet rilis penting dari kalender resmi (terdekat yang belum
+// lewat). Konsensus = ForexFactory (live/arsip), previous = FRED — keduanya via
+// lib/consensus (baris `pending` utk tanggal rilis tsb).
+async function upcomingCheat(limit = 6) {
+  const today = todayWib();
   const list = EVENTS
     .filter((e) => e.impact === "High" && e.indicatorId)
-    .filter((e) => e.date >= isoNow.slice(0, 10))
-    .sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
-  const seen = new Set();
+    .filter((e) => e.date >= today)
+    .sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time))
+    .slice(0, limit * 2);
+  const ids = [...new Set(list.map((e) => e.indicatorId))];
+  const analytics = {};
+  await Promise.all(ids.map(async (id) => { analytics[id] = await getReleaseAnalytics(id).catch(() => null); }));
   const out = [];
+  const seen = new Set();
   for (const e of list) {
-    // Ambil konsensus dari data/releases (per indikator, rilis terakhir).
-    const series = CONSENSUS[e.indicatorId] || [];
-    const last = series[series.length - 1];
+    const key = `${e.indicatorId}|${e.date}`;
+    if (seen.has(key)) continue; // FOMC punya beberapa baris di tanggal yg sama
+    seen.add(key);
+    const a = analytics[e.indicatorId];
+    const row = a?.pending?.find((r) => r.date === e.date) || null;
+    const lastPt = a?.last || null;
     out.push({
       ...e,
-      consensus: last?.consensus ?? null,
-      previous: last?.previous ?? null,
+      consensus: row?.consensus ?? null,
+      previous: row?.previous ?? lastPt?.value ?? null,
+      unit: a?.unit || "",
     });
     if (out.length >= limit) break;
-    seen.add(e.indicatorId);
   }
   return out;
 }
@@ -42,7 +55,7 @@ export default async function FundamentalsPage() {
     getSeriesData("vix").catch(() => null),
   ]);
 
-  const cheat = upcomingCheat(8);
+  const cheat = await upcomingCheat(8);
 
   return (
     <div className="page">

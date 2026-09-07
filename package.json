@@ -10,7 +10,10 @@
     "start": "next start",
     "lint": "next lint",
     "fetch": "node scripts/fetch-all.mjs",
-    "fetch:data": "node scripts/fetch-all.mjs"
+    "fetch:data": "node scripts/fetch-all.mjs",
+    "fetch:ff": "node scripts/fetch-ff.mjs",
+    "fetch:schedule": "node scripts/fetch-bls-schedule.mjs",
+    "fetch:all": "node scripts/fetch-all.mjs && node scripts/fetch-ff.mjs && node scripts/fetch-bls-schedule.mjs"
   },
   "dependencies": {
     "next": "^15.5.24",

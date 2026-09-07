@@ -21,6 +21,10 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # Dipicu oleh refresh-data.yml setelah data/seed.json dkk. diperbarui otomatis
+  # (push oleh GITHUB_TOKEN tidak memicu `push`, maka dipakai repository_dispatch).
+  repository_dispatch:
+    types: [data-refreshed]
 
 jobs:
   build:
@@ -40,7 +44,7 @@ jobs:
   deploy-vercel:
     name: Deploy → Vercel
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.VERCEL_PROJECT_ID != ''
+    if: (github.event_name == 'repository_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')) && vars.VERCEL_PROJECT_ID != ''
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -71,7 +75,7 @@ jobs:
   deploy-netlify:
     name: Deploy → Netlify
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.NETLIFY_SITE_ID != ''
+    if: (github.event_name == 'repository_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')) && vars.NETLIFY_SITE_ID != ''
     runs-on: ubuntu-latest
     environment: production
     steps:

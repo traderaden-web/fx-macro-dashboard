@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAllSeriesData, SEED_META } from "../lib/data";
+import { getAllSeriesData, latestUpdated } from "../lib/data";
 import { getForexRates } from "../lib/forex";
 import { computeCurrencyStrength, riskBias } from "../lib/strength";
 import StatCard from "../components/StatCard";
@@ -48,8 +48,14 @@ const BANNER = [
 
 const FX_ONLY = (p) => p.symbol.includes("/") && !p.symbol.startsWith("XAU") && !p.symbol.startsWith("XAG");
 
+// Dirender per request: data FRED live (cache server ≤ 30 mnt, 3 mnt di jendela rilis).
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function Home() {
   const all = await getAllSeriesData();
+  const asOf = latestUpdated(all);
+  const liveN = all.filter((d) => d.source === "live").length;
 
   // ── Data live (dengan fallback demo) ──────────────────────────────────
   let fx = { pairs: [], source: "demo" };
@@ -80,11 +86,16 @@ export default async function Home() {
 
   // Jadwal rilis hanya untuk bulan yang akan datang.
   const month = nextMonthInfo();
+  // Rilis penting berikutnya (belum lewat, WIB) — mendahulukan bulan yang akan datang
+  // bila sudah ada jadwalnya, kalau tidak: rilis terdekat dari sekarang.
+  const nowMs = Date.now();
   let nextEvents = UPCOMING
-    .filter((e) => e.date.slice(0, 7) === month.key)
+    .filter((e) => e.date.slice(0, 7) === month.key && e.impact !== "Low")
     .sort((a, b) => a.iso.localeCompare(b.iso));
   if (nextEvents.length === 0) {
-    nextEvents = UPCOMING.slice().sort((a, b) => a.iso.localeCompare(b.iso));
+    nextEvents = UPCOMING
+      .filter((e) => new Date(e.iso).getTime() >= nowMs && e.impact !== "Low")
+      .sort((a, b) => a.iso.localeCompare(b.iso));
   }
   nextEvents = nextEvents.slice(0, 10);
 
@@ -150,7 +161,7 @@ export default async function Home() {
         </div>
         <div className="legend" style={{ marginTop: 20 }}>
           <span><span className="pulse-dot" /> Sumber: FRED + Yahoo Finance</span>
-          <span>Dikumpulkan: {SEED_META.generated?.slice(0, 10) || "—"}</span>
+          <span>Data diambil: {asOf ? `${asOf.slice(0, 10)} ${asOf.slice(11, 16)} UTC` : "—"}{liveN ? ` · ${liveN}/${all.length} seri live` : " · cache"}</span>
           {fx.source === "demo" && <span className="cell-muted">· kurs tampil dalam mode demo</span>}
         </div>
       </section>

@@ -2,7 +2,14 @@ import AnalysisClient from "../../components/AnalysisClient";
 import AssetHeatmap from "../../components/AssetHeatmap";
 import MacroMap from "../../components/MacroMap";
 import { getAllReleaseAnalytics } from "../../lib/consensus";
+import { latestUpdated } from "../../lib/data";
 import { UPCOMING } from "../../data/calendar";
+
+// Selalu dirender per request: angka aktual FRED & konsensus ForexFactory
+// ditarik saat halaman dibuka (cache server ≤ 30 menit, 3 menit di jendela
+// rilis) — tidak pernah dibekukan saat build.
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata = {
   title: "Analisis Dampak Rilis — MacroLab",
@@ -11,6 +18,16 @@ export const metadata = {
 
 export default async function AnalysisPage() {
   const items = await getAllReleaseAnalytics();
+  const asOf = latestUpdated(items);
+  const liveCount = items.filter((i) => i.dataSource === "live").length;
+  const consensusLive = items.some((i) => i.consensusLive);
+  // Jadwal ke depan saja (60 hari, kolom seperlunya) — hemat payload ke klien.
+  const nowMs = Date.now();
+  const horizon = nowMs + 60 * 86400000;
+  const upcoming = UPCOMING
+    .filter((e) => { const t = new Date(e.iso).getTime(); return t > nowMs - 3600000 && t < horizon; })
+    .map(({ date, time, iso, title, indicatorId, impact, country }) => ({ date, time, iso, title, indicatorId, impact, country }));
+
   return (
     <>
       <section className="hero section-fade">
@@ -20,13 +37,19 @@ export default async function AnalysisPage() {
           &ldquo;kejutan&rdquo; (surprise), lalu lihat arah &amp; kekuatan dampaknya terhadap pasangan mata uang.
         </p>
         <div className="notice">
-          ℹ️ Nilai konsensus utama berasal dari penyedia live (ForexFactory) bila dapat dijangkau; bila tidak,
-          memakai estimasi demo. Nilai aktual &amp; sebelumnya ditarik otomatis dari FRED.
+          {liveCount > 0 ? (
+            <>🔗 Nilai aktual &amp; sebelumnya ditarik <strong>langsung dari FRED</strong> ({liveCount}/{items.length} seri live,
+            sisanya dari cache yang diperbarui otomatis).</>
+          ) : (
+            <>ℹ️ Nilai aktual &amp; sebelumnya dari FRED (cache lokal, diperbarui otomatis tiap beberapa jam &amp; setelah jam rilis).</>
+          )}{" "}
+          Konsensus dari <strong>ForexFactory</strong> {consensusLive ? "(live minggu ini + arsip)" : "(arsip mingguan)"} — tanggal
+          rilis mengikuti jadwal resmi BLS/BEA/Fed. Data diperbarui otomatis setelah setiap rilis.
         </div>
       </section>
 
       {items.length ? (
-        <AnalysisClient items={items} upcoming={UPCOMING} />
+        <AnalysisClient items={items} upcoming={upcoming} asOf={asOf} />
       ) : (
         <p className="cell-muted">Belum ada data rilis tersedia. Jalankan <code>npm run fetch</code> untuk memperbarui.</p>
       )}
