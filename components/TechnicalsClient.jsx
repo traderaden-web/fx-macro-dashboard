@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { IconChart, IconSearch } from "./Icons";
 import LiveChartModal from "./LiveChartModal";
 
-const TIMEFRAMES = ["15m", "30m", "1h", "4h", "1d", "1w", "1mo"];
+const TIMEFRAMES = ["1m", "5m", "15m", "30m", "1h", "4h", "1d", "1w", "1mo"];
 
 const SIG_CLASS = { LONG: "sig-long", SHORT: "sig-short", NETRAL: "sig-neutral" };
 const COLORS = {

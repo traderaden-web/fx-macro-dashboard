@@ -10,6 +10,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import TradingViewWidget from "./TradingViewWidget";
+import TerminalChart from "./TerminalChart";
 import SignalPanel from "./SignalPanel";
 import FundamentalsCard from "./FundamentalsCard";
 import NewsModal from "./NewsModal";
@@ -56,6 +57,8 @@ const BASE_CHART = {
 
 // TF sinyal → interval TradingView
 const TF_INTERVAL = {
+  "1m": "1",
+  "5m": "5",
   "15m": "15",
   "30m": "30",
   "1h": "60",
@@ -68,6 +71,8 @@ const TF_INTERVAL = {
 export default function ChartsClient({ news = [], upcoming = [] }) {
   const [active, setActive] = useState(SYMBOLS[0]);
   const [tf, setTf] = useState("1h"); // timeframe sinyal + chart (sync)
+  const [techStyle, setTechStyle] = useState("smc"); // smc | klasik
+  const [chartView, setChartView] = useState("tech"); // tech | tv
   const [modalNews, setModalNews] = useState(null); // berita yang dibuka di popup
 
   // Baca ?sym= dari URL (mis. /charts?sym=gold) agar tautan dari halaman
@@ -222,27 +227,31 @@ export default function ChartsClient({ news = [], upcoming = [] }) {
           <span className="chart-hint">
             <span className="inline-ico" aria-hidden="true"><IconLightbulb size={13} /></span>
             <span>
-              Tambah indikator: klik <b>Indicators (fx)</b> di toolbar chart — RSI, MA, Bollinger,{" "}
-              <b>Pivot Points (level S/R)</b>, Fibonacci, dll.
+              Timeframe M1/M5 tersedia di panel Signal. Mode <b>SMC</b> menampilkan Order Block, FVG, dan BOS/CHOCH.
+              Batas hijau = zona TP, merah = SL, emas = ENTRY (ATR 1.5 / 1.0).
             </span>
           </span>
           <a
             className="btn btn-ghost btn-sm chart-open-tv"
-            href={`https://www.tradingview.com/chart/?symbol=${encodeURIComponent(active.tv)}&interval=D`}
+            href={`https://www.tradingview.com/chart/?symbol=${encodeURIComponent(active.tv)}&interval=${TF_INTERVAL[tf] || "60"}`}
             target="_blank"
             rel="noopener noreferrer"
-            title="Buka chart full TradingView untuk indikator komunitas (SMC, SNR, Order Blocks, FVG)"
+            title="Buka chart full TradingView"
           >
-            SMC / SNR &amp; studi komunitas → buka di TradingView ↗
+            Buka di TradingView ↗
           </a>
         </div>
 
-        <TradingViewWidget
-          type="advanced-chart"
-          className="tv-chart-main"
-          height="none"
-          config={{ ...BASE_CHART, symbol: active.tv, interval: TF_INTERVAL[tf] }}
-        />
+        {chartView === "tech" ? (
+          <TerminalChart symbolId={active.id} tf={tf} style={techStyle} height={560} />
+        ) : (
+          <TradingViewWidget
+            type="advanced-chart"
+            className="tv-chart-main"
+            height="none"
+            config={{ ...BASE_CHART, symbol: active.tv, interval: TF_INTERVAL[tf] }}
+          />
+        )}
       </div>
 
       {/* Popup isi berita (dibuka saat item News Event diklik) */}

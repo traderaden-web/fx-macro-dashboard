@@ -9,6 +9,8 @@
 import { useEffect, useMemo, useState } from "react";
 
 const TF_LABELS = {
+  "1m": "M1",
+  "5m": "M5",
   "15m": "15m",
   "30m": "30m",
   "1h": "1 Jam",
@@ -40,8 +42,8 @@ const CH = 132;
 const CPAD = 8;
 
 // Opsi TF chart mini — hanya mengganti pandangan chart, tidak menggeser TF utama
-const CHART_TFS = ["15m", "1h", "4h"];
-const TF_SHORT = { "15m": "15M", "30m": "30M", "1h": "1H", "4h": "4H", "1d": "1D", "1w": "1M", "1mo": "3B" };
+const CHART_TFS = ["1m", "5m", "15m", "1h"];
+const TF_SHORT = { "1m": "M1", "5m": "M5", "15m": "15M", "30m": "30M", "1h": "1H", "4h": "4H", "1d": "1D", "1w": "1M", "1mo": "1B" };
 const TP_MULT = 1.5; // TP = entry ± 1.5×ATR(14)
 const SL_MULT = 1;   // SL = entry ∓ 1×ATR(14)
 
@@ -280,7 +282,7 @@ function MTFStrip({ symbolId }) {
       </div>
       {m && (
         <p className="mtf-note">
-          {bull} bullish · {bear} bearis · {7 - bull - bear} netral — {m.tfs.filter((t) => t.ok).length}/7 timeframe
+          {bull} bullish · {bear} bearis · {m.tfs.length - bull - bear} netral — {m.tfs.filter((t) => t.ok).length}/{m.tfs.length} timeframe
         </p>
       )}
     </div>

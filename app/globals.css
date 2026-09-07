@@ -1331,7 +1331,7 @@ button.btn:disabled, .btn:disabled, .btn[disabled] {
 .signal-body { padding: 13px 14px; display: flex; flex-direction: column; gap: 11px; flex: 1; justify-content: space-between; }
 
 /* timeframe — 7 kolom rata */
-.signal-tf { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+.signal-tf { display: grid; grid-template-columns: repeat(9, 1fr); gap: 5px; }
 .tf-pill {
   font-size: 11px; font-weight: 700; letter-spacing: .2px; text-align: center;
   color: var(--muted); background: var(--bg-soft);
@@ -1583,7 +1583,7 @@ button.btn:disabled, .btn:disabled, .btn[disabled] {
 .mtf-dom.dom-bearish { color: var(--down); background: rgba(251, 113, 133, 0.1); border-color: rgba(251, 113, 133, 0.4); }
 .mtf-dom.dom-mixed { color: var(--warn); background: rgba(251, 191, 36, 0.08); border-color: rgba(251, 191, 36, 0.35); }
 .mtf-strip {
-  display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px;
+  display: grid; grid-template-columns: repeat(9, 1fr); gap: 5px;
 }
 .mtf-cell {
   display: flex; flex-direction: column; align-items: center; gap: 2px;
