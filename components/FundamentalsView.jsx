@@ -35,12 +35,12 @@ function scenario(event, surprise) {
   return { dir: "Pasar bergerak moderat", note: "Jika hasil sesuai konsensus, dampak besar cenderung terbatas — pantau reaksi atas pengumuman (bias ke arah tertentu biasanya muncul di menit pertama).", pairs: ["Perubahan moderat"], tone: "flat" };
 }
 
-export default function FundamentalsView({ pairs = [], cheatSheet = [] }) {
+export default function FundamentalsView({ pairs = [], cheatSheet = [], countryData }) {
   const strength = computeCurrencyStrength(pairs);
   const strengthByCcy = {};
   strength.forEach((s) => (strengthByCcy[s.currency] = s));
 
-  const bias = useMemo(() => fundamentalBias(strengthByCcy), [pairs.length]);
+  const bias = useMemo(() => fundamentalBias(strengthByCcy, countryData), [pairs, countryData]);
 
   // Gabungkan skor
   const rows = bias
@@ -51,7 +51,14 @@ export default function FundamentalsView({ pairs = [], cheatSheet = [] }) {
     .sort((a, b) => b.blended - a.blended);
 
   // Scenario planner
-  const events = cheatSheet.length ? cheatSheet : [{ date: "2026-09-04", time: "19:30", title: "Nonfarm Payrolls (NFP)", indicatorId: "nfp", consensus: 85, impact: "High" }];
+  const events = cheatSheet.length ? cheatSheet : [{
+    date: new Date().toISOString().slice(0, 10),
+    time: "—",
+    title: "Belum ada rilis berdampak tinggi pada kalender aktif",
+    indicatorId: "",
+    consensus: null,
+    impact: "—",
+  }];
   const [selIdx, setSelIdx] = useState(0);
   const [userGuess, setUserGuess] = useState(0);
   const sel = events[Math.min(selIdx, events.length - 1)];

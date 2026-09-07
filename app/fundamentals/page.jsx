@@ -1,62 +1,18 @@
-import { getForexRates } from "../../lib/forex";
-import { getSeriesData } from "../../lib/data";
-import FundamentalsView from "../../components/FundamentalsView";
+import FundamentalsDashboard from "../../components/FundamentalsDashboard";
 import { IconAnalytics } from "../../components/Icons";
-import { EVENTS } from "../../data/calendar";
-import { getReleaseAnalytics } from "../../lib/consensus";
-import { todayWib } from "../../lib/schedule";
-
-// Dirender per request agar cheat sheet (konsensus FF + previous FRED) selalu baru.
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
 export const metadata = {
   title: "Analisis Fundamental — MacroLab",
   description:
-    "Bias fundamental per mata uang (suku bunga riil, kebijakan, pertumbuhan, pasar kerja) + scenario planner untuk rilis penting (NFP, CPI, FOMC).",
+    "Bias fundamental per mata uang dari data makro resmi dan harga pasar terbaru, dengan scenario planner untuk rilis penting.",
 };
 
-// Kumpulkan cheat sheet rilis penting dari kalender resmi (terdekat yang belum
-// lewat). Konsensus = ForexFactory (live/arsip), previous = FRED — keduanya via
-// lib/consensus (baris `pending` utk tanggal rilis tsb).
-async function upcomingCheat(limit = 6) {
-  const today = todayWib();
-  const list = EVENTS
-    .filter((e) => e.impact === "High" && e.indicatorId)
-    .filter((e) => e.date >= today)
-    .sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time))
-    .slice(0, limit * 2);
-  const ids = [...new Set(list.map((e) => e.indicatorId))];
-  const analytics = {};
-  await Promise.all(ids.map(async (id) => { analytics[id] = await getReleaseAnalytics(id).catch(() => null); }));
-  const out = [];
-  const seen = new Set();
-  for (const e of list) {
-    const key = `${e.indicatorId}|${e.date}`;
-    if (seen.has(key)) continue; // FOMC punya beberapa baris di tanggal yg sama
-    seen.add(key);
-    const a = analytics[e.indicatorId];
-    const row = a?.pending?.find((r) => r.date === e.date) || null;
-    const lastPt = a?.last || null;
-    out.push({
-      ...e,
-      consensus: row?.consensus ?? null,
-      previous: row?.previous ?? lastPt?.value ?? null,
-      unit: a?.unit || "",
-    });
-    if (out.length >= limit) break;
-  }
-  return out;
-}
+// Snapshot diambil oleh klien dari /api/fundamentals tanpa HTTP cache dan
+// diperbarui berkala. Halaman ini tidak menyimpan angka makro statis saat build.
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-export default async function FundamentalsPage() {
-  const [fx, vixSeries] = await Promise.all([
-    getForexRates().catch(() => ({ pairs: [] })),
-    getSeriesData("vix").catch(() => null),
-  ]);
-
-  const cheat = await upcomingCheat(8);
-
+export default function FundamentalsPage() {
   return (
     <div className="page">
       <header className="detail-head">
@@ -65,60 +21,20 @@ export default async function FundamentalsPage() {
           <div>
             <h1>Analisis Fundamental</h1>
             <p className="cell-muted" style={{ margin: 0, maxWidth: 720 }}>
-              Pahami <b>mengapa</b> mata uang bergerak. Lihat bias fundamental tiap valuta dari suku
-              bunga riil, sikap bank sentral, pertumbuhan &amp; pasar kerja, lalu simulasikan bagaimana
-              reaksi pasar terhadap rilis penting berikutnya.
+              Pahami <b>mengapa</b> mata uang bergerak melalui suku bunga, inflasi, pertumbuhan,
+              pasar kerja, dan harga pasar. Snapshot mengecek publikasi resmi terbaru secara otomatis
+              serta menandai data fallback secara transparan.
             </p>
           </div>
         </div>
         <div className="tags">
           <span className="badge cat"><IconAnalytics size={13} /> Bias Fundamental</span>
-          <span className="badge cat">Scenario Planner</span>
-          <span className="badge cat">Cheat Sheet Rilis</span>
+          <span className="badge cat">Auto refresh 5 menit</span>
+          <span className="badge cat">Sumber &amp; status data</span>
         </div>
       </header>
 
-      <FundamentalsView pairs={fx.pairs || []} cheatSheet={cheat} />
-
-      {/* ── Cheat Sheet Rilis ── */}
-      <section className="section">
-        <div className="section-head">
-          <h2>Cheat Sheet Rilis Penting</h2>
-          <span className="cell-muted">Konsensus &amp; dampak</span>
-        </div>
-        <div className="table-wrap">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Tanggal</th>
-                <th>Event</th>
-                <th>Kategori</th>
-                <th>Konsensus</th>
-                <th>Previous</th>
-                <th>Dampak</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cheat.map((e) => (
-                <tr key={`${e.indicatorId}-${e.date}-${e.time}`}>
-                  <td className="mono">
-                    <div style={{ fontWeight: 600 }}>{e.date.slice(8, 10)}/{e.date.slice(5, 7)}</div>
-                    <div className="cell-muted">{e.time} WIB</div>
-                  </td>
-                  <td>
-                    <div className="cell-name">{e.title}</div>
-                    <div className="cell-muted">{e.country}</div>
-                  </td>
-                  <td><span className="cell-muted">{e.category}</span></td>
-                  <td className="mono">{e.consensus ?? "—"}</td>
-                  <td className="mono cell-muted">{e.previous ?? "—"}</td>
-                  <td><span className="badge impact" style={{ color: "#fb7185", background: "rgba(251,113,133,0.16)" }}>{e.impact}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <FundamentalsDashboard />
     </div>
   );
 }

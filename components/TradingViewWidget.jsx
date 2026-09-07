@@ -68,7 +68,9 @@ export default function TradingViewWidget({ type, config, height = "auto", class
       }
     }, 12000);
 
-    script.addEventListener("load", () => observer.observe(host, { childList: true, subtree: true }));
+    // Mulai mengamati sebelum script ditambahkan: beberapa browser menjalankan
+    // embed dan membuat iframe sebelum event `load` script dipancarkan.
+    observer.observe(host, { childList: true, subtree: true });
     script.addEventListener("error", () => fail("Gagal memuat script TradingView — periksa koneksi internet."));
 
     host.appendChild(widget);

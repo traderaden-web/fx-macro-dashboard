@@ -6,7 +6,7 @@ import { latestUpdated } from "../../lib/data";
 import { UPCOMING } from "../../data/calendar";
 
 // Selalu dirender per request: angka aktual FRED & konsensus ForexFactory
-// ditarik saat halaman dibuka (cache server ≤ 30 menit, 3 menit di jendela
+// ditarik saat halaman dibuka (cache server ≤ 5 menit, 3 menit di jendela
 // rilis) — tidak pernah dibekukan saat build.
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

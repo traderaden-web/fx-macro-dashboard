@@ -5,8 +5,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { IconChart, IconSearch } from "./Icons";
+import LiveChartModal from "./LiveChartModal";
 
 const TIMEFRAMES = ["15m", "30m", "1h", "4h", "1d", "1w", "1mo"];
 
@@ -31,6 +31,7 @@ export default function TechnicalsClient() {
   const [kind, setKind] = useState("all");
   const [sort, setSort] = useState("score");
   const [updated, setUpdated] = useState(null);
+  const [chartInstrument, setChartInstrument] = useState(null);
 
   useEffect(() => {
     let active = true;
@@ -163,9 +164,14 @@ export default function TechnicalsClient() {
                     </span>
                   </td>
                   <td>
-                    <Link href={`/charts?sym=${row.id}`} className="btn btn-ghost btn-sm">
-                      <IconChart size={14} /> Chart
-                    </Link>
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-sm"
+                      onClick={() => setChartInstrument(row)}
+                      aria-label={`Buka chart live ${row.label}`}
+                    >
+                      <IconChart size={14} /> Chart Live
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -189,6 +195,14 @@ export default function TechnicalsClient() {
             </div>
           ))}
         </div>
+
+      {chartInstrument && (
+        <LiveChartModal
+          instrument={chartInstrument}
+          timeframe="1h"
+          onClose={() => setChartInstrument(null)}
+        />
+      )}
     </div>
   );
 }
