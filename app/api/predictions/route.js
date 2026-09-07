@@ -6,19 +6,24 @@
 
 import { NextResponse } from "next/server";
 import {
-  getPredictions, addPrediction, leaderboard, OPEN_EVENTS, scorePrediction,
+  getPredictions, addPrediction, leaderboard, openEvents, scorePrediction,
 } from "../../../lib/predictions";
-import { CONSENSUS } from "../../../data/releases";
 import { getSeriesData } from "../../../lib/data";
+import { getSeries } from "../../../lib/series";
 import { UPCOMING } from "../../../data/calendar";
+import { obsForRelease } from "../../../lib/schedule";
+import { getReleaseAnalytics } from "../../../lib/consensus";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-// Peta releaseDate → obs (periode data FRED) dari data/releases.
+// releaseDate → obs (periode data FRED): dari `obs` eksplisit di jadwal resmi,
+// kalau tidak, dari aturan periode (NFP 4 Sep → data Agustus, dst.).
 function obsFor(indicatorId, releaseDate) {
-  const list = CONSENSUS[indicatorId] || [];
-  const hit = list.find((e) => e.date === releaseDate);
-  return hit ? hit.obs : null;
+  const def = getSeries(indicatorId);
+  if (!def) return null;
+  const ev = UPCOMING.find((e) => e.indicatorId === indicatorId && e.date === releaseDate && e.obs);
+  return ev ? ev.obs : obsForRelease(def, releaseDate);
 }
 
 // Bangun peta actual: "indicatorId::releaseDate" → nilai FRED aktual.
@@ -44,11 +49,18 @@ export async function GET() {
   const actuals = await buildActuals(preds);
   const board = leaderboard(actuals);
 
-  // Event terbuka untuk diprediksi (yang belum lewat).
-  const open = OPEN_EVENTS.map((e) => {
+  // Event terbuka untuk diprediksi (rilis berikutnya menurut jadwal resmi) +
+  // konsensus ForexFactory bila sudah tersedia.
+  const open = await Promise.all(openEvents().map(async (e) => {
     const already = preds.filter((p) => p.indicatorId === e.indicatorId && p.releaseDate === e.releaseDate);
-    return { ...e, votes: already.length };
-  });
+    let expected = null;
+    try {
+      const a = await getReleaseAnalytics(e.indicatorId);
+      const row = a?.pending?.find((r) => r.date === e.releaseDate);
+      expected = row?.consensus ?? null;
+    } catch { /* tanpa konsensus */ }
+    return { ...e, expected, votes: already.length };
+  }));
 
   // Gabungkan judgement bila ACTUAL tersedia.
   const enriched = preds.map((p) => {

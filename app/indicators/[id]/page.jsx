@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getReleaseAnalytics } from "../../../lib/consensus";
-import { CATEGORIES, COUNTRIES } from "../../../lib/series";
+import { CATEGORIES, COUNTRIES, getSeries } from "../../../lib/series";
 import { getEducation, GENERAL } from "../../../lib/education";
 import { UPCOMING } from "../../../data/calendar";
 import IndicatorClient from "../../../components/IndicatorClient";
@@ -9,8 +9,9 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
+  const def = getSeries(id);
   return {
-    title: `Indikator ${id} — MacroLab`,
+    title: `${def ? `${def.short} — ${def.name}` : `Indikator ${id}`} — MacroLab`,
     description: "Detail indikator makro: riwayat, consensus vs actual, dan edukasi praktis untuk forex.",
   };
 }

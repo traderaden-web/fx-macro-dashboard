@@ -1,0 +1,121 @@
+# .github/workflows/refresh-data.yml
+# Pembaruan data OTOMATIS (tanpa campur tangan manual):
+#
+#   1. Tarik data historis terbaru dari FRED  → data/seed.json      (npm run fetch)
+#   2. Arsipkan forecast/previous ForexFactory → data/ff-history.json (npm run fetch:ff)
+#   3. Sinkronkan jadwal rilis resmi BLS       → data/schedule-us.json (npm run fetch:schedule)
+#   4. Bila ada perubahan → commit + push ke main → CI & Deploy (ci-deploy.yml, via
+#      repository_dispatch) dan/atau Vercel Git Integration mem-build ulang situs.
+#
+# Halaman /analysis, /calendar, /indicators sendiri sudah menarik FRED secara LIVE
+# per request (cache 30 mnt, 3 mnt di jendela rilis). Workflow ini adalah lapisan
+# ke-2: memastikan fallback (seed) tidak pernah basi dan arsip konsensus FF tidak
+# hilang saat feed berganti minggu.
+#
+# Jadwal (UTC — WIB = UTC+7):
+#   • Tiap 6 jam (00/06/12/18 UTC).
+#   • Senin–Jumat 12:45, 13:10, 13:45, 14:10 & 15:10 UTC: jendela rilis AS
+#     (08:30 ET = 12:30 UTC saat EDT / 13:30 UTC saat EST; 10:00 ET = 14:00/15:00 UTC).
+#   • Bisa dijalankan manual dari tab Actions (workflow_dispatch).
+#
+# Catatan: GitHub cron bisa terlambat beberapa menit saat beban tinggi — halaman
+# tetap akurat karena FRED live dibaca langsung saat halaman dibuka.
+
+name: Refresh Data (FRED · ForexFactory · BLS)
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+    - cron: "45 12 * * 1-5"
+    - cron: "10 13 * * 1-5"
+    - cron: "45 13 * * 1-5"
+    - cron: "10 14 * * 1-5"
+    - cron: "10 15 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Alasan refresh manual (opsional)"
+        required: false
+        default: "manual"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Tarik data & commit bila berubah
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # Masing-masing langkah TIDAK menghentikan langkah lain bila satu sumber
+      # sedang down — file yang gagal ditarik dibiarkan apa adanya (data lama tetap valid).
+      - name: FRED → data/seed.json
+        id: fred
+        continue-on-error: true
+        run: npm run fetch
+
+      - name: ForexFactory → data/ff-history.json
+        id: ff
+        continue-on-error: true
+        run: npm run fetch:ff
+
+      - name: BLS schedule → data/schedule-us.json
+        id: bls
+        continue-on-error: true
+        run: npm run fetch:schedule
+
+      - name: Ringkasan
+        run: |
+          echo "FRED: ${{ steps.fred.outcome }} · FF: ${{ steps.ff.outcome }} · BLS: ${{ steps.bls.outcome }}"
+          git status --short data/ || true
+          node -e "const s=require('./data/seed.json'); console.log('seed generated:', s.generated, 'series:', Object.keys(s.series||{}).length)"
+
+      - name: Commit & push bila ada perubahan
+        id: commit
+        run: |
+          git config user.name "macrolab-bot"
+          git config user.email "macrolab-bot@users.noreply.github.com"
+          git add data/seed.json data/ff-history.json data/schedule-us.json
+          if git diff --cached --quiet; then
+            echo "Tidak ada data baru — tidak ada commit."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          STAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
+          git commit -m "data: refresh otomatis ${STAMP}" -m "FRED=${{ steps.fred.outcome }} FF=${{ steps.ff.outcome }} BLS=${{ steps.bls.outcome }}"
+          # Coba push; bila main sudah bergerak, rebase lalu ulangi (maks. 3x).
+          for i in 1 2 3; do
+            if git push origin HEAD:main; then
+              echo "pushed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git pull --rebase origin main || true
+          done
+          echo "Gagal push setelah 3 percobaan" >&2
+          exit 1
+
+      # Push memakai GITHUB_TOKEN tidak memicu workflow lain (aturan GitHub anti-loop),
+      # sehingga ci-deploy.yml dipicu eksplisit lewat repository_dispatch. Vercel Git
+      # Integration (bila dipakai) bereaksi sendiri terhadap push ini.
+      - name: Picu deploy ulang
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api repos/${{ github.repository }}/dispatches -f event_type=data-refreshed || echo "dispatch dilewati"

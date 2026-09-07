@@ -3,6 +3,10 @@ import { COUNTRIES } from "../../lib/series";
 import { CountryFlag } from "../../components/Badges";
 import { fmt } from "../../lib/format";
 
+// Dirender per request: data FRED live (cache server ≤ 30 mnt, 3 mnt di jendela rilis).
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function EconomyPage() {
   const all = await getAllSeriesData();
 

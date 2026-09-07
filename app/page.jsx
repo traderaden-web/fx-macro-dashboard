@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAllSeriesData, SEED_META } from "../lib/data";
+import { getAllSeriesData, latestUpdated } from "../lib/data";
 import { getForexRates } from "../lib/forex";
 import { computeCurrencyStrength, riskBias } from "../lib/strength";
 import StatCard from "../components/StatCard";
@@ -48,8 +48,14 @@ const BANNER = [
 
 const FX_ONLY = (p) => p.symbol.includes("/") && !p.symbol.startsWith("XAU") && !p.symbol.startsWith("XAG");
 
+// Dirender per request: data FRED live (cache server ≤ 30 mnt, 3 mnt di jendela rilis).
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function Home() {
   const all = await getAllSeriesData();
+  const asOf = latestUpdated(all);
+  const liveN = all.filter((d) => d.source === "live").length;
 
   // ── Data live (dengan fallback demo) ──────────────────────────────────
   let fx = { pairs: [], source: "demo" };
@@ -80,13 +86,19 @@ export default async function Home() {
 
   // Jadwal rilis hanya untuk bulan yang akan datang.
   const month = nextMonthInfo();
-  let nextEvents = UPCOMING
-    .filter((e) => e.date.slice(0, 7) === month.key)
+  // Rilis penting berikutnya (belum lewat, WIB) — untuk bar status & tabel.
+  const nowMs = Date.now();
+  const futureEvents = UPCOMING
+    .filter((e) => new Date(e.iso).getTime() >= nowMs && e.impact !== "Low")
     .sort((a, b) => a.iso.localeCompare(b.iso));
-  if (nextEvents.length === 0) {
-    nextEvents = UPCOMING.slice().sort((a, b) => a.iso.localeCompare(b.iso));
-  }
-  nextEvents = nextEvents.slice(0, 10);
+  const nextRelease = futureEvents[0] || null;
+  // Tabel: 10 rilis penting terdekat dari sekarang (bukan "bulan depan" — agar
+  // rilis minggu ini seperti CPI/PPI tidak terlewat).
+  const nextEvents = futureEvents.slice(0, 10);
+  const scheduleLabel = nextEvents.length
+    ? `${nextEvents[0].date.slice(8, 10)} ${MONTHS_ID[Number(nextEvents[0].date.slice(5, 7)) - 1].slice(0, 3)} – ${nextEvents.at(-1).date.slice(8, 10)} ${MONTHS_ID[Number(nextEvents.at(-1).date.slice(5, 7)) - 1].slice(0, 3)}`
+    : month.label;
+  const asOfLabel = asOf ? `${asOf.slice(8, 10)} ${MONTHS_ID[Number(asOf.slice(5, 7)) - 1].slice(0, 3).toUpperCase()} ${asOf.slice(0, 4)} ${asOf.slice(11, 16)}Z` : "—";
 
   return (
     <div className="home-term">
@@ -150,7 +162,7 @@ export default async function Home() {
         </div>
         <div className="legend" style={{ marginTop: 20 }}>
           <span><span className="pulse-dot" /> Sumber: FRED + Yahoo Finance</span>
-          <span>Dikumpulkan: {SEED_META.generated?.slice(0, 10) || "—"}</span>
+          <span>Data diambil: {asOf ? `${asOf.slice(0, 10)} ${asOf.slice(11, 16)} UTC` : "—"}{liveN ? ` · ${liveN}/${all.length} seri live` : " · cache"}</span>
           {fx.source === "demo" && <span className="cell-muted">· kurs tampil dalam mode demo</span>}
         </div>
       </section>
@@ -261,7 +273,7 @@ export default async function Home() {
 
       <section className="section">
         <div className="section-head">
-          <h2>Jadwal Rilis {month.label}</h2>
+          <h2>Jadwal Rilis Terdekat <span className="cell-muted" style={{ fontWeight: 400, fontSize: "0.8em" }}>({scheduleLabel})</span></h2>
           <Link href="/calendar" className="see-all">Kalender penuh →</Link>
         </div>
         <div className="table-hint">Geser tabel untuk melihat semua kolom →</div>
@@ -315,12 +327,12 @@ export default async function Home() {
       </section>
 
       <footer className="home-status mono">
-        <span>SYS: FRED+FF · SERI: 27 · ASOF: 30 AGU 2026</span>
-        {nextEvents[0] && (
+        <span>{`SYS: FRED${liveN ? "·LIVE" : "·CACHE"}+FF · SERI: ${all.length} · ASOF: ${asOfLabel}`}</span>
+        {nextRelease && (
           <span className="home-status-next">
-            NEXT ▸ {nextEvents[0].title} — {nextEvents[0].date.slice(8)}{" "}
-            {["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"][Number(nextEvents[0].date.slice(5, 7)) - 1]}{" "}
-            {nextEvents[0].time} WIB
+            NEXT ▸ {nextRelease.title} — {nextRelease.date.slice(8)}{" "}
+            {["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"][Number(nextRelease.date.slice(5, 7)) - 1]}{" "}
+            {nextRelease.time} WIB
           </span>
         )}
         <span className="home-status-right">

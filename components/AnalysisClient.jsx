@@ -22,6 +22,18 @@ const MM = (s) => (s ? new Date(s + "T00:00:00").toLocaleDateString("id-ID", { m
 // Tanggal rilis lengkap (tanpa nol awal): "8 JUN 26" — dipakai di tabel riwayat
 const DMY = (s) => (s ? `${Number(s.slice(8, 10))} ${BLN[parseInt(s.slice(5, 7), 10) - 1].toUpperCase()} ${s.slice(2, 4)}` : "—");
 const IMPACT_RANK = { High: 0, Medium: 1, Low: 2 };
+// Label sumber konsensus per baris rilis (lib/consensus.js → r.source)
+const SRC_LABEL = { live: "FOREXFACTORY LIVE", ff: "FOREXFACTORY (ARSIP)", local: "KURASI LOKAL", fred: "—" };
+const SRC_SHORT = { live: "FF·LIVE", ff: "FF", local: "KURASI", fred: "—" };
+// ISO timestamp → "6 SEP 26 14:28 WIB"
+function fmtAsOf(iso) {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "—";
+  const p = new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(d);
+  const g = (t) => p.find((x) => x.type === t)?.value || "";
+  return `${g("day")} ${g("month").toUpperCase().replace(".", "")} ${g("year")} ${g("hour")}:${g("minute")} WIB`;
+}
 
 const WIBM = new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
 
@@ -83,6 +95,7 @@ function Num({ v, d = 1, signed = false }) {
 // ── 02 · CONSENSUS VS ACTUAL ─────────────────────────────────────────────
 function BlockConsensus({ item, latest, prevRel, now }) {
   const d = item.decimals;
+  const pendingNext = item.pending?.length ? item.pending[0] : null;
   const tol = item.tol ?? 0.5;
   const surprise = latest?.surprise ?? null;
   const idx = latest?.surpriseIdx ?? null;
@@ -111,7 +124,7 @@ function BlockConsensus({ item, latest, prevRel, now }) {
         <h4>Consensus vs Actual — {item.short}</h4>
         <span className="ct-block-meta mono">
           {stale && <b className="ct-stale">⚠ DATA STALE</b>}
-          {latest && <> ASOF {DMY(latest.date)} · SRC {latest.source === "live" ? "FOREXFACTORY" : "FRED"}</>}
+          {latest && <> RILIS {DMY(latest.date)} · AKTUAL {item.fred ? "FRED" : "ISM"} · KONS {SRC_SHORT[latest.source] || "—"}</>}
           {daily && " · SERI HARIAN (EST. ANALIS)"}
         </span>
       </div>
@@ -156,6 +169,18 @@ function BlockConsensus({ item, latest, prevRel, now }) {
         <span className="ct-senti-chip mono">{chip}</span>
         <span>{rx ? rx.via : "Nilai sesuai konsensus — pasar cenderung minim respons."}</span>
       </div>
+
+      {pendingNext && (
+        <div className="ct-pending mono">
+          <span className="ct-pending-tag">{pendingNext.awaiting ? "MENUNGGU FRED" : "RILIS BERIKUTNYA"}</span>
+          <span>
+            {DMY(pendingNext.date)} · periode {MM(pendingNext.obsDate).toUpperCase()}
+            {pendingNext.consensus != null && <> · KONSENSUS <b>{FMT(pendingNext.consensus, d)}</b> {item.unit}</>}
+            {pendingNext.previous != null && <> · PREV {FMT(pendingNext.previous, d)}</>}
+            {pendingNext.awaiting && " · angka aktual akan tampil otomatis begitu FRED memuatnya"}
+          </span>
+        </div>
+      )}
     </div>
   );
 }
@@ -228,7 +253,7 @@ function ReleaseModal({ item, r, onClose }) {
             <div className="ct-cell cons">
               <em>CONSENSUS</em>
               <b className="mono">{FMT(r.consensus, d)}</b>
-              <i>{r.source === "live" ? "FOREXFACTORY LIVE" : "ESTIMASI KURASI ANALIS"}</i>
+              <i>{r.consensus == null ? "TIDAK ADA KONSENSUS" : SRC_LABEL[r.source] || "KURASI LOKAL"}</i>
             </div>
             <div className="ct-cell act">
               <em>ACTUAL</em>
@@ -354,7 +379,7 @@ function ReleaseModal({ item, r, onClose }) {
           )}
 
           <footer className="rm-foot mono">
-            <span>SRC: {r.source === "live" ? "FOREXFACTORY" : "FRED + KURASI LOKAL"} · TOL ±{FMT(tol, 2)} {item.unit}</span>
+            <span>AKTUAL: {item.fred ? "FRED" : "ISM"} · KONSENSUS: {SRC_LABEL[r.source] || "KURASI LOKAL"} · TOL ±{FMT(tol, 2)} {item.unit}</span>
             <a className="rm-link" href={`/indicators/${item.id}`}>Halaman indikator {item.short} →</a>
           </footer>
         </div>
@@ -433,7 +458,7 @@ function BlockHistory({ item }) {
                       <td className={scls}>{SFMT(r.surprise, d)}</td>
                       <td className={scls}>{r.surpriseIdx !== null && r.surpriseIdx !== undefined ? SFMT(r.surpriseIdx, 0) : "—"}</td>
                       <td className={scls}>{r.surprise === null ? "·" : Math.abs(r.surprise) <= tol ? "◆" : r.surprise > 0 ? "▲" : "▼"}</td>
-                      <td className="ct-src">{r.source === "live" ? "FF" : "FRED"}</td>
+                      <td className="ct-src" title={r.estimated ? "Tanggal rilis diperkirakan dari pola rilis" : undefined}>{r.consensus == null ? "—" : SRC_SHORT[r.source] || "KURASI"}{r.estimated ? "*" : ""}</td>
                       <td className="ct-rm-go" aria-hidden="true">▸</td>
                     </tr>
                   );
@@ -583,7 +608,7 @@ function BlockImpact({ item, latest }) {
 }
 
 // ── TERMINAL ─────────────────────────────────────────────────────────────
-export default function AnalysisClient({ items, upcoming = [] }) {
+export default function AnalysisClient({ items, upcoming = [], asOf = null }) {
   const now = useWib();
   const [selected, setSelected] = useState((items.find((i) => i.id === "cpi") || items[0])?.id);
   const [cat, setCat] = useState("semua");
@@ -618,8 +643,8 @@ export default function AnalysisClient({ items, upcoming = [] }) {
             <span className="ct-cursor" aria-hidden="true" />
           </span>
           <span className="ct-head-right">
-            <span className={`ct-led ${current?.source === "live" ? "ok" : "dim"}`}>
-              {current?.source === "live" ? "FRED·LIVE" : "FRED·CACHE"}
+            <span className={`ct-led ${current?.dataSource === "live" ? "ok" : "dim"}`}>
+              {current?.dataSource === "live" ? (current?.fred ? "FRED·LIVE" : "ISM·LIVE") : current?.dataSource === "curated" ? "ISM·CACHE" : "FRED·CACHE"}
             </span>
             <span className="ct-clock mono">{now ? WIBM.format(now) : "--:--:--"} WIB</span>
           </span>
@@ -706,7 +731,7 @@ export default function AnalysisClient({ items, upcoming = [] }) {
 
         <footer className="ct-foot">
           <span className="mono ct-foot-src">
-            SRC: FRED{current?.source === "live" ? "+LIVE" : ""} · N: {current?.accuracy.samples ?? 0} · TOL: ±{FMT(current?.tol, 2)} {current?.unit} · ASOF: 30 AGU 2026
+            SRC: FRED{current?.consensusLive ? "+FF LIVE" : "+FF ARSIP"} · N: {current?.accuracy.samples ?? 0} · TOL: ±{FMT(current?.tol, 2)} {current?.unit} · ASOF: {fmtAsOf(current?.asOf || asOf)}
           </span>
           {globalNext && now && (
             <span className="mono ct-foot-next">

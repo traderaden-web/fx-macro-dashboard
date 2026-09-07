@@ -100,13 +100,38 @@ Sistem memakai **beberapa sumber**:
 > **TradingEconomics** (actual + konsensus + riwayat) atau **FRED API** resmi dengan key. Ganti
 > `lib/provider.js` agar membaca dari penyedia tersebut — sisanya otomatis menyesuaikan.
 
+### 🔄 Bagaimana data tetap up-to-date (otomatis)
+
+Halaman **/analysis**, **/calendar**, **/indicators** (dan detail `/indicators/[id]`) dirender
+**per request** (`dynamic = "force-dynamic"`) dan memakai tiga lapisan agar angka selalu segar:
+
+| Lapisan | Sumber | Kapan diperbarui |
+|---|---|---|
+| **1. Live** | FRED (`fredgraph.csv`), cache server **30 menit**; **3 menit** di jendela rilis AS (Sen–Jum 08:25–10:45 ET) | Setiap halaman dibuka — angka rilis baru tampil beberapa menit setelah FRED memuatnya |
+| **2. Konsensus** | ForexFactory feed mingguan (K/previous) + arsip `data/ff-history.json` | Live tiap 15 menit; arsip di-commit otomatis (lihat lapisan 3) |
+| **3. Fallback & arsip** | `data/seed.json`, `data/ff-history.json`, `data/schedule-us.json` | **GitHub Actions** `refresh-data.yml`: tiap 6 jam + 5× di jendela rilis AS (Sen–Jum), lalu commit + picu deploy |
+
+- **Jadwal rilis** (`data/calendar.js`) diturunkan dari kalender resmi BLS/BEA/Fed/ISM/Census/UMich/ADP/ECB
+  (2026–2027) dengan konversi WIB yang memperhitungkan DST; jadwal BLS disinkronkan ulang otomatis dari
+  `bls.gov/schedule/news_release/bls.ics` → `data/schedule-us.json`.
+- **Aktual selalu dari sumber resmi** — FRED, atau laporan ISM (`ismworld.org`, karena ISM PMI tidak ada di
+  FRED) — bukan dari feed konsensus, sehingga nilai *Actual/Previous* = angka resmi.
+  Periode data (`obs`) dipetakan per indikator (`lib/schedule.js`: NFP 4 Sep → data Agustus, CPI → bulan
+  sebelumnya, Fed Funds → bulan yang sama, klaim → minggu sebelumnya, dst.).
+- Setelah jam rilis tetapi FRED belum memuat angka, baris kalender/analisis menampilkan **MENUNGGU DATA**
+  (bukan angka lama) dan otomatis terisi begitu FRED ter-update.
+- Setiap halaman menampilkan **stempel waktu pengambilan** & sumber (`FRED LIVE n/N`, `FF LIVE/ARSIP`) di
+  footer — tidak ada lagi tanggal yang ditulis manual.
+- Perintah manual: `npm run fetch` (FRED → seed), `npm run fetch:ff` (arsip FF), `npm run fetch:schedule`
+  (jadwal BLS), atau `npm run fetch:all` untuk ketiganya. Setel `USE_SEED_ONLY=1` untuk memaksa mode offline.
+
 ---
 
 ## 🚀 Menjalankan
 
 ```bash
 npm install
-npm run fetch      # ambil data terbaru dari FRED → data/seed.json
+npm run fetch:all  # FRED → data/seed.json, arsip FF, jadwal BLS (opsional; CI melakukannya otomatis)
 npm run dev        # server pengembangan di http://localhost:3000
 # atau untuk produksi:
 npm run build && npm run start

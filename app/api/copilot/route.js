@@ -58,7 +58,11 @@ export async function POST(req) {
     let events = [];
     try {
       const { UPCOMING } = await import("../../../data/calendar");
-      events = UPCOMING.slice(0, 6).map((e) => ({ title: e.title, date: e.date, time: e.time }));
+      const now = Date.now();
+      events = UPCOMING
+        .filter((e) => new Date(e.iso).getTime() >= now && e.impact !== "Low")
+        .slice(0, 6)
+        .map((e) => ({ title: e.title, date: e.date, time: e.time }));
     } catch { /* no-op */ }
 
     const ctx = { matrix, strength, bias, vix: vixSeries?.last?.value ?? null, events };

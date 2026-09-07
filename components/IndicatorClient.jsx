@@ -305,7 +305,13 @@ export default function IndicatorClient({ data, releases, accuracy, source, edu,
   // bar kejutan untuk tabel rilis
   const maxSurp = Math.max(...(hist.map((r) => Math.abs(r.surprise) || 0)), 1e-9);
 
-  const srcLive = source === "live" || data.source === "live";
+  const dataSrc = data.dataSource || data.source; // live | seed | curated
+  const srcLive = dataSrc === "live";
+  const isIsm = !data.fred; // ISM: tanpa FRED → laporan resmi ismworld.org
+  const srcName = isIsm ? "ISM" : "FRED";
+  const srcLabel = srcLive ? `${srcName} LIVE` : dataSrc === "curated" ? `${srcName} CACHE` : "FRED CACHE";
+  const updatedStamp = data.updated ? data.updated.slice(0, 16).replace("T", " ") + " UTC" : "—";
+  const pendingNext = data.pending?.length ? data.pending[0] : null;
 
   return (
     <div className="ind-term">
@@ -318,7 +324,7 @@ export default function IndicatorClient({ data, releases, accuracy, source, edu,
           <span className="ct-cursor" aria-hidden="true" />
         </span>
         <span className="ind-term-head-right">
-          <span className={`ct-led ${srcLive ? "ok" : "warn"}`}>{srcLive ? "FRED LIVE" : "CACHE LOKAL"} · {data.updated?.slice(0, 10)}</span>
+          <span className={`ct-led ${srcLive ? "ok" : "warn"}`} title={`Data diambil ${updatedStamp}`}>{srcLabel} · {data.updated?.slice(0, 10) || "—"}</span>
           <TermClock />
         </span>
       </header>
@@ -381,6 +387,13 @@ export default function IndicatorClient({ data, releases, accuracy, source, edu,
                 <b>{fmtCountdown(new Date(nextRel.iso).getTime() - now.getTime())}</b>
                 <span>menuju rilis</span>
               </div>
+              {pendingNext && (pendingNext.consensus != null || pendingNext.previous != null) && (
+                <span className="ind-next-sched mono">
+                  {pendingNext.consensus != null && <>KONSENSUS {fmt(pendingNext.consensus, data.decimals)} {data.unit}</>}
+                  {pendingNext.consensus != null && pendingNext.previous != null && " · "}
+                  {pendingNext.previous != null && <>PREV {fmt(pendingNext.previous, data.decimals)}</>}
+                </span>
+              )}
             </div>
           ) : (
             <div className="ind-next-body">
@@ -397,7 +410,7 @@ export default function IndicatorClient({ data, releases, accuracy, source, edu,
           <div className="ct-block-head">
             <span className="ct-tag">01</span>
             <h4>Consensus vs Actual — Rilis Terakhir</h4>
-            <span className="ct-block-meta mono">▸ {latest.date} · SRC: {latest.source?.toUpperCase()}</span>
+            <span className="ct-block-meta mono">▸ {latest.date} · AKTUAL: {srcName} · KONS: {latest.consensus == null ? "—" : latest.source === "live" ? "FF LIVE" : latest.source === "ff" ? "FF ARSIP" : "KURASI"}</span>
           </div>
 
           <div className="ind-cells mono">
@@ -536,7 +549,7 @@ export default function IndicatorClient({ data, releases, accuracy, source, edu,
       )}
 
       <footer className="ind-term-foot mono">
-        <span>SRC: {srcLive ? "FRED (LIVE)" : "CACHE LOKAL"} · N={pts.length} POINT · AS-OF {lastDate || "—"} · ZONA: WIB (UTC+7)</span>
+        <span>SRC: {srcLabel} · DIAMBIL {updatedStamp} · N={pts.length} POINT · PERIODE TERAKHIR {lastDate || "—"} · ZONA: WIB (UTC+7)</span>
         <span className="ind-term-foot-note">Selalu verifikasi ke sumber resmi — data bisa direvisi</span>
         <span className="ct-blink" aria-hidden="true">●</span>
       </footer>

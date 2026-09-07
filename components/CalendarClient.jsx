@@ -23,6 +23,11 @@ const COUNTRY_META = {
 };
 const IMP_CLS = { High: "im-high", Medium: "im-medium", Low: "im-low" };
 
+// Tanggal (YYYY-MM-DD) menurut WIB — bukan UTC — agar label "HARI INI" dan
+// pembagian hari konsisten dengan waktu rilis yang ditampilkan (WIB).
+const WIB_DATE = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta", year: "numeric", month: "2-digit", day: "2-digit" });
+const wibDate = (d) => WIB_DATE.format(d);
+
 function useNow() {
   const [now, setNow] = useState(null);
   useEffect(() => {
@@ -104,7 +109,7 @@ function EventRow({ e, now, isNext, open, onToggle, onOpenDetail }) {
   const ts = new Date(e.iso).getTime();
   const tNow = now ? now.getTime() : ts;
   const isPast = ts < tNow;
-  const isToday = now && e.iso.slice(0, 10) === now.toISOString().slice(0, 10);
+  const isToday = now && e.iso.slice(0, 10) === wibDate(now);
   const time = e.iso.slice(11, 16);
   const cat = CATEGORIES.find((c) => c.id === e.category);
   const cname = COUNTRY_META[e.country] || e.country;
@@ -129,7 +134,7 @@ function EventRow({ e, now, isNext, open, onToggle, onOpenDetail }) {
           <CountryFlag code={e.country} size={15} showCode={false} />
           {e.title}
           {isNext && <b className="cal-next-tag">NEXT</b>}
-          {isPast && <i className="cal-released">RELEASED</i>}
+          {isPast && <i className="cal-released">{series && e.actual == null ? "MENUNGGU DATA" : "RELEASED"}</i>}
         </span>
         <span className="cal-r-cat" style={{ "--c": cat?.color }}>
           <i /> {cat?.label || e.category}
@@ -210,7 +215,7 @@ function EventRow({ e, now, isNext, open, onToggle, onOpenDetail }) {
 }
 
 // ── TERMINAL ─────────────────────────────────────────────────────────────
-export default function CalendarClient({ events, details = {} }) {
+export default function CalendarClient({ events, details = {}, meta = null }) {
   const now = useNow();
   const [win, setWin] = useState("terkini");
   const [cat, setCat] = useState("semua");
@@ -276,11 +281,11 @@ export default function CalendarClient({ events, details = {} }) {
 
   const dateLabel = (date) => {
     if (!now) return { main: DAY_NAMES[new Date(`${date}T00:00:00`).getDay()], sub: `${date.slice(8)} ${MONTHS[Number(date.slice(5, 7)) - 1]} ${date.slice(0, 4)}`, today: false };
-    const todayKey = now.toISOString().slice(0, 10);
-    if (date === todayKey) return { main: "HARI INI", sub: `${DAY_NAMES[now.getDay()]}, ${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()}`, today: true };
+    const todayKey = wibDate(now);
     const dt = new Date(`${date}T00:00:00`);
-    const yest = new Date(now.getTime() - DAY).toISOString().slice(0, 10);
-    const tmr = new Date(now.getTime() + DAY).toISOString().slice(0, 10);
+    if (date === todayKey) return { main: "HARI INI", sub: `${DAY_NAMES[dt.getDay()]}, ${dt.getDate()} ${MONTHS[dt.getMonth()]} ${dt.getFullYear()}`, today: true };
+    const yest = wibDate(new Date(now.getTime() - DAY));
+    const tmr = wibDate(new Date(now.getTime() + DAY));
     if (date === yest) return { main: "KEMARIN", sub: `${DAY_NAMES[dt.getDay()]}, ${dt.getDate()} ${MONTHS[dt.getMonth()]} ${dt.getFullYear()}`, today: false };
     if (date === tmr) return { main: "BESOK", sub: `${DAY_NAMES[dt.getDay()]}, ${dt.getDate()} ${MONTHS[dt.getMonth()]} ${dt.getFullYear()}`, today: false };
     return { main: DAY_NAMES[dt.getDay()], sub: `${dt.getDate()} ${MONTHS[dt.getMonth()]} ${dt.getFullYear()}`, today: false };
@@ -417,7 +422,7 @@ export default function CalendarClient({ events, details = {} }) {
 
         {groups.map((g) => {
           const lbl = dateLabel(g.date);
-          const pastDay = now && g.date < now.toISOString().slice(0, 10);
+          const pastDay = now && g.date < wibDate(now);
           return (
             <div key={g.date} className={`cal-day ${pastDay ? "is-past" : ""}`}>
               <div className={`cal-day-head ${lbl.today ? "today" : ""}`}>
@@ -445,8 +450,11 @@ export default function CalendarClient({ events, details = {} }) {
       </section>
 
       <footer className="cal-term-foot mono">
-        <span>SRC: JADWAL RESMI BLS/FED/ECB/ONS · P: FRED · K/A: FOREXFACTORY LIVE · N: {filtered.length} · ZONA: WIB (UTC+7)</span>
-        <span className="cal-term-foot-note">P = sebelum rilis · K = konsensus · A = angka yang sudah keluar — verifikasi ke sumber resmi</span>
+        <span>
+          SRC: JADWAL BLS/BEA/FED/CENSUS/ISM/ECB · P/A: FRED/ISM{meta?.liveFred ? ` LIVE ${meta.liveFred}/${meta.totalFred}` : " CACHE"} · K: FOREXFACTORY{meta?.liveFf ? " LIVE" : " ARSIP"} · N: {filtered.length} · ZONA: WIB (UTC+7)
+          {meta?.generatedAt && <> · ASOF {meta.generatedAt.slice(11, 16)} UTC</>}
+        </span>
+        <span className="cal-term-foot-note">P = sebelum rilis · K = konsensus · A = angka yang sudah keluar (otomatis dari FRED / laporan ISM) — verifikasi ke sumber resmi</span>
         <span className="ct-blink" aria-hidden="true">●</span>
       </footer>
 

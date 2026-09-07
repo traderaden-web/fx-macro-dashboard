@@ -36,7 +36,7 @@ function Spark({ points, up }) {
   );
 }
 
-export default function IndicatorsClient({ items }) {
+export default function IndicatorsClient({ items, asOf = null }) {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("semua");
   const [imp, setImp] = useState("semua");
@@ -57,7 +57,9 @@ export default function IndicatorsClient({ items }) {
     high: items.filter((d) => d.impact === "High").length,
     med: items.filter((d) => d.impact === "Medium").length,
     low: items.filter((d) => d.impact === "Low").length,
+    live: items.filter((d) => d.source === "live").length,
   }), [items]);
+  const asOfLabel = asOf ? `${asOf.slice(0, 10)} ${asOf.slice(11, 16)} UTC` : "—";
 
   const filtered = useMemo(() => {
     const qm = q.trim().toLowerCase();
@@ -97,7 +99,9 @@ export default function IndicatorsClient({ items }) {
           <span className="ct-cursor" aria-hidden="true" />
         </span>
         <span className="ilt-term-head-right">
-          <span className="ct-led ok">{counts.total} INDIKATOR · DATA RIIL</span>
+          <span className={`ct-led ${counts.live ? "ok" : "warn"}`} title={`Data terakhir diambil ${asOfLabel}`}>
+            {counts.total} INDIKATOR · {counts.live ? `FRED LIVE ${counts.live}/${counts.total}` : "FRED CACHE"}
+          </span>
           <TermClock />
         </span>
       </header>
@@ -204,7 +208,10 @@ export default function IndicatorsClient({ items }) {
                   <i /><i /><i />
                   <u className="mono">{d.impact === "High" ? "HIGH" : d.impact === "Medium" ? "MED" : "LOW"}</u>
                 </span>
-                <span className="ilt-r-asof mono">{d.last?.date?.slice(0, 7) || "—"}</span>
+                <span className="ilt-r-asof mono" title={`Periode data terakhir ${d.last?.date || "—"} · sumber ${d.source === "live" ? (d.fred ? "FRED live" : "ISM live") : d.source === "curated" ? "ISM (cache)" : "cache FRED"}`}>
+                  {d.freq === "W" ? d.last?.date || "—" : d.last?.date?.slice(0, 7) || "—"}
+                  {d.source === "live" && <i className="ilt-live-dot" aria-hidden="true" />}
+                </span>
                 <span className="ilt-r-chev" aria-hidden="true">▸</span>
               </Link>
             );
@@ -213,7 +220,7 @@ export default function IndicatorsClient({ items }) {
       </section>
 
       <footer className="ilt-term-foot mono">
-        <span>SRC: FRED / CACHE LOKAL · N: {filtered.length}/{counts.total} · ZONA: WIB (UTC+7)</span>
+        <span>SRC: FRED{counts.live ? ` LIVE ${counts.live}/${counts.total}` : " CACHE"} · DIAMBIL {asOfLabel} · N: {filtered.length}/{counts.total} · ZONA: WIB (UTC+7)</span>
         <span className="ilt-term-foot-note">Klik baris untuk riwayat, konsensus vs actual & edukasi lengkap</span>
         <span className="ct-blink" aria-hidden="true">●</span>
       </footer>
