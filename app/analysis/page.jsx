@@ -21,6 +21,19 @@ export default async function AnalysisPage() {
   const asOf = latestUpdated(items);
   const liveCount = items.filter((i) => i.dataSource === "live").length;
   const consensusLive = items.some((i) => i.consensusLive);
+  // Peta Makro: timpa angka AS dengan nilai FRED terbaru (rate/inflasi/pengangguran/GDP).
+  const byId = Object.fromEntries(items.map((i) => [i.id, i]));
+  const lastOf = (id) => byId[id]?.last?.value ?? null;
+  const macroOverrides = {
+    us: {
+      rate: lastOf("fedfunds"),
+      inflation: lastOf("cpi"),
+      unemp: lastOf("unemp"),
+      gdp: lastOf("gdp"),
+      gdpNote: byId.gdp?.last?.date ? `annualized ${byId.gdp.last.date.slice(0, 7)} (FRED)` : undefined,
+      live: ["fedfunds", "cpi", "unemp", "gdp"].some((id) => byId[id]?.last),
+    },
+  };
   // Jadwal ke depan saja (60 hari, kolom seperlunya) — hemat payload ke klien.
   const nowMs = Date.now();
   const horizon = nowMs + 60 * 86400000;
@@ -56,7 +69,7 @@ export default async function AnalysisPage() {
 
       {/* Round-33: Peta Makro Global diletakkan tepat di atas Heatmap Aset */}
       <div className="section-fade map-upper">
-        <MacroMap />
+        <MacroMap overrides={macroOverrides} asOf={asOf ? `${asOf.slice(8, 10)}/${asOf.slice(5, 7)}/${asOf.slice(0, 4)}` : null} />
       </div>
 
       {/* Heatmap dipindah ke paling bawah halaman (Round-25) */}

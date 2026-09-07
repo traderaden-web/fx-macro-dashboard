@@ -10,7 +10,8 @@
 // count-up panel, ripple klik, ticker data bergulir.
 // Interaksi: hover = tooltip ikut kursor · KLIK negara = popup modal data
 // lengkap + berita terkini (/api/country/news).
-// Data kurasi per-30-Agu-2026 (lib/macroData.js).
+// Data kurasi (lib/macroData.js) + timpaan LIVE dari FRED lewat prop `overrides`
+// (AS: Fed Funds, CPI y/y, pengangguran, GDP — dikirim server /analysis).
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { COUNTRIES, OTHERS, MAP_VIEW } from "../lib/worldMapData";
@@ -20,10 +21,11 @@ import {
   CAPITAL_POINTS,
   projectPoint,
   dataFor,
-  COUNTRY_DATA,
+  COUNTRY_DATA as CURATED_DATA,
   COUNTRY_NAMES,
   countryColor,
   legendStops,
+  mergeCountryData,
 } from "../lib/macroData";
 import { IconGlobe } from "./Icons";
 
@@ -79,7 +81,7 @@ function IndicatorBar({ indId, d }) {
 }
 
 // ── Popup modal: data lengkap + berita terkini negara ───────────────────
-function CountryModal({ cc, onClose }) {
+function CountryModal({ cc, onClose, data, asOf }) {
   const [news, setNews] = useState(null);
   const [err, setErr] = useState("");
 
@@ -103,9 +105,10 @@ function CountryModal({ cc, onClose }) {
     };
   }, [cc, onClose]);
 
-  const d = COUNTRY_DATA[cc];
+  const d = (data || CURATED_DATA)[cc];
   const name = COUNTRY_NAMES[cc];
   if (!d) return null;
+  const asOfLabel = d.live && asOf ? `${asOf} (FRED)` : MACRO_ASOF;
 
   return (
     <div
@@ -119,7 +122,7 @@ function CountryModal({ cc, onClose }) {
         <header className="cm-head">
           <div>
             <h3 className="cm-name">{name}</h3>
-            <p className="cm-sub">{d.rateBank} · data per {MACRO_ASOF}</p>
+            <p className="cm-sub">{d.rateBank} · data per {asOfLabel}</p>
           </div>
           <span className={`cm-move ${d.move > 0 ? "hawk" : "dove"}`}>
             {d.move > 0 ? `▲ +${d.move}bp · hawkish` : `▼ ${d.move}bp · dovish`}
@@ -182,7 +185,10 @@ function CountryModal({ cc, onClose }) {
   );
 }
 
-export default function MacroMap() {
+export default function MacroMap({ overrides = null, asOf = null }) {
+  // Data kurasi + timpaan LIVE (FRED) dari server untuk entitas yang dilacak.
+  const COUNTRY_DATA = useMemo(() => mergeCountryData(overrides), [overrides]);
+  const liveKeys = useMemo(() => Object.keys(overrides || {}).filter((k) => COUNTRY_DATA[k]?.live), [overrides, COUNTRY_DATA]);
   const [indId, setIndId] = useState("rate");
   const [hover, setHover] = useState(null); // id topo negara
   const [modalKey, setModalKey] = useState(null); // entitas makro untuk modal
@@ -201,15 +207,15 @@ export default function MacroMap() {
   const pins = useMemo(() => {
     const seen = new Map();
     for (const id of Object.keys(COUNTRIES)) {
-      const d = dataFor(id);
+      const d = dataFor(id, COUNTRY_DATA);
       if (!d || seen.has(d.key) || !CAPITAL_POINTS[d.key]) continue;
       const [x, y] = projectPoint(...CAPITAL_POINTS[d.key]);
       seen.set(d.key, { key: d.key, x, y, data: d });
     }
     return [...seen.values()];
-  }, []);
+  }, [COUNTRY_DATA]);
 
-  const hoverData = hover ? dataFor(hover) : null;
+  const hoverData = hover ? dataFor(hover, COUNTRY_DATA) : null;
   const hoverVal = hoverData ? hoverData[indId] : null;
 
   // Entitas dengan nilai TERBESAR indikator aktif → denyut "ekstrem" + badge di peta
@@ -219,11 +225,11 @@ export default function MacroMap() {
     const best = valid.reduce((a, b) => (b.v > a.v ? b : a));
     const pin = pins.find((p) => p.key === best.k);
     return pin ? { ...best, x: pin.x, y: pin.y, name: COUNTRY_NAMES[best.k] } : null;
-  }, [indId, pins]);
+  }, [indId, pins, COUNTRY_DATA]);
 
   // Klik negara → ripple di titik klik + (bila berdata) buka modal
   const onCountryClick = (e, id) => {
-    const d = dataFor(id);
+    const d = dataFor(id, COUNTRY_DATA);
     setHover(id);
     const r = frameRef.current?.getBoundingClientRect();
     if (r) {
@@ -272,7 +278,7 @@ export default function MacroMap() {
         const d = COUNTRY_DATA[k];
         return `${COUNTRY_NAMES[k]} · ${FMT(d.rate)}% · ${d.inflation != null ? FMT(d.inflation) + "%" : "—"} · ${d.gdp != null ? FMT(d.gdp) + "%" : "—"} · ${d.unemp != null ? FMT(d.unemp) + "%" : "—"}`;
       }),
-    []
+    [COUNTRY_DATA]
   );
 
   return (
@@ -325,7 +331,7 @@ export default function MacroMap() {
             {/* negara target: interaktif — re-entrance wave tiap ganti indikator */}
             <g key={`countries-${indId}`}>
               {Object.entries(COUNTRIES).map(([id, c], i) => {
-                const d = dataFor(id);
+                const d = dataFor(id, COUNTRY_DATA);
                 const val = d ? d[indId] : null;
                 const fill = d ? countryColor(indId, val) : "#333c4c";
                 const isHover = hover === id;
@@ -501,11 +507,16 @@ export default function MacroMap() {
       </div>
 
       <div className="map-foot">
-        <span>Data per {MACRO_ASOF} · sumber: ONS, ECB, FRED, RBA, Investing.com, TradingEconomics, Fitch, OECD</span>
+        <span>
+          {liveKeys.length
+            ? <>{liveKeys.map((k) => COUNTRY_NAMES[k]).join(", ")}: FRED per {asOf} · lainnya kurasi per {MACRO_ASOF}</>
+            : <>Data per {MACRO_ASOF}</>}
+          {" "}· sumber: ONS, ECB, FRED, RBA, Investing.com, TradingEconomics, Fitch, OECD
+        </span>
         <span>Arc = sinyal terkuat memancar · hover / klik negara · {INDICATORS.length} indikator</span>
       </div>
 
-      {modalKey && <CountryModal cc={modalKey} onClose={() => setModalKey(null)} />}
+      {modalKey && <CountryModal cc={modalKey} onClose={() => setModalKey(null)} data={COUNTRY_DATA} asOf={asOf} />}
     </div>
   );
 }
