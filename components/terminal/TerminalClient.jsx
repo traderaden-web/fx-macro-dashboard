@@ -33,6 +33,7 @@ import StructureCards from "./StructureCards";
 import PatternCards from "./PatternCards";
 import MtfMatrix from "./MtfMatrix";
 import ScreenerSection from "./ScreenerSection";
+import SignalChart from "./SignalChart";
 import { TV_INTERVAL, TF_LABEL, TF_SHORT } from "./fmt";
 
 export const SYMBOLS = [
@@ -86,6 +87,7 @@ export default function TerminalClient({ news = [], upcoming = [] }) {
   const [patternData, setPatternData] = useState(null); // /api/patterns
   const [modalNews, setModalNews] = useState(null);
   const [activeNav, setActiveNav] = useState("sinyal");
+  const [chartView, setChartView] = useState("signal"); // "signal" | "tv"
   const topRef = useRef(null);
 
   const symbol = SYMBOLS.find((s) => s.id === symbolId) || SYMBOLS[0];
@@ -298,20 +300,48 @@ export default function TerminalClient({ news = [], upcoming = [] }) {
         </div>
       </section>
 
-      {/* ══ SEKSI 2: CHART LIVE ══ */}
+      {/* ══ SEKSI 2: CHART LIVE — sinyal & metode divisualisasikan di chart ══ */}
       <section id="chart" className="terminal-sec">
-        <div className="card chart-card reveal">
-          <div className="tv-chart-head">
+        <div className="card chart-card sig-chart-card reveal">
+          <div className="tv-chart-head sig-chart-head">
             <div className="tv-chart-id">
               <span className="tv-chart-title">
                 <span className="inline-ico" aria-hidden="true"><IconChart size={18} /></span>
-                {symbol.desc} <span className="tv-chart-sub" style={{ display: "inline" }}>· {TF_LABEL[tf]}</span>
+                {symbol.desc}
+                <span className="tv-chart-sub sig-tf-pill">· {TF_LABEL[tf]}</span>
               </span>
-              <span className="tv-chart-sub">Timeframe chart mengikuti timeframe analisis — indikator &amp; drawing bebas di dalam chart</span>
+              <span className="tv-chart-sub">
+                {chartView === "signal"
+                  ? "Chart live dengan level sinyal digambar otomatis — Entry · SL · TP, zona Order Block & FVG, S/R, Premium/Diskon"
+                  : "Chart TradingView penuh — indikator, alat gambar & studi komunitas bebas dipakai"}
+              </span>
             </div>
-            <span className="tv-chart-tv">
-              <span className="pulse-dot" style={{ width: 6, height: 6 }} /> TradingView · Live
-            </span>
+            <div className="sig-chart-live">
+              <span className="pulse-dot" style={{ width: 6, height: 6 }} />
+              {chartView === "signal" ? "Live · auto-refresh 45 dtk" : "TradingView · Live"}
+            </div>
+          </div>
+
+          {/* Picker tampilan chart */}
+          <div className="sig-view-tabs" role="tablist" aria-label="Pilih tampilan chart">
+            <button
+              role="tab" aria-selected={chartView === "signal"}
+              className={`sig-view-tab ${chartView === "signal" ? "active" : ""}`}
+              onClick={() => setChartView("signal")}
+              title="Chart live dengan level Entry/SL/TP & zona SMC-ICT digambar otomatis"
+            >
+              🎯 Chart Sinyal
+              <small>Entry · SL · TP · OB · FVG · S/R</small>
+            </button>
+            <button
+              role="tab" aria-selected={chartView === "tv"}
+              className={`sig-view-tab ${chartView === "tv" ? "active" : ""}`}
+              onClick={() => setChartView("tv")}
+              title="Chart lengkap TradingView — indikator & drawing manual"
+            >
+              📈 TradingView
+              <small>Chart penuh · studi &amp; alat gambar</small>
+            </button>
           </div>
 
           <TradingViewWidget
@@ -322,28 +352,33 @@ export default function TerminalClient({ news = [], upcoming = [] }) {
             }}
           />
 
-          <div className="chart-hints">
-            <span className="chart-hint">
-              <span className="inline-ico" aria-hidden="true"><IconLightbulb size={13} /></span>
-              <span>
-                Tandai level hasil analisis: <b>Entry {data?.plan?.mode === "directional" ? "→ garis harga" : ""}</b>, SL/TP dari kartu Sinyal,
-                Order Block &amp; FVG dari kartu SMC — pakai alat garis/kotak di toolbar chart.
-              </span>
-            </span>
-            <a
-              className="btn btn-ghost btn-sm chart-open-tv"
-              href={`https://www.tradingview.com/chart/?symbol=${encodeURIComponent(symbol.tv)}&interval=${TV_INTERVAL[tf]}`}
-              target="_blank" rel="noopener noreferrer"
-              title="Buka chart penuh TradingView (studi komunitas SMC, order block, FVG)"
-            >
-              Studi SMC komunitas → buka di TradingView ↗
-            </a>
-          </div>
-
-          <TradingViewWidget
-            type="advanced-chart" className="tv-chart-main" height="none"
-            config={{ ...BASE_CHART, symbol: symbol.tv, interval: TV_INTERVAL[tf] }}
-          />
+          {chartView === "signal" ? (
+            <SignalChart symbolId={symbolId} tf={tf} symbolLabel={symbol.label} />
+          ) : (
+            <div className="sig-tv-wrap">
+              <TradingViewWidget
+                type="advanced-chart" className="tv-chart-main" height="none"
+                config={{ ...BASE_CHART, symbol: symbol.tv, interval: TV_INTERVAL[tf] }}
+              />
+              <div className="chart-hints sig-tv-hints">
+                <span className="chart-hint">
+                  <span className="inline-ico" aria-hidden="true"><IconLightbulb size={13} /></span>
+                  <span>
+                    Tandai manual level dari kartu Sinyal &amp; SMC — <b>Entry, SL/TP, Order Block, FVG</b> —
+                    pakai alat garis/kotak di toolbar chart TradingView.
+                  </span>
+                </span>
+                <a
+                  className="btn btn-ghost btn-sm chart-open-tv"
+                  href={`https://www.tradingview.com/chart/?symbol=${encodeURIComponent(symbol.tv)}&interval=${TV_INTERVAL[tf]}`}
+                  target="_blank" rel="noopener noreferrer"
+                  title="Buka chart penuh TradingView (studi komunitas SMC, order block, FVG)"
+                >
+                  Bukа penuh di TradingView ↗
+                </a>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
