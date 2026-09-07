@@ -10,9 +10,6 @@
   --dim: #67738a;
   --accent: #f0b429;
   --accent-2: #c98a12;
-  /* alias yang dipakai 12 aturan (.lvl-chip.in, .sig-tfbtns, dll.) tapi belum pernah
-     didefinisikan → warna ENTRY/emas ikut hilang. Satu baris ini memulihkannya. */
-  --gold: var(--accent);
   --up: #4ade80;
   --down: #fb7185;
   --warn: #fbbf24;
@@ -1334,7 +1331,7 @@ button.btn:disabled, .btn:disabled, .btn[disabled] {
 .signal-body { padding: 13px 14px; display: flex; flex-direction: column; gap: 11px; flex: 1; justify-content: space-between; }
 
 /* timeframe — 7 kolom rata */
-.signal-tf { display: grid; grid-template-columns: repeat(9, 1fr); gap: 5px; }
+.signal-tf { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
 .tf-pill {
   font-size: 11px; font-weight: 700; letter-spacing: .2px; text-align: center;
   color: var(--muted); background: var(--bg-soft);
@@ -1586,7 +1583,7 @@ button.btn:disabled, .btn:disabled, .btn[disabled] {
 .mtf-dom.dom-bearish { color: var(--down); background: rgba(251, 113, 133, 0.1); border-color: rgba(251, 113, 133, 0.4); }
 .mtf-dom.dom-mixed { color: var(--warn); background: rgba(251, 191, 36, 0.08); border-color: rgba(251, 191, 36, 0.35); }
 .mtf-strip {
-  display: grid; grid-template-columns: repeat(9, 1fr); gap: 5px;
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px;
 }
 .mtf-cell {
   display: flex; flex-direction: column; align-items: center; gap: 2px;
@@ -5516,52 +5513,3 @@ html[data-theme="light"] .r52-marker { border-color: var(--panel); }
 .tech-sig.sig-long { color: var(--up); }
 .tech-sig.sig-short { color: var(--down); }
 .tech-sig.sig-neutral { color: var(--warn); }
-
-/* ════════════════════════════════════════════════════════════════════
-   TERMINAL — toolbar chart + chart teknikal SVG (TerminalChart)
-   Dua kelas ini dipakai komponen /terminal sejak merge PR #17 tetapi
-   tidak pernah punya aturan CSS → tampil menumpuk & SVG melebar.
-   ════════════════════════════════════════════════════════════════════ */
-.tv-chart-tools {
-  display: flex; align-items: center; justify-content: flex-end;
-  gap: 10px; flex-wrap: wrap; margin-left: auto;
-}
-@media (max-width: 720px) {
-  .tv-chart-tools { width: 100%; justify-content: flex-start; margin-left: 0; }
-}
-
-.term-tech-chart {
-  position: relative;
-  border-top: 1px solid var(--border); background: var(--bg-soft);
-  padding: 8px 10px 0; overflow: hidden;
-}
-.term-tech-svg { display: block; width: 100%; height: auto; cursor: crosshair; }
-.term-tech-empty {
-  display: grid; place-items: center; min-height: 240px;
-  font-size: 12.5px; color: var(--dim); letter-spacing: .2px;
-}
-.term-tech-legend {
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  padding: 9px 2px 11px; font-size: 11.5px; color: var(--muted);
-}
-.term-tech-legend .tt-mode {
-  font-size: 10.5px; font-weight: 800; letter-spacing: .4px; text-transform: uppercase;
-  color: var(--accent);
-}
-.term-tech-legend .tt-hover {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px;
-  color: var(--text); background: var(--panel-2);
-  border: 1px solid var(--border); border-radius: 6px; padding: 2px 7px;
-}
-.term-tech-legend .tt-levels { display: inline-flex; gap: 6px; margin-left: auto; flex-wrap: wrap; }
-.term-tech-lbl {
-  font-size: 9.5px; font-weight: 800; letter-spacing: .3px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-}
-.term-tech-tag {
-  font-size: 9px; font-weight: 800; letter-spacing: .2px; fill: #0a0c10;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-}
-@media (max-width: 720px) {
-  .term-tech-legend .tt-levels { margin-left: 0; width: 100%; }
-}

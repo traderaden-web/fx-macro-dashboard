@@ -97,10 +97,18 @@ diinginkan → tombol **••• → Promote to Production**. Untuk commit `926
 Produksi langsung menunjuk ke build itu; **permanen hanya sampai push `main` berikutnya**.
 
 **Cara 2 — Permanen lewat git.** Kalau memang ingin seluruh proyek kembali ke commit itu,
-buat PR revert di atas `main` (mis. `git revert -m 1 <merge-sha>`) atau kembalikan bagian
-yang hilang — Vercel otomatis men-deploy hasil merge-nya. Contoh nyata: styling `/terminal`
-yang hilang akibat rantai merge PR #17/#18/#20 dipulihkan dengan menambahkan lagi blok CSS
-TERMINAL dari `926dc53` ke `app/globals.css` (lihat PR yang membuka bagian ini).
+kunci `main` pada tree commit tersebut — Vercel otomatis men-deploy hasil merge-nya:
+
+```bash
+git read-tree -u --reset 926dc53 && git clean -fd   # tree = persis isi commit
+git commit -m "rollback: kunci main ke isi commit 926dc53"
+```
+
+Bandingkan dulu apa yang tersingkir: `git diff --diff-filter=AR --name-status 926dc53 main`
+(file yang ditambahkan setelahnya) dan `git diff --stat 926dc53 main` — periksa juga apakah
+`data/seed.json` ikut lebih tua, sebab file itu di-refresh otomatis oleh `refresh-data.yml`.
+Opsi lain yang lebih lembut: kembalikan hanya bagian yang rusak (mis. blok CSS TERMINAL dari
+`926dc53` ditambahkan lagi ke `app/globals.css`) tanpa membuang fitur setelahnya.
 
 **Cara 3 — Redeploy commit lama via CLI** (kalau ingin build ulang, mis. setelah env berubah):
 
