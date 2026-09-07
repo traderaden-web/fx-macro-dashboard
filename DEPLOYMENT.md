@@ -68,6 +68,56 @@ Atau pakai Netlify: set Variable `NETLIFY_SITE_ID` + Secret `NETLIFY_AUTH_TOKEN`
 (Netlify → **Site settings → General → Site details** & **User settings → Personal access tokens**).
 Keduanya boleh di-set, tapi pilih satu agar tidak ada dua deploy paralel.
 
+## Menampilkan commit tertentu di Vercel (mis. rollback ke `926dc53`)
+
+Repo ini **sudah terhubung ke Vercel lewat Git Integration** (project
+`adens-projects-947b5d3c/fx-macro-dashboard`). Artinya:
+
+- push ke `main` → deploy **produksi** (`https://fx-macro-dashboard.vercel.app`);
+- tiap PR / branch → **preview deployment** dengan URL sendiri;
+- tiap commit punya status **"Vercel – fx-macro-dashboard"** yang bisa diklik untuk
+  melompat ke deployment yang dibangun dari commit itu — cara tercepat mencari
+  "halaman versi commit X":
+
+  ```bash
+  SHA=926dc53
+  gh api "repos/traderaden-web/fx-macro-dashboard/commits/$SHA/status" \
+    --jq '.statuses[] | select(.context|startswith("Vercel – fx-macro")) | .target_url'
+  ```
+
+> Catatan: job **"Deploy → Vercel"** di `ci-deploy.yml` berstatus *skipped* — itu normal,
+> karena `VERCEL_PROJECT_ID`/`VERCEL_TOKEN` belum diisi. Bukan bug: deploy sudah ditangani
+> Git Integration, jadi jangan set keduanya kecuali ingin log deploy muncul di tab Actions
+> (kalau dua-duanya aktif, akan ada dua deploy paralel tiap push).
+
+**Cara 1 — Promote (paling cepat, tanpa build ulang).** Buka deployment commit yang
+diinginkan → tombol **••• → Promote to Production**. Untuk commit `926dc53`
+(Terminal Teknikal Pro) URL-nya:
+`https://vercel.com/adens-projects-947b5d3c/fx-macro-dashboard/J7nRqDkXCSCaKE9CzqWLeq3DBixP`.
+Produksi langsung menunjuk ke build itu; **permanen hanya sampai push `main` berikutnya**.
+
+**Cara 2 — Permanen lewat git.** Kalau memang ingin seluruh proyek kembali ke commit itu,
+kunci `main` pada tree commit tersebut — Vercel otomatis men-deploy hasil merge-nya:
+
+```bash
+git read-tree -u --reset 926dc53 && git clean -fd   # tree = persis isi commit
+git commit -m "rollback: kunci main ke isi commit 926dc53"
+```
+
+Bandingkan dulu apa yang tersingkir: `git diff --diff-filter=AR --name-status 926dc53 main`
+(file yang ditambahkan setelahnya) dan `git diff --stat 926dc53 main` — periksa juga apakah
+`data/seed.json` ikut lebih tua, sebab file itu di-refresh otomatis oleh `refresh-data.yml`.
+Opsi lain yang lebih lembut: kembalikan hanya bagian yang rusak (mis. blok CSS TERMINAL dari
+`926dc53` ditambahkan lagi ke `app/globals.css`) tanpa membuang fitur setelahnya.
+
+**Cara 3 — Redeploy commit lama via CLI** (kalau ingin build ulang, mis. setelah env berubah):
+
+```bash
+git switch --detach 926dc53
+vercel deploy --prod          # dari root proyek, setelah `vercel login`
+git switch -                  # balik ke branch kerja
+```
+
 ## Catatan penting untuk Vercel
 
 - **`/api/journal` (Papan Skor)**: filesystem Vercel **read-only**, jadi jurnal

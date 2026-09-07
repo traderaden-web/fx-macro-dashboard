@@ -191,7 +191,7 @@ export default function WatchlistClient() {
                     </div>
                     <div className="watch-actions">
                       <button className="icon-btn" title="Buat alert" onClick={() => setEditing({ symbol: sym, op: "above", target: q?.value != null ? fmt(q.value) : "", done: false })}>🔔</button>
-                      <Link href={`/charts?sym=${chartSym(sym)}`} className="icon-btn" title="Chart">📈</Link>
+                      <Link href={`/terminal?sym=${chartSym(sym)}`} className="icon-btn" title="Chart">📈</Link>
                       <button className="icon-btn danger" title="Hapus" onClick={() => removeSymbol(sym)}>✕</button>
                     </div>
                   </div>
