@@ -157,7 +157,7 @@ export default function TradePlanCard({ data, tf, onTf, loading }) {
       <div className="signal-body">
         {/* 7 timeframe penuh */}
         <div className="signal-tf tpl-tfs" role="tablist" aria-label="Pilih timeframe sinyal">
-          {["15m", "30m", "1h", "4h", "1d", "1w", "1mo"].map((t) => (
+          {["1m", "5m", "15m", "30m", "1h", "4h", "1d", "1w", "1mo"].map((t) => (
             <button key={t} role="tab" aria-selected={tf === t}
               className={`tf-pill ${tf === t ? "active" : ""}`} onClick={() => onTf(t)}>
               {TF_SHORT[t]}

@@ -14,7 +14,7 @@ function fmt(p) {
   return p.toFixed(5);
 }
 
-export default function TerminalChart({ symbolId, tf, style = "smc", height = 520 }) {
+export default function TerminalChart({ symbolId, tf, style = "smc", height = 520, plan = null }) {
   const wrapRef = useRef(null);
   const [w, setW] = useState(900);
   const [sig, setSig] = useState(null);
