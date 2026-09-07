@@ -19,12 +19,14 @@ const ICONS = {
   indicators: IconIndicators, chart: IconChart, learn: IconLearn, news: IconNews,
   calculator: IconCalculator, technicals: IconGauge, watchlist: IconWallet, copilot: IconLightbulb,
   screener: IconScan, community: IconUsers, broker: IconWallet, settings: IconGauge,
-  journal: IconBook, terminal: IconScan,
+  journal: IconBook,
 };
 
 export const LINKS = [
   { href: "/", icon: "home", label: "Beranda", desc: "Command Center — sentimen, sesi & kekuatan mata uang" },
-  { href: "/terminal", icon: "terminal", label: "Terminal", desc: "Sinyal SL/TP, SMC·ICT, SNR, chart pattern & screener 7 timeframe" },
+  { href: "/technicals", icon: "technicals", label: "Teknikal", desc: "Matriks sinyal multi-timeframe & skor confluence" },
+  { href: "/screener", icon: "screener", label: "Screener", desc: "Scan pola candlestick & breakout semua pasangan" },
+  { href: "/charts", icon: "chart", label: "Chart", desc: "Chart Gold, Forex & Komoditas (TradingView)" },
   { href: "/analysis", icon: "analytics", label: "Analisis", desc: "Dampak rilis ekonomi ke pasangan mata uang" },
   { href: "/fundamentals", icon: "analytics", label: "Fundamental", desc: "Bank sentral, bias mata uang & fokus Rupiah" },
   { href: "/broker", icon: "broker", label: "Broker", desc: "Sinkron posisi nyata (MetaAPI) & portfolio" },

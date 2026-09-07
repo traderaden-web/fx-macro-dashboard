@@ -8,7 +8,7 @@ import { getSignalMatrix } from "../../../../lib/signals";
 export const dynamic = "force-dynamic";
 
 const VALID_SYMBOLS = new Set([
-  "gold", "silver", "wti", "eurusd", "gbpusd", "usdjpy", "audusd", "usdcad", "nzdusd", "dxy",
+  "gold", "silver", "wti", "eurusd", "gbpusd", "usdjpy", "usdchf", "audusd", "usdcad", "nzdusd", "dxy",
 ]);
 
 export async function GET(req) {

@@ -22,6 +22,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import TradingViewWidget from "../TradingViewWidget";
+import TerminalChart from "../TerminalChart";
 import FundamentalsCard from "../FundamentalsCard";
 import NewsModal from "../NewsModal";
 import { CotPanel, SessionPanel, CalendarPanel } from "../TerminalPanels";
@@ -49,7 +50,7 @@ export const SYMBOLS = [
   { id: "dxy", label: "DXY", tv: "TVC:DXY", desc: "Dollar Index — kekuatan USD" },
 ];
 
-const ALL_TFS = ["15m", "30m", "1h", "4h", "1d", "1w", "1mo"];
+const ALL_TFS = ["1m", "5m", "15m", "30m", "1h", "4h", "1d", "1w", "1mo"];
 const BASE_CHART = {
   autosize: true, timezone: "Asia/Jakarta", theme: "dark", style: "1",
   locale: "en", allow_symbol_change: true, save_image: false,
@@ -86,6 +87,8 @@ export default function TerminalClient({ news = [], upcoming = [] }) {
   const [patternData, setPatternData] = useState(null); // /api/patterns
   const [modalNews, setModalNews] = useState(null);
   const [activeNav, setActiveNav] = useState("sinyal");
+  const [techStyle, setTechStyle] = useState("smc");
+  const [chartView, setChartView] = useState("tech");
   const topRef = useRef(null);
 
   const symbol = SYMBOLS.find((s) => s.id === symbolId) || SYMBOLS[0];
@@ -193,7 +196,7 @@ export default function TerminalClient({ news = [], upcoming = [] }) {
             <p className="cell-muted" style={{ margin: 0, maxWidth: 860 }}>
               Satu halaman untuk semua analisis: <b>sinyal terukur</b> (Entry · SL · TP1/2/3 · R:R),
               struktur <b>SMC &amp; ICT</b>, <b>SNR</b>, <b>breakout</b>, <b>chart pattern</b> bullish/bearish,
-              sampai <b>screener 11 instrumen × 7 timeframe</b>. Pilih instrumen &amp; timeframe —
+              sampai <b>screener 11 instrumen × 9 timeframe (M1–1B)</b>. Pilih instrumen &amp; timeframe —
               seluruh halaman ikut menyesuaikan.
             </p>
           </div>
@@ -307,11 +310,23 @@ export default function TerminalClient({ news = [], upcoming = [] }) {
                 <span className="inline-ico" aria-hidden="true"><IconChart size={18} /></span>
                 {symbol.desc} <span className="tv-chart-sub" style={{ display: "inline" }}>· {TF_LABEL[tf]}</span>
               </span>
-              <span className="tv-chart-sub">Timeframe chart mengikuti timeframe analisis — indikator &amp; drawing bebas di dalam chart</span>
+              <span className="tv-chart-sub">
+                Overlay {techStyle === "smc" ? "SMC (OB / FVG / BOS)" : "EMA 20/50"} · zona visual ENTRY / TP / SL
+              </span>
             </div>
-            <span className="tv-chart-tv">
-              <span className="pulse-dot" style={{ width: 6, height: 6 }} /> TradingView · Live
-            </span>
+            <div className="tv-chart-tools">
+              <div className="seg" role="tablist" aria-label="Gaya teknikal">
+                <button type="button" className={`seg-btn ${techStyle === "smc" ? "active" : ""}`} onClick={() => setTechStyle("smc")}>SMC</button>
+                <button type="button" className={`seg-btn ${techStyle === "klasik" ? "active" : ""}`} onClick={() => setTechStyle("klasik")}>Klasik</button>
+              </div>
+              <div className="seg" role="tablist" aria-label="Sumber chart">
+                <button type="button" className={`seg-btn ${chartView === "tech" ? "active" : ""}`} onClick={() => setChartView("tech")}>Teknikal</button>
+                <button type="button" className={`seg-btn ${chartView === "tv" ? "active" : ""}`} onClick={() => setChartView("tv")}>TradingView</button>
+              </div>
+              <span className="tv-chart-tv">
+                <span className="pulse-dot" style={{ width: 6, height: 6 }} /> {TF_SHORT[tf]}
+              </span>
+            </div>
           </div>
 
           <TradingViewWidget
@@ -326,24 +341,28 @@ export default function TerminalClient({ news = [], upcoming = [] }) {
             <span className="chart-hint">
               <span className="inline-ico" aria-hidden="true"><IconLightbulb size={13} /></span>
               <span>
-                Tandai level hasil analisis: <b>Entry {data?.plan?.mode === "directional" ? "→ garis harga" : ""}</b>, SL/TP dari kartu Sinyal,
-                Order Block &amp; FVG dari kartu SMC — pakai alat garis/kotak di toolbar chart.
+                Mode <b>SMC</b> menggambar Order Block, FVG, dan BOS/CHOCH. Batas hijau = TP, merah = SL, emas = ENTRY
+                dari trade plan terukur.
               </span>
             </span>
             <a
               className="btn btn-ghost btn-sm chart-open-tv"
               href={`https://www.tradingview.com/chart/?symbol=${encodeURIComponent(symbol.tv)}&interval=${TV_INTERVAL[tf]}`}
               target="_blank" rel="noopener noreferrer"
-              title="Buka chart penuh TradingView (studi komunitas SMC, order block, FVG)"
+              title="Buka chart penuh TradingView"
             >
-              Studi SMC komunitas → buka di TradingView ↗
+              Buka di TradingView ↗
             </a>
           </div>
 
-          <TradingViewWidget
-            type="advanced-chart" className="tv-chart-main" height="none"
-            config={{ ...BASE_CHART, symbol: symbol.tv, interval: TV_INTERVAL[tf] }}
-          />
+          {chartView === "tech" ? (
+            <TerminalChart symbolId={symbol.id} tf={tf} style={techStyle} plan={data?.plan} height={560} />
+          ) : (
+            <TradingViewWidget
+              type="advanced-chart" className="tv-chart-main" height="none"
+              config={{ ...BASE_CHART, symbol: symbol.tv, interval: TV_INTERVAL[tf] }}
+            />
+          )}
         </div>
       </section>
 
