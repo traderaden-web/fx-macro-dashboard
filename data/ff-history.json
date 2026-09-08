@@ -1,7 +1,7 @@
 {
  "source": "ForexFactory (nfs.faireconomy.media/ff_calendar_thisweek.json)",
  "note": "Arsip event kalender FF per minggu (forecast & previous). Diperbarui otomatis oleh scripts/fetch-ff.mjs (GitHub Actions). Kolom actual TIDAK berasal dari file ini — selalu dari FRED.",
- "updated": "2026-09-07T20:53:35.498Z",
+ "updated": "2026-09-08T01:50:35.796Z",
  "weeks": [
   "2026-09-07"
  ],
@@ -20,7 +20,7 @@
   {"title":"Monetary Policy Report Hearings","country":"GBP","date":"2026-09-08T09:15:00-04:00","impact":"Medium","forecast":"","previous":""},
   {"title":"CPI y/y","country":"CNY","date":"2026-09-08T21:30:00-04:00","impact":"Low","forecast":"0.8%","previous":"0.5%"},
   {"title":"PPI y/y","country":"CNY","date":"2026-09-08T21:30:00-04:00","impact":"Low","forecast":"3.6%","previous":"3.5%"},
-  {"title":"French Industrial Production m/m","country":"EUR","date":"2026-09-09T02:45:00-04:00","impact":"Low","forecast":"0.1%","previous":"0.1%"},
+  {"title":"French Industrial Production m/m","country":"EUR","date":"2026-09-09T02:45:00-04:00","impact":"Low","forecast":"0.2%","previous":"0.1%"},
   {"title":"ADP Weekly Employment Change","country":"USD","date":"2026-09-09T08:15:00-04:00","impact":"Low","forecast":"","previous":""},
   {"title":"ADP Weekly Employment Change","country":"USD","date":"2026-09-09T08:16:00-04:00","impact":"Low","forecast":"","previous":"11.8K"},
   {"title":"ECB President Lagarde Speaks","country":"EUR","date":"2026-09-09T13:00:00-04:00","impact":"Medium","forecast":"","previous":""},
@@ -34,8 +34,8 @@
   {"title":"ECB Press Conference","country":"EUR","date":"2026-09-10T08:45:00-04:00","impact":"High","forecast":"","previous":""},
   {"title":"PPI y/y","country":"JPY","date":"2026-09-10T19:50:00-04:00","impact":"Low","forecast":"7.4%","previous":"7.2%"},
   {"title":"GDP m/m","country":"GBP","date":"2026-09-11T02:00:00-04:00","impact":"High","forecast":"0.0%","previous":"0.3%"},
-  {"title":"Industrial Production m/m","country":"GBP","date":"2026-09-11T02:00:00-04:00","impact":"Low","forecast":"-0.1%","previous":"-0.2%"},
-  {"title":"Italian Quarterly Unemployment Rate","country":"EUR","date":"2026-09-11T04:00:00-04:00","impact":"Low","forecast":"5.3%","previous":"5.3%"},
+  {"title":"Industrial Production m/m","country":"GBP","date":"2026-09-11T02:00:00-04:00","impact":"Low","forecast":"-0.2%","previous":"-0.2%"},
+  {"title":"Italian Quarterly Unemployment Rate","country":"EUR","date":"2026-09-11T04:00:00-04:00","impact":"Low","forecast":"5.4%","previous":"5.3%"},
   {"title":"SNB Chairman Schlegel Speaks","country":"CHF","date":"2026-09-11T05:15:00-04:00","impact":"Medium","forecast":"","previous":""},
   {"title":"Core CPI m/m","country":"USD","date":"2026-09-11T08:30:00-04:00","impact":"High","forecast":"0.2%","previous":"0.2%"},
   {"title":"Core CPI y/y","country":"USD","date":"2026-09-11T08:30:00-04:00","impact":"High","forecast":"2.4%","previous":"2.5%"},
