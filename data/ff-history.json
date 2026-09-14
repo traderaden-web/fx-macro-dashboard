@@ -1,7 +1,7 @@
 {
  "source": "ForexFactory (nfs.faireconomy.media/ff_calendar_thisweek.json)",
  "note": "Arsip event kalender FF per minggu (forecast & previous). Diperbarui otomatis oleh scripts/fetch-ff.mjs (GitHub Actions). Kolom actual TIDAK berasal dari file ini — selalu dari FRED.",
- "updated": "2026-09-14T19:19:00.170Z",
+ "updated": "2026-09-14T19:49:53.864Z",
  "weeks": [
   "2026-09-07",
   "2026-09-14"
@@ -58,14 +58,14 @@
   {"title":"Trimmed CPI y/y","country":"CAD","date":"2026-09-14T08:30:00-04:00","impact":"High","forecast":"1.9%","previous":"1.9%"},
   {"title":"ECB President Lagarde Speaks","country":"EUR","date":"2026-09-14T11:15:00-04:00","impact":"Medium","forecast":"","previous":""},
   {"title":"Industrial Production y/y","country":"CNY","date":"2026-09-14T22:00:00-04:00","impact":"Low","forecast":"4.8%","previous":"4.5%"},
-  {"title":"Retail Sales y/y","country":"CNY","date":"2026-09-14T22:00:00-04:00","impact":"Low","forecast":"0.8%","previous":"0.6%"},
+  {"title":"Retail Sales y/y","country":"CNY","date":"2026-09-14T22:00:00-04:00","impact":"Low","forecast":"0.7%","previous":"0.6%"},
   {"title":"Unemployment Rate","country":"CNY","date":"2026-09-14T22:00:00-04:00","impact":"Low","forecast":"5.2%","previous":"5.2%"},
   {"title":"Average Earnings Index 3m/y","country":"GBP","date":"2026-09-15T02:00:00-04:00","impact":"Medium","forecast":"3.9%","previous":"4.1%"},
   {"title":"Claimant Count Change","country":"GBP","date":"2026-09-15T02:00:00-04:00","impact":"High","forecast":"8.3K","previous":"-11.0K"},
-  {"title":"Unemployment Rate","country":"GBP","date":"2026-09-15T02:00:00-04:00","impact":"Low","forecast":"4.9%","previous":"4.9%"},
+  {"title":"Unemployment Rate","country":"GBP","date":"2026-09-15T02:00:00-04:00","impact":"Low","forecast":"5.0%","previous":"4.9%"},
   {"title":"French Final CPI m/m","country":"EUR","date":"2026-09-15T02:45:00-04:00","impact":"Low","forecast":"0.7%","previous":"0.7%"},
-  {"title":"German ZEW Economic Sentiment","country":"EUR","date":"2026-09-15T05:00:00-04:00","impact":"Low","forecast":"42.7","previous":"34.2"},
-  {"title":"ZEW Economic Sentiment","country":"EUR","date":"2026-09-15T05:00:00-04:00","impact":"Low","forecast":"39.9","previous":"31.4"},
+  {"title":"German ZEW Economic Sentiment","country":"EUR","date":"2026-09-15T05:00:00-04:00","impact":"Low","forecast":"39.8","previous":"34.2"},
+  {"title":"ZEW Economic Sentiment","country":"EUR","date":"2026-09-15T05:00:00-04:00","impact":"Low","forecast":"39.2","previous":"31.4"},
   {"title":"ADP Weekly Employment Change","country":"USD","date":"2026-09-15T08:15:00-04:00","impact":"Low","forecast":"","previous":"12.0K"},
   {"title":"Westpac Consumer Sentiment","country":"NZD","date":"2026-09-15T17:00:00-04:00","impact":"Low","forecast":"","previous":"80.4"},
   {"title":"Core CPI y/y","country":"GBP","date":"2026-09-16T02:00:00-04:00","impact":"Low","forecast":"2.6%","previous":"2.6%"},
