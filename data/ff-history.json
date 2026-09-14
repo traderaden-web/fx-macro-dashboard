@@ -1,7 +1,7 @@
 {
  "source": "ForexFactory (nfs.faireconomy.media/ff_calendar_thisweek.json)",
  "note": "Arsip event kalender FF per minggu (forecast & previous). Diperbarui otomatis oleh scripts/fetch-ff.mjs (GitHub Actions). Kolom actual TIDAK berasal dari file ini — selalu dari FRED.",
- "updated": "2026-09-13T19:57:43.462Z",
+ "updated": "2026-09-14T02:07:08.657Z",
  "weeks": [
   "2026-09-07",
   "2026-09-14"
@@ -56,6 +56,7 @@
   {"title":"CPI m/m","country":"CAD","date":"2026-09-14T08:30:00-04:00","impact":"High","forecast":"-0.1%","previous":"0.5%"},
   {"title":"Median CPI y/y","country":"CAD","date":"2026-09-14T08:30:00-04:00","impact":"High","forecast":"2.0%","previous":"2.0%"},
   {"title":"Trimmed CPI y/y","country":"CAD","date":"2026-09-14T08:30:00-04:00","impact":"High","forecast":"1.9%","previous":"1.9%"},
+  {"title":"ECB President Lagarde Speaks","country":"EUR","date":"2026-09-14T11:15:00-04:00","impact":"Medium","forecast":"","previous":""},
   {"title":"Industrial Production y/y","country":"CNY","date":"2026-09-14T22:00:00-04:00","impact":"Low","forecast":"4.8%","previous":"4.5%"},
   {"title":"Retail Sales y/y","country":"CNY","date":"2026-09-14T22:00:00-04:00","impact":"Low","forecast":"0.8%","previous":"0.6%"},
   {"title":"Unemployment Rate","country":"CNY","date":"2026-09-14T22:00:00-04:00","impact":"Low","forecast":"5.2%","previous":"5.2%"},
@@ -74,7 +75,7 @@
   {"title":"Industrial Production m/m","country":"EUR","date":"2026-09-16T05:00:00-04:00","impact":"Low","forecast":"-0.5%","previous":"0.0%"},
   {"title":"Core Retail Sales m/m","country":"USD","date":"2026-09-16T08:30:00-04:00","impact":"Medium","forecast":"0.5%","previous":"-0.3%"},
   {"title":"Retail Sales m/m","country":"USD","date":"2026-09-16T08:30:00-04:00","impact":"Medium","forecast":"0.8%","previous":"-0.6%"},
-  {"title":"Federal Funds Rate","country":"USD","date":"2026-09-16T14:00:00-04:00","impact":"High","forecast":"3.75%","previous":"3.75%"},
+  {"title":"Federal Funds Rate","country":"USD","date":"2026-09-16T14:00:00-04:00","impact":"High","forecast":"4.00%","previous":"3.75%"},
   {"title":"FOMC Economic Projections","country":"USD","date":"2026-09-16T14:00:00-04:00","impact":"High","forecast":"","previous":""},
   {"title":"FOMC Statement","country":"USD","date":"2026-09-16T14:00:00-04:00","impact":"High","forecast":"","previous":""},
   {"title":"FOMC Press Conference","country":"USD","date":"2026-09-16T14:30:00-04:00","impact":"High","forecast":"","previous":""},
@@ -94,8 +95,10 @@
   {"title":"BOJ Press Conference","country":"JPY","date":"2026-09-18T01:30:00-04:00","impact":"High","forecast":"","previous":""},
   {"title":"German PPI m/m","country":"EUR","date":"2026-09-18T02:00:00-04:00","impact":"Low","forecast":"0.6%","previous":"1.1%"},
   {"title":"Retail Sales m/m","country":"GBP","date":"2026-09-18T02:00:00-04:00","impact":"Medium","forecast":"-0.2%","previous":"-0.5%"},
+  {"title":"ECB President Lagarde Speaks","country":"EUR","date":"2026-09-18T06:30:00-04:00","impact":"Medium","forecast":"","previous":""},
   {"title":"Capacity Utilization Rate","country":"USD","date":"2026-09-18T09:15:00-04:00","impact":"Low","forecast":"76.4%","previous":"76.3%"},
   {"title":"Industrial Production m/m","country":"USD","date":"2026-09-18T09:15:00-04:00","impact":"Low","forecast":"0.1%","previous":"0.2%"},
-  {"title":"FOMC Member Bowman Speaks","country":"USD","date":"2026-09-18T09:30:00-04:00","impact":"Low","forecast":"","previous":""}
+  {"title":"FOMC Member Bowman Speaks","country":"USD","date":"2026-09-18T09:30:00-04:00","impact":"Low","forecast":"","previous":""},
+  {"title":"FOMC Member Schmid Speaks","country":"USD","date":"2026-09-18T11:45:00-04:00","impact":"Low","forecast":"","previous":""}
  ]
 }
