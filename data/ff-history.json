@@ -1,7 +1,7 @@
 {
  "source": "ForexFactory (nfs.faireconomy.media/ff_calendar_thisweek.json)",
  "note": "Arsip event kalender FF per minggu (forecast & previous). Diperbarui otomatis oleh scripts/fetch-ff.mjs (GitHub Actions). Kolom actual TIDAK berasal dari file ini — selalu dari FRED.",
- "updated": "2026-09-21T11:19:20.573Z",
+ "updated": "2026-09-21T17:19:45.847Z",
  "weeks": [
   "2026-09-07",
   "2026-09-14",
@@ -139,6 +139,7 @@
   {"title":"FOMC Member Hammack Speaks","country":"USD","date":"2026-09-24T08:50:00-04:00","impact":"Low","forecast":"","previous":""},
   {"title":"FOMC Member Paulson Speaks","country":"USD","date":"2026-09-24T10:10:00-04:00","impact":"Low","forecast":"","previous":""},
   {"title":"Bank Holiday","country":"CNY","date":"2026-09-24T19:01:00-04:00","impact":"Holiday","forecast":"","previous":""},
+  {"title":"BOJ Core CPI y/y","country":"JPY","date":"2026-09-25T01:00:00-04:00","impact":"Low","forecast":"","previous":"1.6%"},
   {"title":"BOE Gov Bailey Speaks","country":"GBP","date":"2026-09-25T05:15:00-04:00","impact":"High","forecast":"","previous":""},
   {"title":"FOMC Member Williams Speaks","country":"USD","date":"2026-09-25T05:15:00-04:00","impact":"Low","forecast":"","previous":""},
   {"title":"Revised UoM Consumer Sentiment","country":"USD","date":"2026-09-25T10:00:00-04:00","impact":"Medium","forecast":"47.5","previous":"47.8"},
