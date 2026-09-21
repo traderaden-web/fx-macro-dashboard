@@ -1,7 +1,7 @@
 {
  "source": "ForexFactory (nfs.faireconomy.media/ff_calendar_thisweek.json)",
  "note": "Arsip event kalender FF per minggu (forecast & previous). Diperbarui otomatis oleh scripts/fetch-ff.mjs (GitHub Actions). Kolom actual TIDAK berasal dari file ini — selalu dari FRED.",
- "updated": "2026-09-21T19:57:50.222Z",
+ "updated": "2026-09-21T21:19:59.983Z",
  "weeks": [
   "2026-09-07",
   "2026-09-14",
@@ -127,7 +127,7 @@
   {"title":"Flash Manufacturing PMI","country":"GBP","date":"2026-09-23T04:30:00-04:00","impact":"Medium","forecast":"51.5","previous":"51.5"},
   {"title":"Flash Services PMI","country":"GBP","date":"2026-09-23T04:30:00-04:00","impact":"Medium","forecast":"52.0","previous":"52.8"},
   {"title":"FOMC Member Barr Speaks","country":"USD","date":"2026-09-23T10:05:00-04:00","impact":"Low","forecast":"","previous":""},
-  {"title":"Employment Change","country":"AUD","date":"2026-09-23T21:30:00-04:00","impact":"High","forecast":"20.9K","previous":"-15.8K"},
+  {"title":"Employment Change","country":"AUD","date":"2026-09-23T21:30:00-04:00","impact":"High","forecast":"22.5K","previous":"-15.8K"},
   {"title":"Unemployment Rate","country":"AUD","date":"2026-09-23T21:30:00-04:00","impact":"High","forecast":"4.5%","previous":"4.5%"},
   {"title":"SNB Monetary Policy Assessment","country":"CHF","date":"2026-09-24T03:30:00-04:00","impact":"High","forecast":"","previous":""},
   {"title":"SNB Policy Rate","country":"CHF","date":"2026-09-24T03:30:00-04:00","impact":"High","forecast":"0.00%","previous":"0.00%"},
@@ -140,10 +140,10 @@
   {"title":"FOMC Member Hammack Speaks","country":"USD","date":"2026-09-24T08:50:00-04:00","impact":"Low","forecast":"","previous":""},
   {"title":"FOMC Member Paulson Speaks","country":"USD","date":"2026-09-24T10:10:00-04:00","impact":"Low","forecast":"","previous":""},
   {"title":"Bank Holiday","country":"CNY","date":"2026-09-24T19:01:00-04:00","impact":"Holiday","forecast":"","previous":""},
-  {"title":"BOJ Core CPI y/y","country":"JPY","date":"2026-09-25T01:00:00-04:00","impact":"Low","forecast":"","previous":"1.6%"},
+  {"title":"BOJ Core CPI y/y","country":"JPY","date":"2026-09-25T01:00:00-04:00","impact":"Low","forecast":"1.5%","previous":"1.6%"},
   {"title":"BOE Gov Bailey Speaks","country":"GBP","date":"2026-09-25T05:15:00-04:00","impact":"High","forecast":"","previous":""},
   {"title":"FOMC Member Williams Speaks","country":"USD","date":"2026-09-25T05:15:00-04:00","impact":"Low","forecast":"","previous":""},
-  {"title":"Revised UoM Consumer Sentiment","country":"USD","date":"2026-09-25T10:00:00-04:00","impact":"Medium","forecast":"47.5","previous":"47.8"},
+  {"title":"Revised UoM Consumer Sentiment","country":"USD","date":"2026-09-25T10:00:00-04:00","impact":"Medium","forecast":"47.4","previous":"47.8"},
   {"title":"Revised UoM Inflation Expectations","country":"USD","date":"2026-09-25T10:00:00-04:00","impact":"Medium","forecast":"","previous":"4.6%"},
   {"title":"FOMC Member Hammack Speaks","country":"USD","date":"2026-09-25T14:00:00-04:00","impact":"Low","forecast":"","previous":""},
   {"title":"Daylight Saving Time Shift","country":"NZD","date":"2026-09-26T10:00:00-04:00","impact":"Holiday","forecast":"","previous":""}
