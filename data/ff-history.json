@@ -1,7 +1,7 @@
 {
  "source": "ForexFactory (nfs.faireconomy.media/ff_calendar_thisweek.json)",
  "note": "Arsip event kalender FF per minggu (forecast & previous). Diperbarui otomatis oleh scripts/fetch-ff.mjs (GitHub Actions). Kolom actual TIDAK berasal dari file ini — selalu dari FRED.",
- "updated": "2026-09-22T10:29:22.269Z",
+ "updated": "2026-09-22T15:52:57.722Z",
  "weeks": [
   "2026-09-07",
   "2026-09-14",
@@ -116,6 +116,7 @@
   {"title":"RBA Gov Bullock Speaks","country":"AUD","date":"2026-09-21T23:10:00-04:00","impact":"High","forecast":"","previous":""},
   {"title":"ECB President Lagarde Speaks","country":"EUR","date":"2026-09-22T07:00:00-04:00","impact":"Medium","forecast":"","previous":""},
   {"title":"ADP Weekly Employment Change","country":"USD","date":"2026-09-22T08:15:00-04:00","impact":"Low","forecast":"","previous":"16.3K"},
+  {"title":"President Trump Speaks","country":"USD","date":"2026-09-22T09:55:00-04:00","impact":"Medium","forecast":"","previous":""},
   {"title":"FOMC Member Williams Speaks","country":"USD","date":"2026-09-22T10:05:00-04:00","impact":"Low","forecast":"","previous":""},
   {"title":"FOMC Member Jefferson Speaks","country":"USD","date":"2026-09-22T10:20:00-04:00","impact":"Low","forecast":"","previous":""},
   {"title":"FOMC Member Barkin Speaks","country":"USD","date":"2026-09-22T13:00:00-04:00","impact":"Low","forecast":"","previous":""},
