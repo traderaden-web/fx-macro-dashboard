@@ -40,7 +40,7 @@ function decisionImpact(ccy, surprise) {
 }
 
 const CAT_COLOR = {
-  inflasi: "#f0b429", "tenaga-kerja": "#2dd4bf", moneter: "#c084fc",
+  inflasi: "#22d3ee", "tenaga-kerja": "#2dd4bf", moneter: "#c084fc",
   pertumbuhan: "#4ade80", konsumen: "#a78bfa", pasar: "#94a3b8",
 };
 

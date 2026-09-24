@@ -470,7 +470,7 @@ export default function IndicatorClient({ data, releases, accuracy, source, edu,
           ))}
         </div>
 
-        <Chart points={shown} color={cat?.color || "#f0b429"} unit={data.unit} decimals={data.decimals} height={320} />
+        <Chart points={shown} color={cat?.color || "#22d3ee"} unit={data.unit} decimals={data.decimals} height={320} />
 
         <div className="ind-rows12">
           <div className="ind-rows12-head mono"><span>PERIODE</span><span>NILAI</span><span className="ind-rows12-barcol">PERUBAHAN</span></div>

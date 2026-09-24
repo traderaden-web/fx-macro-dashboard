@@ -31,7 +31,7 @@ const C = {
   axisBg: "rgba(18,21,28,0.92)",
   text: "#e8ecf3",
   muted: "#9aa5b8",
-  ema20: "#f0b429",
+  ema20: "#22d3ee",
   ema50: "#38bdf8",
   entry: "#7dd3fc",
   sl: "#fb7185",
@@ -44,7 +44,7 @@ const C = {
   fvgBullB: "rgba(34,211,238,0.5)",
   fvgBear: "rgba(167,139,250,0.10)",
   fvgBearB: "rgba(167,139,250,0.5)",
-  range: "rgba(240,180,41,0.55)",
+  range: "rgba(34, 211, 238,0.55)",
   snr: "rgba(154,165,184,0.6)",
   liq: "rgba(217,119,87,0.75)",
   eq: "rgba(154,165,184,0.45)",
@@ -52,7 +52,7 @@ const C = {
   disc: "rgba(74,222,128,0.055)",
   cross: "rgba(232,236,243,0.45)",
   rsi: "#c084fc",
-  macd: "#f0b429",
+  macd: "#22d3ee",
   macdSig: "#38bdf8",
 };
 
@@ -296,7 +296,7 @@ export default function SignalChart({ symbolId, tf, symbolLabel }) {
         ctx.setLineDash([5, 4]); ctx.strokeStyle = C.range; ctx.lineWidth = 1.2;
         ctx.strokeRect(x0, y(rg.hi), xR - x0, y(rg.lo) - y(rg.hi));
         ctx.setLineDash([]);
-        ctx.fillStyle = "rgba(240,180,41,0.85)"; ctx.textAlign = "left";
+        ctx.fillStyle = "rgba(34, 211, 238,0.85)"; ctx.textAlign = "left";
         ctx.fillText(rg.status === "RANGE" ? "RANGE 20" : rg.status.replace("_", " "), x0 + 4, y(rg.hi) - 8);
       }
     }

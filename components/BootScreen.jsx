@@ -10,14 +10,14 @@
 import { useEffect, useRef, useState } from "react";
 
 const LINES = [
-  { label: "MACROLAB BIOS v2.2.1 — (C) 2026 AD TRADER FOREX", status: "" },
+  { label: "MACROLAB HUD BIOS v3.0 — (C) 2026 AD TRADER FOREX", status: "" },
   { label: "CPU   NEXT.JS 15.5 / REACT 19.2 ...............", status: "OK" },
   { label: "MEM   27 SERI FRED + KALENDER RILIS ............", status: "OK" },
   { label: "MOUNT /dev/fred + /dev/forexfactory ............", status: "OK" },
   { label: "SYNC  JADWAL BLS / FOMC / ECB / BOJ ............", status: "OK" },
   { label: "CALIB MATRIX PAIR FX (14 PAIR MAJOR + CROSS) ...", status: "OK" },
   { label: "LOAD  MODUL ANALISIS / CHART / PETA MAKRO ......", status: "OK" },
-  { label: "RENDER TERMINAL UI v2.2 ........................", status: "READY" },
+  { label: "RENDER HUD INTERFACE v3.0 ......................", status: "READY" },
 ];
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
