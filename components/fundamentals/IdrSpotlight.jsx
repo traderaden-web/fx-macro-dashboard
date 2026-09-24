@@ -164,7 +164,7 @@ export default function IdrSpotlight({ idr, banks = [] }) {
           </div>
           <AreaChart
             points={chartData}
-            color="#f0b429"
+            color="#22d3ee"
             height={280}
             fmtX={fmtXIDR}
             fmtY={fmtYIDR}

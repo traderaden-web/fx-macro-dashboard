@@ -115,7 +115,7 @@ export function ScoreDial({ score = 50, size = 74, label }) {
  * liveIdx: indeks titik live (ditandai lingkaran + label LIVE).
  */
 export function AreaChart({
-  points = [], color = "#f0b429", height = 300, fmtX = (d) => d, fmtY = (v) => v,
+  points = [], color = "#22d3ee", height = 300, fmtX = (d) => d, fmtY = (v) => v,
   liveIdx = -1, yPadRatio = 0.12, unit = "", footnote,
 }) {
   const W = 860;
@@ -215,7 +215,7 @@ export function AreaChart({
 }
 
 /** Grafik tangga untuk jalur suku bunga (BI-Rate). */
-export function StepChart({ points = [], height = 190, color = "#f0b429", fmtY = (v) => v, fmtX = (d) => d, fmtEnd }) {
+export function StepChart({ points = [], height = 190, color = "#22d3ee", fmtY = (v) => v, fmtX = (d) => d, fmtEnd }) {
   const W = 860;
   const H = height;
   const PL = 46, PR = 14, PT = 14, PB = 26;

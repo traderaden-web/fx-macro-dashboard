@@ -341,7 +341,7 @@ export default function MacroMap({ overrides = null, asOf = null }) {
                     key={id}
                     d={c.d}
                     fill={fill}
-                    stroke={isHover ? "#f0b429" : "#0a0c10"}
+                    stroke={isHover ? "#22d3ee" : "#0a0c10"}
                     strokeWidth={isHover ? 1.4 : 0.7}
                     className={`map-country ${isExtreme ? "map-country-extreme" : ""}`}
                     style={{ "--i": i }}
@@ -370,8 +370,8 @@ export default function MacroMap({ overrides = null, asOf = null }) {
                 <g key={a.key}>
                   <path d={a.d} pathLength={1} className="map-arc" style={{ "--i": a.i }} />
                   <g className="map-arc-pkt" style={{ "--i": a.i }}>
-                    <circle r="2.8" fill="rgba(240,180,41,0.20)" />
-                    <circle r="1.3" fill="#f0b429" />
+                    <circle r="2.8" fill="rgba(34, 211, 238,0.20)" />
+                    <circle r="1.3" fill="#22d3ee" />
                     <animateMotion
                       dur={`${(2.8 + (a.i % 5) * 0.45).toFixed(2)}s`}
                       begin={`${(1 + a.i * 0.13).toFixed(2)}s`}

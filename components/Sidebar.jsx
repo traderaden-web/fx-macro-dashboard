@@ -92,7 +92,7 @@ export default function Sidebar({ open = false, onClose }) {
           <ThemeToggle />
         </div>
         <div className="side-foot-meta mono">
-          <span>SYS: FRED+FF · v3.1</span>
+          <span>SYS: FRED+FF · HUD v3</span>
           <span>{SECTION_OF(pathname) || "Over — view"}</span>
         </div>
       </div>
