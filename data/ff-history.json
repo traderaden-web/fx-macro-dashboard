@@ -1,7 +1,7 @@
 {
  "source": "ForexFactory (nfs.faireconomy.media/ff_calendar_thisweek.json)",
  "note": "Arsip event kalender FF per minggu (forecast & previous). Diperbarui otomatis oleh scripts/fetch-ff.mjs (GitHub Actions). Kolom actual TIDAK berasal dari file ini — selalu dari FRED.",
- "updated": "2026-10-07T03:05:41.816Z",
+ "updated": "2026-10-07T12:13:37.251Z",
  "weeks": [
   "2026-09-07",
   "2026-09-14",
@@ -248,6 +248,7 @@
   {"title":"FOMC Member Schmid Speaks","country":"USD","date":"2026-10-06T13:15:00-04:00","impact":"Low","forecast":"","previous":""},
   {"title":"Bank Holiday","country":"CNY","date":"2026-10-06T19:01:00-04:00","impact":"Holiday","forecast":"","previous":""},
   {"title":"German Industrial Production m/m","country":"EUR","date":"2026-10-07T02:00:00-04:00","impact":"Low","forecast":"0.5%","previous":"-1.1%"},
+  {"title":"President Trump Speaks","country":"USD","date":"2026-10-07T13:00:00-04:00","impact":"Medium","forecast":"","previous":""},
   {"title":"FOMC Meeting Minutes","country":"USD","date":"2026-10-07T14:00:00-04:00","impact":"High","forecast":"","previous":""},
   {"title":"Economy Watchers Sentiment","country":"JPY","date":"2026-10-08T01:00:00-04:00","impact":"Low","forecast":"46.7","previous":"46.4"},
   {"title":"FOMC Member Waller Speaks","country":"USD","date":"2026-10-08T04:30:00-04:00","impact":"Medium","forecast":"","previous":""},
