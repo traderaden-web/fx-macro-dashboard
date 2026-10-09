@@ -1,9 +1,9 @@
 {
-  "generated": "2026-10-09T03:27:33.037Z",
+  "generated": "2026-10-09T12:17:04.054Z",
   "source": "FRED (fred.stlouisfed.org/graph/fredgraph.csv)",
-  "ok": 28,
-  "fail": 2,
-  "kept": 2,
+  "ok": 0,
+  "fail": 30,
+  "kept": 30,
   "series": {
     "nfp": {
       "id": "nfp",
