@@ -1,7 +1,7 @@
 {
  "source": "ForexFactory (nfs.faireconomy.media/ff_calendar_thisweek.json)",
  "note": "Arsip event kalender FF per minggu (forecast & previous). Diperbarui otomatis oleh scripts/fetch-ff.mjs (GitHub Actions). Kolom actual TIDAK berasal dari file ini — selalu dari FRED.",
- "updated": "2026-10-22T10:47:17.448Z",
+ "updated": "2026-10-22T16:13:00.303Z",
  "weeks": [
   "2026-09-07",
   "2026-09-14",
@@ -338,6 +338,7 @@
   {"title":"CPI q/q","country":"NZD","date":"2026-10-21T17:45:00-04:00","impact":"High","forecast":"0.8%","previous":"1.5%"},
   {"title":"IPPI m/m","country":"CAD","date":"2026-10-22T08:30:00-04:00","impact":"Low","forecast":"0.9%","previous":"1.3%"},
   {"title":"Unemployment Claims","country":"USD","date":"2026-10-22T08:30:00-04:00","impact":"Medium","forecast":"200K","previous":"199K"},
+  {"title":"IPPI m/m","country":"CAD","date":"2026-10-22T08:38:00-04:00","impact":"Low","forecast":"0.9%","previous":"1.3%"},
   {"title":"National Core CPI y/y","country":"JPY","date":"2026-10-22T19:30:00-04:00","impact":"Low","forecast":"2.1%","previous":"1.7%"},
   {"title":"Retail Sales m/m","country":"GBP","date":"2026-10-23T02:00:00-04:00","impact":"Medium","forecast":"-0.1%","previous":"0.5%"},
   {"title":"French Flash Manufacturing PMI","country":"EUR","date":"2026-10-23T03:15:00-04:00","impact":"Medium","forecast":"50.5","previous":"50.3"},
