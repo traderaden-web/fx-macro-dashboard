@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-28T18:47:58.452Z",
+  "generated": "2026-10-28T19:07:43.682Z",
   "source": "FRED (fred.stlouisfed.org/graph/fredgraph.csv)",
   "ok": 28,
   "fail": 2,
@@ -10,7 +10,7 @@
       "fred": "PAYEMS",
       "mode": "monthly_change",
       "unit": "ribu",
-      "updated": "2026-10-28T18:47:46.281Z",
+      "updated": "2026-10-28T19:07:33.906Z",
       "last": {
         "date": "2026-09-01",
         "value": 29
@@ -551,7 +551,7 @@
       "fred": "UNRATE",
       "mode": "level",
       "unit": "%",
-      "updated": "2026-10-28T18:47:46.569Z",
+      "updated": "2026-10-28T19:07:34.139Z",
       "last": {
         "date": "2026-09-01",
         "value": 4.2
@@ -1092,7 +1092,7 @@
       "fred": "CPIAUCNS",
       "mode": "yoy_pct",
       "unit": "%",
-      "updated": "2026-10-28T18:47:46.786Z",
+      "updated": "2026-10-28T19:07:34.393Z",
       "last": {
         "date": "2026-09-01",
         "value": 3.74
@@ -1633,7 +1633,7 @@
       "fred": "CPILFENS",
       "mode": "yoy_pct",
       "unit": "%",
-      "updated": "2026-10-28T18:47:47.013Z",
+      "updated": "2026-10-28T19:07:34.695Z",
       "last": {
         "date": "2026-09-01",
         "value": 2.56
@@ -2174,7 +2174,7 @@
       "fred": "PPIFIS",
       "mode": "mom_pct",
       "unit": "%",
-      "updated": "2026-10-28T18:47:47.320Z",
+      "updated": "2026-10-28T19:07:35.054Z",
       "last": {
         "date": "2026-09-01",
         "value": 1.34
@@ -2715,7 +2715,7 @@
       "fred": "PCEPILFE",
       "mode": "mom_pct",
       "unit": "%",
-      "updated": "2026-10-28T18:47:47.568Z",
+      "updated": "2026-10-28T19:07:35.297Z",
       "last": {
         "date": "2026-08-01",
         "value": 0.25
@@ -3256,7 +3256,7 @@
       "fred": "CES0500000003",
       "mode": "mom_pct",
       "unit": "%",
-      "updated": "2026-10-28T18:47:47.804Z",
+      "updated": "2026-10-28T19:07:35.548Z",
       "last": {
         "date": "2026-09-01",
         "value": 0.13
@@ -3797,7 +3797,7 @@
       "fred": "DFEDTARU",
       "mode": "level_last",
       "unit": "%",
-      "updated": "2026-10-28T18:47:49.197Z",
+      "updated": "2026-10-28T19:07:35.798Z",
       "last": {
         "date": "2026-10-01",
         "value": 4
@@ -4338,7 +4338,7 @@
       "fred": "DGS10",
       "mode": "level",
       "unit": "%",
-      "updated": "2026-10-28T18:47:49.542Z",
+      "updated": "2026-10-28T19:07:36.021Z",
       "last": {
         "date": "2026-10-01",
         "value": 5.16
@@ -4879,7 +4879,7 @@
       "fred": "RSAFS",
       "mode": "mom_pct",
       "unit": "%",
-      "updated": "2026-10-28T18:47:49.873Z",
+      "updated": "2026-10-28T19:07:36.277Z",
       "last": {
         "date": "2026-09-01",
         "value": 0.77
@@ -5420,7 +5420,7 @@
       "fred": "UMCSENT",
       "mode": "level",
       "unit": "index",
-      "updated": "2026-10-28T18:47:50.256Z",
+      "updated": "2026-10-28T19:07:36.692Z",
       "last": {
         "date": "2026-09-01",
         "value": 48.1
@@ -5961,7 +5961,7 @@
       "fred": "INDPRO",
       "mode": "mom_pct",
       "unit": "%",
-      "updated": "2026-10-28T18:47:50.545Z",
+      "updated": "2026-10-28T19:07:36.951Z",
       "last": {
         "date": "2026-09-01",
         "value": 0.66
@@ -6502,7 +6502,7 @@
       "fred": "A191RL1Q225SBEA",
       "mode": "raw",
       "unit": "%",
-      "updated": "2026-10-28T18:47:50.867Z",
+      "updated": "2026-10-28T19:07:37.180Z",
       "last": {
         "date": "2026-04-01",
         "value": 2.2
@@ -7043,7 +7043,7 @@
       "fred": "CP0000EZ19M086NEST",
       "mode": "yoy_pct",
       "unit": "%",
-      "updated": "2026-10-28T18:47:51.069Z",
+      "updated": "2026-10-28T19:07:37.433Z",
       "last": {
         "date": "2026-09-01",
         "value": 3.75
@@ -7584,7 +7584,7 @@
       "fred": "LRHUTTTTEZM156S",
       "mode": "level",
       "unit": "%",
-      "updated": "2026-10-28T18:47:51.390Z",
+      "updated": "2026-10-28T19:07:37.674Z",
       "last": {
         "date": "2023-01-01",
         "value": 6.7
@@ -8081,7 +8081,7 @@
       "fred": "GBRCPIALLMINMEI",
       "mode": "yoy_pct",
       "unit": "%",
-      "updated": "2026-10-28T18:47:51.598Z",
+      "updated": "2026-10-28T19:07:37.908Z",
       "last": {
         "date": "2025-03-01",
         "value": 3.42
@@ -8622,7 +8622,7 @@
       "fred": "LRHUTTTTGBM156S",
       "mode": "level",
       "unit": "%",
-      "updated": "2026-10-28T18:47:51.836Z",
+      "updated": "2026-10-28T19:07:38.160Z",
       "last": {
         "date": "2026-06-01",
         "value": 4.9
@@ -9163,7 +9163,7 @@
       "fred": "JPNCPIALLMINMEI",
       "mode": "yoy_pct",
       "unit": "%",
-      "updated": "2026-10-28T18:47:52.039Z",
+      "updated": "2026-10-28T19:07:38.371Z",
       "last": {
         "date": "2021-06-01",
         "value": -0.4
@@ -9536,7 +9536,7 @@
       "fred": "DCOILWTICO",
       "mode": "level",
       "unit": "USD/barel",
-      "updated": "2026-10-28T18:47:52.326Z",
+      "updated": "2026-10-28T19:07:38.812Z",
       "last": {
         "date": "2026-10-01",
         "value": 101.38
@@ -10077,7 +10077,7 @@
       "fred": "VIXCLS",
       "mode": "level",
       "unit": "index",
-      "updated": "2026-10-28T18:47:53.288Z",
+      "updated": "2026-10-28T19:07:39.045Z",
       "last": {
         "date": "2026-10-01",
         "value": 16.75
@@ -10618,7 +10618,7 @@
       "fred": "DCOILBRENTEU",
       "mode": "level",
       "unit": "USD/barel",
-      "updated": "2026-10-28T18:47:54.381Z",
+      "updated": "2026-10-28T19:07:39.266Z",
       "last": {
         "date": "2026-10-01",
         "value": 124.83
@@ -11159,7 +11159,7 @@
       "fred": "DHHNGSP",
       "mode": "level",
       "unit": "USD/MMBtu",
-      "updated": "2026-10-28T18:47:55.425Z",
+      "updated": "2026-10-28T19:07:40.242Z",
       "last": {
         "date": "2026-10-01",
         "value": 3.04
@@ -11700,7 +11700,7 @@
       "fred": "PCOPPUSDM",
       "mode": "level",
       "unit": "USD/ton",
-      "updated": "2026-10-28T18:47:55.727Z",
+      "updated": "2026-10-28T19:07:40.465Z",
       "last": {
         "date": "2026-09-01",
         "value": 14473.06
@@ -12241,7 +12241,7 @@
       "fred": "ICSA",
       "mode": "raw",
       "unit": "orang",
-      "updated": "2026-10-28T18:47:55.989Z",
+      "updated": "2026-10-28T19:07:40.715Z",
       "last": {
         "date": "2026-10-17",
         "value": 194000
@@ -12782,7 +12782,7 @@
       "fred": "TCU",
       "mode": "level",
       "unit": "%",
-      "updated": "2026-10-28T18:47:56.325Z",
+      "updated": "2026-10-28T19:07:41.012Z",
       "last": {
         "date": "2026-09-01",
         "value": 76.85
@@ -13323,7 +13323,7 @@
       "fred": "CLVMNACSCAB1GQEA19",
       "mode": "yoy_pct",
       "unit": "%",
-      "updated": "2026-10-28T18:47:56.568Z",
+      "updated": "2026-10-28T19:07:41.253Z",
       "last": {
         "date": "2026-04-01",
         "value": 1.19
@@ -13824,7 +13824,7 @@
       "fred": "CHNCPIALLMINMEI",
       "mode": "yoy_pct",
       "unit": "%",
-      "updated": "2026-10-28T18:47:56.842Z",
+      "updated": "2026-10-28T19:07:41.557Z",
       "last": {
         "date": "2025-04-01",
         "value": -0.07
@@ -14420,7 +14420,7 @@
       "fred": "ADPMNUSNERSA",
       "mode": "monthly_change_k",
       "unit": "ribu",
-      "updated": "2026-10-28T18:47:57.946Z",
+      "updated": "2026-10-28T19:07:42.824Z",
       "last": {
         "date": "2026-09-01",
         "value": 90
