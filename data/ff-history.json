@@ -1,7 +1,7 @@
 {
  "source": "ForexFactory (nfs.faireconomy.media/ff_calendar_thisweek.json)",
  "note": "Arsip event kalender FF per minggu (forecast & previous). Diperbarui otomatis oleh scripts/fetch-ff.mjs (GitHub Actions). Kolom actual TIDAK berasal dari file ini — selalu dari FRED.",
- "updated": "2026-11-03T13:10:43.162Z",
+ "updated": "2026-11-03T19:48:35.154Z",
  "weeks": [
   "2026-09-07",
   "2026-09-14",
@@ -432,6 +432,7 @@
   {"title":"RBA Rate Statement","country":"AUD","date":"2026-11-02T22:30:00-05:00","impact":"High","forecast":"","previous":""},
   {"title":"RBA Press Conference","country":"AUD","date":"2026-11-02T23:30:00-05:00","impact":"High","forecast":"","previous":""},
   {"title":"CPI m/m","country":"CHF","date":"2026-11-03T02:30:00-05:00","impact":"Medium","forecast":"0.0%","previous":"0.0%"},
+  {"title":"RCM/TIPP Economic Optimism","country":"USD","date":"2026-11-03T04:00:00-05:00","impact":"Low","forecast":"46.2","previous":"46.8"},
   {"title":"JOLTS Job Openings","country":"USD","date":"2026-11-03T10:00:00-05:00","impact":"Medium","forecast":"7.15M","previous":"7.08M"},
   {"title":"RCM/TIPP Economic Optimism","country":"USD","date":"2026-11-03T10:10:00-05:00","impact":"Low","forecast":"46.2","previous":"46.8"},
   {"title":"Congressional Elections","country":"USD","date":"2026-11-03T10:16:00-05:00","impact":"High","forecast":"","previous":""},
