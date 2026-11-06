@@ -1,7 +1,7 @@
 {
  "source": "ForexFactory (nfs.faireconomy.media/ff_calendar_thisweek.json)",
  "note": "Arsip event kalender FF per minggu (forecast & previous). Diperbarui otomatis oleh scripts/fetch-ff.mjs (GitHub Actions). Kolom actual TIDAK berasal dari file ini — selalu dari FRED.",
- "updated": "2026-11-06T13:23:54.196Z",
+ "updated": "2026-11-06T19:41:33.698Z",
  "weeks": [
   "2026-09-07",
   "2026-09-14",
@@ -474,6 +474,7 @@
   {"title":"Prelim UoM Inflation Expectations","country":"USD","date":"2026-11-06T10:00:00-05:00","impact":"Medium","forecast":"","previous":"4.7%"},
   {"title":"BOJ Gov Ueda Speaks","country":"JPY","date":"2026-11-06T11:00:00-05:00","impact":"High","forecast":"","previous":""},
   {"title":"FOMC Member Bowman Speaks","country":"USD","date":"2026-11-06T12:15:00-05:00","impact":"Low","forecast":"","previous":""},
+  {"title":"FOMC Member Daly Speaks","country":"USD","date":"2026-11-06T13:00:00-05:00","impact":"Low","forecast":"","previous":""},
   {"title":"Parliamentary Elections","country":"NZD","date":"2026-11-06T16:45:00-05:00","impact":"High","forecast":"","previous":""}
  ]
 }
