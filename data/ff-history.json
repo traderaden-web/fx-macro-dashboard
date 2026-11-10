@@ -1,7 +1,7 @@
 {
  "source": "ForexFactory (nfs.faireconomy.media/ff_calendar_thisweek.json)",
  "note": "Arsip event kalender FF per minggu (forecast & previous). Diperbarui otomatis oleh scripts/fetch-ff.mjs (GitHub Actions). Kolom actual TIDAK berasal dari file ini — selalu dari FRED.",
- "updated": "2026-11-10T00:57:05.520Z",
+ "updated": "2026-11-10T13:54:22.494Z",
  "weeks": [
   "2026-09-07",
   "2026-09-14",
@@ -487,7 +487,8 @@
   {"title":"BRC Retail Sales Monitor y/y","country":"GBP","date":"2026-11-09T19:01:00-05:00","impact":"Low","forecast":"1.2%","previous":"1.0%"},
   {"title":"Economy Watchers Sentiment","country":"JPY","date":"2026-11-10T00:00:00-05:00","impact":"Low","forecast":"47.1","previous":"47.0"},
   {"title":"FOMC Member Waller Speaks","country":"USD","date":"2026-11-10T04:00:00-05:00","impact":"Medium","forecast":"","previous":""},
-  {"title":"ADP Weekly Employment Change","country":"USD","date":"2026-11-10T08:15:00-05:00","impact":"Low","forecast":"","previous":""},
+  {"title":"ADP Weekly Employment Change","country":"USD","date":"2026-11-10T08:14:00-05:00","impact":"Low","forecast":"","previous":"16.8K"},
+  {"title":"ADP Weekly Employment Change","country":"USD","date":"2026-11-10T08:15:00-05:00","impact":"Low","forecast":"","previous":"19.5K"},
   {"title":"ADP Weekly Employment Change","country":"USD","date":"2026-11-10T08:16:00-05:00","impact":"Low","forecast":"","previous":"16.8K"},
   {"title":"Core CPI m/m","country":"USD","date":"2026-11-10T08:30:00-05:00","impact":"High","forecast":"0.2%","previous":"0.3%"},
   {"title":"CPI m/m","country":"USD","date":"2026-11-10T08:30:00-05:00","impact":"High","forecast":"0.3%","previous":"0.6%"},
