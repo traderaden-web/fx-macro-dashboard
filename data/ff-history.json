@@ -1,7 +1,7 @@
 {
  "source": "ForexFactory (nfs.faireconomy.media/ff_calendar_thisweek.json)",
  "note": "Arsip event kalender FF per minggu (forecast & previous). Diperbarui otomatis oleh scripts/fetch-ff.mjs (GitHub Actions). Kolom actual TIDAK berasal dari file ini — selalu dari FRED.",
- "updated": "2026-11-13T21:23:58.725Z",
+ "updated": "2026-11-13T22:59:09.745Z",
  "weeks": [
   "2026-09-07",
   "2026-09-14",
@@ -527,6 +527,7 @@
   {"title":"FOMC Member Logan Speaks","country":"USD","date":"2026-11-13T09:40:00-05:00","impact":"Low","forecast":"","previous":""},
   {"title":"FOMC Member Bowman Speaks","country":"USD","date":"2026-11-13T10:50:00-05:00","impact":"Low","forecast":"","previous":""},
   {"title":"FOMC Member Daly Speaks","country":"USD","date":"2026-11-13T12:00:00-05:00","impact":"Low","forecast":"","previous":""},
+  {"title":"FOMC Financial Stability Report","country":"USD","date":"2026-11-13T16:00:00-05:00","impact":"Low","forecast":"","previous":""},
   {"title":"FOMC Member Jefferson Speaks","country":"USD","date":"2026-11-13T19:00:00-05:00","impact":"Low","forecast":"","previous":""}
  ]
 }
